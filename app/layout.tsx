@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google"; // Import font từ thư viện của Next.js
+import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
+import { Toaster } from "sonner"; // Thêm import
 
-// Cấu hình font Inter với hỗ trợ tiếng Việt
-const inter = Inter({ 
+const inter = Inter({
   subsets: ["latin", "vietnamese"],
-  display: 'swap',
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -22,14 +22,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="vi">
-      {/* Gán font vào className của body để áp dụng toàn trang */}
       <body className={`${inter.className} antialiased text-secondary`}>
         <Header />
-        {/* Main padding-top 16 (64px) để không bị Header đè lên nội dung */}
-        <main className="min-h-screen pt-16">
-          {children}
-        </main>
+        <main className="min-h-screen pt-16">{children}</main>
         <Footer />
+        <Toaster position="top-right" richColors /> {/* Thêm dòng này */}
       </body>
     </html>
   );
