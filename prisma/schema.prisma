@@ -1,13 +1,163 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
-  output   = "../lib/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+// 1. NGƯỜI DÙNG & XÁC THỰC (USER & AUTH)
+model User {
+  id            String    @id @default(cuid()) 
+  email         String    @unique
+  phone         String?   @unique
+  name          String?
+  password      String?  
+  image         String?   
+  address       String?
+  
+  // Xác thực (Dành cho NextAuth)
+  accounts      Account[]
+  sessions      Session[]
+
+  orders         Order[]          // Các đơn hàng cá nhân hoặc đơn nhóm do user này thanh toán
+  groupItems     GroupCartItem[] // Các món lẻ mà User này bỏ vào giỏ (của mình hoặc của nhóm)
+  hostedSessions GroupSession[] // Các phiên gộp đơn do User này tạo ra
+  
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+// Account & Session tích hợp đăng nhập mạng xã hội
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String? @db.Text
+  access_token       String? @db.Text
+  user               User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// 2. NHÀ HÀNG & DANH MỤC & SẢN PHẨM
+model Restaurant {
+  id        String    @id @default(cuid())
+  name      String
+  address   String
+  products  Product[]
+  orders    Order[]
+}
+
+model Category {
+  id       String    @id @default(cuid())
+  name     String    @unique
+  slug     String    @unique // Dùng cho đường dẫn URL (VD: /category/do-chay)
+  products Product[]
+}
+
+model Product {
+  id           String   @id @default(cuid())
+  name         String
+  price        Decimal  @db.Decimal(10, 2) 
+  description  String?  @db.Text
+  image        String?
+  
+  categoryId   String
+  category     Category @relation(fields: [categoryId], references: [id])
+  
+  restaurantId String
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+  
+  cartItems    GroupCartItem[]
+  orderItems   OrderItem[] 
+}
+
+// 3. PHIÊN GOM ĐƠN (GROUP SESSION)
+model GroupSession {
+  id        String      @id @default(cuid())
+  code      String      @unique // Mã mời (VD: NHOM-05-XYZ)
+  hostId    String
+  host      User        @relation(fields: [hostId], references: [id])
+  status    SessionStatus @default(OPENING) 
+  items     GroupCartItem[]
+  order     Order?      // Một phiên gộp đơn sau khi chốt sẽ tạo ra 1 Order
+  createdAt DateTime    @default(now())
+}
+
+// 4. CHI TIẾT GIỎ HÀNG (GROUP CART ITEM)
+model GroupCartItem {
+  id         String       @id @default(cuid())
+  sessionId  String?     
+  session    GroupSession? @relation(fields: [sessionId], references: [id])
+  userId     String
+  user       User          @relation(fields: [userId], references: [id])
+  productId  String
+  product    Product       @relation(fields: [productId], references: [id])
+  quantity   Int           @default(1)
+  note       String?       // Ghi chú: "Không hành", "Nhiều ớt"...
+}
+
+// 5. ĐƠN HÀNG & CHI TIẾT ĐƠN HÀNG (ORDER & ORDER ITEM)
+model Order {
+  id             String      @id @default(cuid())
+  totalAmount    Decimal     @db.Decimal(10, 2)
+  status         OrderStatus @default(PENDING)
+  paymentStatus  PaymentStatus @default(UNPAID)
+  deliveryAddress String
+  deliveryPhone   String
+  
+  userId         String
+  user           User        @relation(fields: [userId], references: [id])
+  restaurantId   String
+  restaurant     Restaurant  @relation(fields: [restaurantId], references: [id])
+  
+  sessionId      String?     @unique 
+  session        GroupSession? @relation(fields: [sessionId], references: [id])
+  
+  items          OrderItem[] // Chú thích mới: Danh sách món ăn ĐÃ CHỐT trong đơn hàng
+  
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+  price     Decimal @db.Decimal(10, 2) // Chú thích mới: Lưu giá tại thời điểm mua, đề phòng sau này quán tăng giá thì đơn cũ vẫn giữ giá cũ
+}
+
+// ENUMS
+enum SessionStatus {
+  OPENING // Đang chờ mọi người chọn món
+  LOCKED  // Đã chốt danh sách, không cho thêm món nữa
+  COMPLETED // Đã thanh toán và tạo đơn hàng
+}
+
+enum OrderStatus {
+  PENDING // Đang chờ nhà hàng xác nhận
+  PAID  // Nhà hàng đã nhận đơn
+  PROCESSING  // Đang chế biến
+  SHIPPED // Shipper đang đi giao
+  DELIVERED // Đã giao xong
+  CANCELLED // Đơn bị hủy
+}
+
+enum PaymentStatus {
+  UNPAID  // Chưa trả tiền
+  PAID   // Đã trả tiền
+  REFUNDED  // Đã hoàn tiền (nếu hủy đơn)
 }
