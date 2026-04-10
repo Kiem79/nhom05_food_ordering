@@ -1,109 +1,72 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { ShoppingCart, User, UtensilsCrossed, Search, Menu, LogOut } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { useAuth } from "@/hooks/useAuth"; // Đảm bảo đường dẫn này đúng
+import { useAuth } from "@/hooks/useAuth";
+import { useCartStore } from "@/store/cartStore";
 
-const NAV_LINKS = [
-  { name: "Trang chủ", href: "/" },
-  { name: "Thực đơn", href: "/products" },
-  { name: "Đặt nhóm", href: "/group-order" },
-  { name: "Thành viên", href: "/about" },
-] as const;
-
-export default function Header() {
-  const pathname = usePathname();
-  
-  // ✅ PHẢI GỌI HOOK Ở ĐÂY (Bên trong Component)
+const Header = () => {
   const { user, isLoggedIn, logout } = useAuth();
+  const { cart } = useCartStore();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => { setMounted(true); }, []);
+
+  if (!mounted) return <header className="h-16 bg-white border-b border-slate-100" />;
 
   return (
-    <header className="fixed top-0 z-50 w-full bg-[#F97316] shadow-lg shadow-orange-900/20">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
+    <header className="bg-white border-b border-slate-100 sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-6 h-16 flex justify-between items-center">
         
-        {/* LOGO SECTION */}
-        <Link href="/" className="group flex items-center gap-2">
-          <div className="rounded-xl bg-white p-2 shadow-sm transition-transform group-hover:scale-110">
-            <UtensilsCrossed className="h-6 w-6 text-[#F97316]" />
-          </div>
-          <span className="text-2xl font-black tracking-tighter text-white">
-            Foodie<span className="text-white/60">.</span>
+        {/* LOGO CŨ TRÊN NỀN HIỆN ĐẠI */}
+        <Link href="/" className="flex items-center gap-2 group">
+          <span className="bg-orange-500 text-white p-1.5 rounded-xl text-xl shadow-sm group-hover:scale-110 transition-transform">
+            🍴
+          </span>
+          <span className="text-2xl font-black italic tracking-tighter text-orange-500">
+            Foodie.
           </span>
         </Link>
 
-        {/* NAVIGATION MENU */}
-        <nav className="hidden items-center gap-8 md:flex">
-          {NAV_LINKS.map((link) => {
-            const isActive = pathname === link.href;
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={cn(
-                  "relative text-sm font-bold transition-all duration-300",
-                  isActive 
-                    ? "text-white after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-full after:bg-white" 
-                    : "text-white/80 hover:text-white"
-                )}
-              >
-                {link.name}
-              </Link>
-            );
-          })}
+        <nav className="hidden md:flex gap-8 text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">
+          <Link href="/" className="hover:text-orange-500 transition-colors">Trang chủ</Link>
+          <Link href="/products" className="hover:text-orange-500 transition-colors">Thực đơn</Link>
+          <Link href="/group-order" className="text-orange-500 border-b-2 border-orange-500 pb-1">Đặt nhóm</Link>
+          <Link href="/about" className="hover:text-orange-500 transition-colors">Thành viên</Link>
         </nav>
 
-        {/* ACTIONS SECTION */}
-        <div className="flex items-center gap-3">
-          {/* Nút Tìm kiếm */}
-          <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 rounded-full">
-            <Search className="h-5 w-5" />
-          </Button>
-
-          {/* Giỏ hàng (Có badge số lượng) */}
-          <Link href="/cart" className="group relative rounded-full p-2 transition-colors hover:bg-white/10">
-            <ShoppingCart className="h-5 w-5 text-white" />
-            <span className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center rounded-full border-2 border-[#F97316] bg-white text-[10px] font-black text-[#F97316]">
-              3
-            </span>
-          </Link>
-
-          {/* LOGIC ĐĂNG NHẬP / THÔNG TIN USER */}
-          <div className="ml-2 border-l border-white/20 pl-4">
-            {isLoggedIn ? (
-              <div className="flex items-center gap-4">
-                <div className="flex flex-col items-end">
-                  <span className="text-[10px] font-medium text-white/70 uppercase leading-none">Thành viên</span>
-                  <span className="text-sm font-black text-white">{user?.name}</span>
-                </div>
-                <Button 
-                  onClick={logout}
-                  variant="ghost" 
-                  size="icon" 
-                  className="h-8 w-8 text-white hover:bg-white/20 rounded-full"
-                  title="Đăng xuất"
-                >
-                  <LogOut className="h-4 w-4" />
-                </Button>
-              </div>
-            ) : (
-              <Button asChild className="rounded-full bg-white px-6 font-black text-[#F97316] hover:bg-orange-50 shadow-md transition-all active:scale-95">
-                <Link href="/auth">
-                  <User className="mr-2 h-4 w-4" /> Đăng nhập
-                </Link>
-              </Button>
+        <div className="flex items-center gap-4">
+          <div className="relative p-2 text-slate-600 hover:bg-orange-50 rounded-full transition-colors cursor-pointer group">
+            <span className="text-xl group-hover:rotate-12 transition-transform inline-block">🛒</span>
+            {cart.length > 0 && (
+              <span className="absolute top-1 right-1 bg-orange-600 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center border-2 border-white">
+                {cart.length}
+              </span>
             )}
           </div>
 
-          {/* Mobile Menu Button */}
-          <Button variant="ghost" size="icon" className="text-white md:hidden ml-2">
-            <Menu className="h-6 w-6" />
-          </Button>
+          {isLoggedIn ? (
+            <div className="flex items-center gap-3 pl-3 border-l border-slate-100">
+              <div className="text-right hidden sm:block">
+                <p className="text-[10px] font-black text-slate-300 uppercase leading-none mb-1">Thành viên</p>
+                <p className="text-sm font-black text-slate-800 tracking-tight">{user?.name}</p>
+              </div>
+              <div className="w-9 h-9 bg-orange-50 text-orange-600 rounded-full flex items-center justify-center font-black text-sm border border-orange-100 shadow-sm">
+                {user?.name?.charAt(0).toUpperCase()}
+              </div>
+              <button onClick={logout} className="p-2 text-slate-300 hover:text-red-500 transition-colors text-lg">
+                 🚪
+              </button>
+            </div>
+          ) : (
+            <Link href="/auth" className="bg-orange-500 text-white px-6 py-2 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-orange-600 transition-all shadow-lg shadow-orange-100">
+              Đăng nhập
+            </Link>
+          )}
         </div>
       </div>
     </header>
   );
-}
+};
+
+export default Header;
