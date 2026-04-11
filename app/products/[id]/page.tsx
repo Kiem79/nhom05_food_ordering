@@ -1,32 +1,37 @@
 import data from "@/lib/data.json";
 import Image from "next/image";
+import { notFound } from "next/navigation";
 
-// generate static params (bắt buộc cho export)
+// 1. Khai báo hàm generateStaticParams để Next.js biết cần tạo những trang nào lúc build
 export async function generateStaticParams() {
   return data.map((item) => ({
     id: item.id.toString(),
   }));
 }
 
-export default function ProductDetail({
-  params,
-}: {
-  params: { id: string };
-}) {
-  const product = data.find((item) => item.id.toString() === params.id);
+// 2. Định nghĩa Interface cho Props (Giúp tránh lỗi TypeScript)
+interface Props {
+  params: Promise<{ id: string }> | { id: string };
+}
 
-  // nếu không tìm thấy
+export default async function ProductDetail({ params }: Props) {
+  // Đảm bảo params đã được giải quyết (await) để tương thích với Next.js mới
+  const resolvedParams = await params;
+  const { id } = resolvedParams;
+
+  const product = data.find((item) => item.id.toString() === id);
+
+  // Nếu không tìm thấy, sử dụng hàm notFound() chuẩn của Next.js
   if (!product) {
-    return <div className="p-6">Không tìm thấy sản phẩm</div>;
+    notFound();
   }
 
   return (
     <div className="container mx-auto px-4 py-8">
-      
       <div className="grid md:grid-cols-2 gap-8">
         
-        {/* Image */}
-        <div className="relative w-full h-80 rounded-foodie overflow-hidden">
+        {/* Hình ảnh sản phẩm */}
+        <div className="relative w-full h-80 rounded-foodie overflow-hidden bg-gray-100">
           <Image
             src={product.images[0]}
             alt={product.name}
@@ -37,7 +42,7 @@ export default function ProductDetail({
           />
         </div>
 
-        {/* Info */}
+        {/* Thông tin chi tiết */}
         <div>
           <h1 className="text-3xl font-bold text-primary mb-4">
             {product.name}
