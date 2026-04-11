@@ -1,7 +1,7 @@
 import data from '@/lib/data.json';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
-
+import Image from "next/image";
 export default function ProductsPage() {
   return (
     <div className="py-10">
@@ -17,10 +17,15 @@ export default function ProductsPage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {data.products.map((p) => (
+        {data.map((p) => (
           <div key={p.id} className="bg-white rounded-xl overflow-hidden border group hover:shadow-xl transition-all">
             <div className="relative h-48 overflow-hidden">
-              <img src={p.image} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+              <Image
+  src={p.images[0]}
+  alt={p.name}
+  fill
+  className="object-cover"
+/>
             </div>
             <div className="p-4 space-y-3">
               <span className="text-xs font-semibold text-orange-600 bg-orange-50 px-2 py-1 rounded-full">{p.category}</span>

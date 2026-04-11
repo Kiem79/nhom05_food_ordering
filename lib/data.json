@@ -1,8 +1,254 @@
-{
-  "products": [
-    { "id": 1, "name": "Bánh Mì Đặc Biệt", "price": 35000, "category": "Món chính", "image": "https://images.unsplash.com/photo-1600454021970-351eff4a6554?q=80&w=500" },
-    { "id": 2, "name": "Phở Bò Tái Lăn", "price": 55000, "category": "Món chính", "image": "https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?q=80&w=500" },
-    { "id": 3, "name": "Trà Sữa Trân Châu", "price": 25000, "category": "Đồ uống", "image": "https://images.unsplash.com/photo-1576092768241-dec231879fc3?q=80&w=500" },
-    { "id": 4, "name": "Cơm Tấm Sườn Bì", "price": 45000, "category": "Món chính", "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=500" }
-  ]
-}
+[
+  {
+    "id": 1,
+    "name": "Cơm tấm sườn bì chả",
+    "description": "Sườn nướng than thơm lừng, ăn kèm bì dai và chả trứng béo, chan nước mắm đậm vị",
+    "price": 45000,
+    "category": "com",
+    "images": [
+      "/food/com-tam-suonbicha-1.webp",
+      "/food/com-tam-suonbicha-2.webp",
+      "/food/com-tam-suonbicha-3.webp"
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Cơm tấm sườn nướng",
+    "description": "Miếng sườn heo vàng thơm, ướp đậm đà và nướng cháy cạnh, ăn kèm cơm tấm mềm dẻo",
+    "price": 35000,
+    "category": "com",
+    "images": [
+      "/food/com-tam-suon-1.webp",
+      "/food/com-tam-suon-2.webp",
+      "/food/com-tam-suon-3.webp"
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Cơm tấm sườn trứng",
+    "description": "Sườn nướng đậm vị ăn cùng trứng ốp la lòng đào béo ngậy, hòa quyện với cơm tấm",
+    "price": 40000,
+    "category": "com",
+    "images": [
+      "/food/com-tam-suontrung-1.webp",
+      "/food/com-tam-suontrung-2.webp",
+      "/food/com-tam-suontrung-3.webp"
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Cơm tấm gà nướng",
+    "description": "Thịt gà nướng mềm ngọt, thấm gia vị, kết hợp với cơm tấm và nước mắm chua ngọt",
+    "price": 35000,
+    "category": "com",
+    "images": [
+      "/food/com-tam-ga-1.webp",
+      "/food/com-tam-ga-2.webp",
+      "/food/com-tam-ga-3.webp"
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Cơm tấm sườn bì trứng",
+    "description": "sườn nướng thơm lừng, bì dai giòn và trứng béo ngậy, ăn cùng cơm tấm dẻo mềm",
+    "price": 45000,
+    "category": "com",
+    "images": [
+      "/food/com-tam-suonbitrung-1.webp",
+      "/food/com-tam-suonbitrung-2.webp",
+      "/food/com-tam-suonbitrung-3.webp"
+    ]
+  },
+  {
+    "id": 6,
+    "name": "Bún bò Huế",
+    "description": "Nước dùng cay nhẹ đặc trưng, thịt bò mềm, giò heo đậm đà, ăn kèm rau sống tươi",
+    "price": 45000,
+    "category": "bun",
+    "images": [
+      "/food/bun-bo-hue-1.webp",
+      "/food/bun-bo-hue-2.webp",
+      "/food/bun-bo-hue-3.webp"
+    ]
+  },
+  {
+    "id": 7,
+    "name": "Bún chả Hà Nội",
+    "description": "Thịt nướng thơm lừng, nước mắm chua ngọt và bún tươi, ăn kèm rau sống",
+    "price": 50000,
+    "category": "bun",
+    "images": [
+      "/food/bun-cha-1.webp",
+      "/food/bun-cha-2.webp",
+      "/food/bun-cha-3.webp"
+    ]
+  },
+  {
+    "id": 8,
+    "name": "Bún riêu",
+    "description": "Nước dùng chua nhẹ từ cà chua, riêu cua béo thơm, ăn cùng đậu hũ và rau sống",
+    "price": 35000,
+    "category": "bun",
+    "images": [
+      "/food/bun-rieu-1.webp",
+      "/food/bun-rieu-2.webp",
+      "/food/bun-rieu-3.webp"
+    ]
+  },
+  {
+    "id": 9,
+    "name": "Bún thịt nướng",
+    "description": "Bún tươi, thịt nướng đậm vị, kết hợp cùng rau sống, đồ chua và nước mắm",
+    "price": 45000,
+    "category": "bun",
+    "images": [
+      "/food/bun-thit-1.webp",
+      "/food/bun-thit-2.webp",
+      "/food/bun-thit-3.webp"
+    ]
+  },
+  {
+    "id": 10,
+    "name": "Bún mắm",
+    "description": "Nước dùng đậm vị đặc trưng từ mắm, kết hợp với hải sản, thịt và rau sống",
+    "price": 40000,
+    "category": "bun",
+    "images": [
+      "/food/bun-mam-1.webp",
+      "/food/bun-mam-2.webp",
+      "/food/bun-mam-3.webp"
+    ]
+  },
+  {
+    "id": 11,
+    "name": "Phở bò tái",
+    "description": "Lát thịt bò mềm, tái vừa chín tới, hòa quyện cùng nước dùng nóng hổi, đậm đà",
+    "price": 50000,
+    "category": "pho",
+    "images": [
+      "/food/pho-tai-1.webp",
+      "/food/pho-tai-2.webp",
+      "/food/pho-tai-3.webp"
+    ]
+  },
+  {
+    "id": 12,
+    "name": "Phở bò chín",
+    "description": "Thịt bò được nấu chín mềm, thấm vị, kết hợp nước dùng thanh ngọt",
+    "price": 50000,
+    "category": "pho",
+    "images": [
+      "/food/pho-chin-1.webp",
+      "/food/pho-chin-2.webp",
+      "/food/pho-chin-3.webp"
+    ]
+  },
+  {
+    "id": 13,
+    "name": "Phở gà",
+    "description": "Thịt gà dai ngọt, nước dùng trong cùng với sợi phở dai dai",
+    "price": 47000,
+    "category": "pho",
+    "images": [
+      "/food/pho-ga-1.webp",
+      "/food/pho-ga-2.webp",
+      "/food/pho-ga-3.webp"
+    ]
+  },
+  {
+    "id": 14,
+    "name": "Phở bò viên",
+    "description": "Những viên bò dai giòn, thơm ngon, ăn cùng nước dùng nóng hổi",
+    "price": 47000,
+    "category": "pho",
+    "images": [
+      "/food/pho-vien-1.webp",
+      "/food/pho-vien-2.webp",
+      "/food/pho-vien-3.webp"
+    ]
+  },
+  {
+    "id": 15,
+    "name": "Phở tái nạm",
+    "description": "Thịt bò tái mềm, chín vừa tới và nạm bò béo nhẹ, ăn cùng nước dùng nóng hổi, đậm đà",
+    "price": 50000,
+    "category": "pho",
+    "images": [
+      "/food/pho-tainam-1.webp",
+      "/food/pho-tainam-2.webp",
+      "/food/pho-tainam-3.webp"
+    ]
+  },
+  {
+    "id": 16,
+    "name": "Bánh xèo",
+    "description": "Lớp vỏ vàng giòn, thơm mùi nghệ, bên trong là nhân tôm, thịt và giá đỗ, ăn kèm rau sống và nước chấm chua ngọt",
+    "price": 12000,
+    "category": "banh",
+    "images": [
+      "/food/banhxeo-1.webp",
+      "/food/banhxeo-2.webp",
+      "/food/banhxeo-3.webp"
+    ]
+  },
+  {
+    "id": 17,
+    "name": "Bánh cuốn",
+    "description": "Lớp vỏ mỏng tan, mềm mịn, nhân thịt băm và mộc nhĩ, ăn cùng chả và nước mắm",
+    "price": 7000,
+    "category": "banh",
+    "images": [
+      "/food/banhcuon-1.webp",
+      "/food/banhcuon-2.webp",
+      "/food/banhcuon-3.webp"
+    ]
+  },
+  {
+    "id": 18,
+    "name": "Bánh khọt",
+    "description": "Bánh nhỏ giòn, bên trên có tôm, ăn kèm rau sống và nước mắm chua ngọt",
+    "price": 7000,
+    "category": "banh",
+    "images": [
+      "/food/banhkhot-1.webp",
+      "/food/banhkhot-2.webp",
+      "/food/banhkhot-3.webp"
+    ]
+  },
+  {
+    "id": 19,
+    "name": "Bánh bèo",
+    "description": "Bánh bèo mềm, phủ tôm chấy và mỡ hành cùng với nước mắm chan",
+    "price": 20000,
+    "category": "banh",
+    "images": [
+      "/food/banhbeo-1.webp",
+      "/food/banhbeo-2.webp",
+      "/food/banhbeo-3.webp"
+    ]
+  },
+  {
+    "id": 20,
+    "name": "Bánh giò",
+    "description": "Bánh với lớp vỏ mềm mịn, thơm nhẹ, bao bọc phần nhân thịt băm đậm đà và mộc nhĩ giòn",
+    "price": 17000,
+    "category": "banh",
+    "images": [
+      "/food/banhgio-1.webp",
+      "/food/banhgio-2.webp",
+      "/food/banhgio-3.webp"
+    ]
+  },
+  {
+    "id": 21,
+    "name": "Gỏi cuốn",
+    "description": "Tôm thịt tươi ngon, bún và rau sống cuốn trong lớp bánh tráng dai mềm, chấm cùng tương đen béo ngậy",
+    "price": 80000,
+    "category": "goi",
+    "images": [
+      "/food/goi-1.webp",
+      "/food/goi-2.webp",
+      "/food/goi-3.webp"
+    ]
+  }
+]

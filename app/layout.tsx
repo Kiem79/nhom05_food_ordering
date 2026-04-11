@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google"; // Import font từ thư viện của Next.js
+import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
+import { Toaster } from "sonner";
 
-// Cấu hình font Inter với hỗ trợ tiếng Việt
-const inter = Inter({ 
+const inter = Inter({
   subsets: ["latin", "vietnamese"],
-  display: 'swap',
+  display: "swap",
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("http://localhost:3000"),
   title: "Foodie - Đặt món nhóm thông minh",
   description: "Đồ án thiết kế Web - Nhóm 05 - HCMUTE",
 };
@@ -21,15 +22,28 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="vi">
-      {/* Gán font vào className của body để áp dụng toàn trang */}
-      <body className={`${inter.className} antialiased text-secondary`}>
+    <html lang="vi" suppressHydrationWarning>
+      <body
+        className={`${inter.className} antialiased text-primary bg-white min-h-screen flex flex-col`}
+      >
+        {/* Header */}
         <Header />
-        {/* Main padding-top 16 (64px) để không bị Header đè lên nội dung */}
-        <main className="min-h-screen pt-16">
+
+        {/* Main content */}
+        <main className="flex-1">
           {children}
         </main>
+
+        {/* Footer */}
         <Footer />
+
+        {/* Toast */}
+        <Toaster
+          position="top-right"
+          richColors
+          closeButton
+          expand
+        />
       </body>
     </html>
   );

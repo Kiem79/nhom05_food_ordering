@@ -1,8 +1,22 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ArrowRight, Star, Clock, ShieldCheck } from "lucide-react";
+import data from "@/lib/data.json";
+import ProductCard from "@/components/ui/ProductCard";
+import FoodCardSkeleton from "@/components/ui/FoodCardSkeleton";
+import Image from "next/image";
 
 export default function HomePage() {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 800);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div className="py-10 space-y-20">
       {/* Hero Section */}
@@ -16,15 +30,24 @@ export default function HomePage() {
           </p>
           <div className="flex gap-4">
             <Button size="lg" className="bg-orange-600 hover:bg-orange-700" asChild>
-              <Link href="/products">Khám phá ngay <ArrowRight className="ml-2 w-5 h-5" /></Link>
+              <Link href="/products">
+                Khám phá ngay <ArrowRight className="ml-2 w-5 h-5" />
+              </Link>
             </Button>
             <Button size="lg" variant="outline" asChild>
               <Link href="/group-order">Mở phòng đặt nhóm</Link>
             </Button>
           </div>
         </div>
+
         <div className="flex-1">
-          <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1000" alt="Food Hero" className="rounded-3xl shadow-2xl" />
+          <Image
+            src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1000"
+            alt="Food Hero"
+            width={600}
+            height={400}
+            className="rounded-3xl shadow-2xl object-cover"
+          />
         </div>
       </section>
 
@@ -41,6 +64,27 @@ export default function HomePage() {
             <p className="text-slate-500 mt-2">{f.desc}</p>
           </div>
         ))}
+      </section>
+
+      {/* Menu */}
+      <section>
+        <h2 className="text-3xl font-bold text-primary mb-6">
+          Thực đơn nổi bật
+        </h2>
+
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <FoodCardSkeleton key={i} />
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {data.slice(0, 6).map((item) => (
+              <ProductCard key={item.id} product={item} />
+            ))}
+          </div>
+        )}
       </section>
     </div>
   );
