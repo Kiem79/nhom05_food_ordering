@@ -2,26 +2,30 @@ import data from "@/lib/data.json";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
-// 1. Khai báo hàm generateStaticParams để Next.js biết cần tạo những trang nào lúc build
+// BẮT BUỘC: Cho Next.js biết không có dữ liệu động nào khác ngoài danh sách đã khai báo
+// Điều này giúp vượt qua lỗi build "output: export"
+export const dynamicParams = false;
+
+// 1. Khai báo hàm generateStaticParams để tạo các trang tĩnh tại thời điểm build
 export async function generateStaticParams() {
   return data.map((item) => ({
     id: item.id.toString(),
   }));
 }
 
-// 2. Định nghĩa Interface cho Props (Giúp tránh lỗi TypeScript)
+// 2. Định nghĩa Interface cho Props
 interface Props {
   params: Promise<{ id: string }> | { id: string };
 }
 
 export default async function ProductDetail({ params }: Props) {
-  // Đảm bảo params đã được giải quyết (await) để tương thích với Next.js mới
+  // Giải quyết params (Next.js 15+ yêu cầu await params)
   const resolvedParams = await params;
   const { id } = resolvedParams;
 
   const product = data.find((item) => item.id.toString() === id);
 
-  // Nếu không tìm thấy, sử dụng hàm notFound() chuẩn của Next.js
+  // Nếu không tìm thấy sản phẩm trong data.json
   if (!product) {
     notFound();
   }
