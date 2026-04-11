@@ -7,10 +7,16 @@ import { useCartStore } from "@/store/cartStore";
 
 const Header = () => {
   const { user, isLoggedIn, logout } = useAuth();
-  const { cart } = useCartStore();
+  const cart = useCartStore((state: any) => state.cart) || [];
   const [mounted, setMounted] = useState(false);
 
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+  const timer = setTimeout(() => {
+    setMounted(true);
+  }, 0);
+
+  return () => clearTimeout(timer);
+}, []);
 
   if (!mounted) return <header className="h-16 bg-white border-b border-slate-100" />;
 

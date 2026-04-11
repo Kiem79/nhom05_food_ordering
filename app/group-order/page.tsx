@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useCartStore } from "@/store/cartStore";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { Trash2, ChevronRight, ShoppingBag, ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -13,10 +13,13 @@ export default function GroupOrderPage() {
   const { items, getTotalPrice, removeItem, clearCart } = useCartStore() as any;
   const [isClient, setIsClient] = useState(false);
 
-  // Fix lỗi Hydration của Next.js
   useEffect(() => {
+  const timer = setTimeout(() => {
     setIsClient(true);
-  }, []);
+  }, 0);
+
+  return () => clearTimeout(timer);
+}, []);
 
   if (!isClient) return null;
 
