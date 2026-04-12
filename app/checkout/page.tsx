@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useCartStore } from "@/store/cartStore";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { MapPin, CreditCard, Banknote, CheckCircle2, ArrowLeft, Loader2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -14,39 +14,33 @@ export default function CheckoutPage() {
   const [location, setLocation] = useState("cong-a");
   const [isSuccess, setIsSuccess] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  
+  // --- BƯỚC 1: THÊM STATE ĐỂ KIỂM TRA MOUNT ---
+  const [isMounted, setIsMounted] = useState(false);
+  
   const router = useRouter();
 
-  // Bảo vệ trang: Nếu giỏ hàng trống mà chưa đặt thành công thì quay về menu
   useEffect(() => {
-    if (items.length === 0 && !isSuccess) {
-      router.push('/products');
-    }
-    // Dọn sạch mọi toast còn sót lại khi thoát trang
-    return () => {
-      toast.dismiss();
-    };
-  }, [items, isSuccess, router]);
+  const timer = setTimeout(() => {
+    setIsMounted(true);
+  }, 0);
+
+  return () => clearTimeout(timer);
+}, []);
 
   const handleOrder = () => {
     setIsProcessing(true);
-    // BƯỚC 1: Hiện loading và lưu lại ID
     const loadingId = toast.loading("Đang xử lý đơn hàng...");
 
-    // Giả lập thời gian chờ thanh toán
     setTimeout(() => {
-      // BƯỚC 2: DỨT ĐIỂM LỖI XOAY - Ép sonner xóa bỏ loading cũ bằng ID
       toast.dismiss(loadingId); 
-      
-      // BƯỚC 3: Hiện thông báo thành công mới
       toast.success("Đặt hàng thành công! Shipper đang chuẩn bị đồ cho Mạnh.");
-      
       clearCart();
       setIsSuccess(true);
       setIsProcessing(false);
     }, 2000);
   };
 
-  // GIAO DIỆN KHI ĐẶT HÀNG THÀNH CÔNG
   if (isSuccess) {
     return (
       <div className="max-w-xl mx-auto py-32 text-center space-y-10 animate-in zoom-in duration-500">
@@ -82,13 +76,11 @@ export default function CheckoutPage() {
       </Link>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
-        {/* CỘT TRÁI: FORM THÔNG TIN */}
         <div className="lg:col-span-2 space-y-12">
           <h1 className="text-6xl font-black text-slate-900 tracking-tighter uppercase italic leading-none">
             Thanh <br /> <span className="text-orange-500">toán</span>
           </h1>
           
-          {/* ĐỊA ĐIỂM NHẬN HÀNG */}
           <div className="space-y-6">
             <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.4em] flex items-center gap-3">
               <MapPin size={18} className="text-orange-500" /> 01. Điểm hẹn tại HCMUTE
@@ -111,7 +103,6 @@ export default function CheckoutPage() {
             </div>
           </div>
 
-          {/* PHƯƠNG THỨC THANH TOÁN */}
           <div className="space-y-6">
             <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.4em] flex items-center gap-3">
               <CreditCard size={18} className="text-orange-500" /> 02. Hình thức trả tiền
@@ -146,10 +137,8 @@ export default function CheckoutPage() {
           </div>
         </div>
 
-        {/* CỘT PHẢI: TỔNG KẾT THANH TOÁN */}
         <div className="h-fit lg:sticky lg:top-24">
           <div className="bg-slate-900 text-white p-10 rounded-[3rem] shadow-[0_40px_80px_-15px_rgba(0,0,0,0.3)] relative overflow-visible">
-            {/* Decor nền */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
             
             <h3 className="text-[10px] font-black text-orange-500 uppercase tracking-[0.4em] mb-12 opacity-80">Chi tiết thanh toán</h3>
@@ -165,8 +154,10 @@ export default function CheckoutPage() {
                     <span className="text-slate-500 text-[10px] font-black uppercase tracking-widest mb-1">Cần thanh toán</span>
                     <span className="font-bold text-sm uppercase">Tổng cộng</span>
                 </div>
+                
+                {/* --- BƯỚC 3: KIỂM TRA ĐIỀU KIỆN KHI HIỂN THỊ GIÁ --- */}
                 <span className="text-4xl font-black text-orange-500 tabular-nums leading-none tracking-tighter">
-                  {getTotalPrice().toLocaleString()}đ
+                  {isMounted ? `${getTotalPrice().toLocaleString()}đ` : "0đ"}
                 </span>
               </div>
             </div>

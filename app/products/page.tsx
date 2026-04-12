@@ -2,21 +2,23 @@
 
 import React, { useEffect, useState } from "react";
 import data from '@/lib/data.json';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 import { Plus, ShoppingCart, ArrowRight, Star } from 'lucide-react';
 import { useCartStore } from "@/store/cartStore"; 
 import { toast } from "sonner";
 import Link from "next/link";
+import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 
 export default function ProductsPage() {
   const { addItem, items } = useCartStore() as any;
-  const [isClient, setIsClient] = useState(false);
-
+  const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
-    setIsClient(true);
-  }, []);
+  const timer = setTimeout(() => {
+    setIsMounted(true);
+  }, 0);
 
-  if (!isClient) return null;
+  return () => clearTimeout(timer);
+}, []);
 
   const totalItems = items?.reduce((acc: number, item: any) => acc + (item.quantity || 0), 0) || 0;
 
@@ -26,7 +28,11 @@ export default function ProductsPage() {
   };
 
   return (
-    <div className="py-12 px-4 max-w-7xl mx-auto min-h-screen relative">
+    <div className="py-12 px-4 max-w-7xl mx-auto min-h-screen relative animate-in fade-in duration-500">
+      
+      {/* THANH ĐIỀU HƯỚNG */}
+      <Breadcrumbs />
+
       {/* HEADER SECTION */}
       <div className="mb-12 space-y-2">
         <div className="flex items-center gap-2 text-orange-500 font-black text-xs uppercase tracking-[0.3em]">
@@ -68,12 +74,11 @@ export default function ProductsPage() {
                 {p.name}
               </h3>
               
-              {/* PHẦN ĐÃ FIX: CĂN CHỈNH GIÁ VÀ NÚT + */}
               <div className="mt-auto pt-6 border-t border-slate-50 flex justify-between items-center">
                 <div className="flex flex-col">
                   <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1">Giá bán</span>
                   <span className="text-2xl font-black text-slate-900 leading-none tracking-tighter">
-                    {p.price.toLocaleString()}đ
+                    {p.price.toLocaleString('en-US').replace(/,/g, '.')}đ
                   </span>
                 </div>
                 
@@ -90,8 +95,8 @@ export default function ProductsPage() {
         ))}
       </div>
 
-      {/* NÚT GIỎ HÀNG NỔI */}
-      {totalItems > 0 && (
+      {/* NÚT GIỎ HÀNG NỔI (Chỉ hiển thị khi đã mounted và có món) */}
+      {isMounted && totalItems > 0 && (
         <div className="fixed bottom-10 right-10 z-50">
           <Link href="/group-order">
             <button className="flex items-center gap-5 bg-orange-500 text-white p-2 pr-10 rounded-full shadow-[0_20px_50px_rgba(249,115,22,0.4)] hover:scale-105 transition-all border-4 border-white animate-in slide-in-from-bottom-10">
