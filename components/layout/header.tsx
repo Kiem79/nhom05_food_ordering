@@ -6,6 +6,9 @@ import { ShoppingCart, LogOut } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
 import useAuthStore from "@/store/authStore";
 
+// IMPORT COMPONENT BẠN VỪA TẠO
+import SearchBar from "@/components/search/SearchBar";
+
 export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
@@ -20,7 +23,7 @@ export default function Header() {
   ];
 
   const handleLogout = () => {
-    if(confirm("Bạnmuốn đăng xuất thật à?")) {
+    if(confirm("Bạn muốn đăng xuất thật à?")) {
       logout();
       if(clearCart) clearCart();
       router.push("/");
@@ -29,13 +32,21 @@ export default function Header() {
 
   return (
     <header className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md z-50 border-b border-slate-100 font-sans">
-      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2">
+      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between gap-6">
+        
+        {/* LOGO */}
+        <Link href="/" className="flex items-center gap-2 shrink-0">
           <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center text-white font-black italic shadow-lg shadow-orange-200">F.</div>
           <span className="text-xl font-black tracking-tighter text-slate-900 uppercase italic">Foodie.</span>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-8">
+        {/* COMPONENT SMART SEARCH CHÈN VÀO ĐÂY */}
+        <div className="flex-1 flex justify-center">
+          <SearchBar />
+        </div>
+
+        {/* MENU ĐIỀU HƯỚNG */}
+        <nav className="hidden lg:flex items-center gap-8 shrink-0">
           {navLinks.map((link) => (
             <Link
               key={link.href}
@@ -49,7 +60,8 @@ export default function Header() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-4">
+        {/* CART & AUTH */}
+        <div className="flex items-center gap-4 shrink-0">
           <Link href="/group-order" className="relative p-2 text-slate-400 hover:text-orange-500 transition-colors">
             <ShoppingCart size={20} />
             {items?.length > 0 && (
@@ -70,11 +82,12 @@ export default function Header() {
               </button>
             </div>
           ) : (
-            <Link href="/auth/login" className="bg-slate-900 text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-orange-500 transition-all shadow-lg shadow-slate-200">
+            <Link href="/auth/login" className="bg-slate-900 text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-orange-500 transition-all shadow-lg shadow-slate-200 whitespace-nowrap">
               Đăng nhập
             </Link>
           )}
         </div>
+
       </div>
     </header>
   );

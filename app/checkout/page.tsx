@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useCartStore } from "@/store/cartStore";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { 
   MapPin, 
   CreditCard, 
