@@ -1,71 +1,76 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { useAuth } from "@/hooks/useAuth";
+import { usePathname, useRouter } from "next/navigation";
+import { ShoppingCart, LogOut } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
+import useAuthStore from "@/store/authStore";
 
-const Header = () => {
-  const { user, isLoggedIn, logout } = useAuth();
-  const cart = useCartStore((state: any) => state.cart) || [];
-  const [mounted, setMounted] = useState(false);
+export default function Header() {
+  const pathname = usePathname();
+  const router = useRouter();
+  const { user, logout } = useAuthStore();
+  const { items, clearCart } = useCartStore(); // Giả sử sếp đã có store này
 
-  useEffect(() => {
-  const timer = setTimeout(() => {
-    setMounted(true);
-  }, 0);
+  const navLinks = [
+    { name: "Trang chủ", href: "/" },
+    { name: "Thực đơn", href: "/products" },
+    { name: "Đặt nhóm", href: "/group-order" },
+    { name: "Thành viên", href: "/about" },
+  ];
 
-  return () => clearTimeout(timer);
-}, []);
-
-  if (!mounted) return <header className="h-16 bg-white border-b border-slate-100" />;
+  const handleLogout = () => {
+    if(confirm("Bạnmuốn đăng xuất thật à?")) {
+      logout();
+      if(clearCart) clearCart();
+      router.push("/");
+    }
+  };
 
   return (
-    <header className="bg-white border-b border-slate-100 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-6 h-16 flex justify-between items-center">
-        
-        {/* LOGO CŨ TRÊN NỀN HIỆN ĐẠI */}
-        <Link href="/" className="flex items-center gap-2 group">
-          <span className="bg-orange-500 text-white p-1.5 rounded-xl text-xl shadow-sm group-hover:scale-110 transition-transform">
-            🍴
-          </span>
-          <span className="text-2xl font-black italic tracking-tighter text-orange-500">
-            Foodie.
-          </span>
+    <header className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md z-50 border-b border-slate-100 font-sans">
+      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+        <Link href="/" className="flex items-center gap-2">
+          <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center text-white font-black italic shadow-lg shadow-orange-200">F.</div>
+          <span className="text-xl font-black tracking-tighter text-slate-900 uppercase italic">Foodie.</span>
         </Link>
 
-        <nav className="hidden md:flex gap-8 text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">
-          <Link href="/" className="hover:text-orange-500 transition-colors">Trang chủ</Link>
-          <Link href="/products" className="hover:text-orange-500 transition-colors">Thực đơn</Link>
-          <Link href="/group-order" className="text-orange-500 border-b-2 border-orange-500 pb-1">Đặt nhóm</Link>
-          <Link href="/about" className="hover:text-orange-500 transition-colors">Thành viên</Link>
+        <nav className="hidden md:flex items-center gap-8">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={`text-[10px] font-black uppercase tracking-[0.2em] transition-colors ${
+                pathname === link.href ? "text-orange-500" : "text-slate-400 hover:text-slate-900"
+              }`}
+            >
+              {link.name}
+            </Link>
+          ))}
         </nav>
 
         <div className="flex items-center gap-4">
-          <div className="relative p-2 text-slate-600 hover:bg-orange-50 rounded-full transition-colors cursor-pointer group">
-            <span className="text-xl group-hover:rotate-12 transition-transform inline-block">🛒</span>
-            {cart.length > 0 && (
-              <span className="absolute top-1 right-1 bg-orange-600 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center border-2 border-white">
-                {cart.length}
+          <Link href="/group-order" className="relative p-2 text-slate-400 hover:text-orange-500 transition-colors">
+            <ShoppingCart size={20} />
+            {items?.length > 0 && (
+              <span className="absolute top-0 right-0 w-4 h-4 bg-orange-600 text-white text-[9px] font-black rounded-full flex items-center justify-center animate-bounce">
+                {items.length}
               </span>
             )}
-          </div>
+          </Link>
 
-          {isLoggedIn ? (
-            <div className="flex items-center gap-3 pl-3 border-l border-slate-100">
+          {user ? (
+            <div className="flex items-center gap-3 pl-4 border-l border-slate-100">
               <div className="text-right hidden sm:block">
-                <p className="text-[10px] font-black text-slate-300 uppercase leading-none mb-1">Thành viên</p>
-                <p className="text-sm font-black text-slate-800 tracking-tight">{user?.name}</p>
+                <p className="text-[9px] font-black text-slate-400 uppercase leading-none mb-1 tracking-tighter">Leader</p>
+                <p className="text-xs font-black text-slate-900 leading-none">{user.name}</p>
               </div>
-              <div className="w-9 h-9 bg-orange-50 text-orange-600 rounded-full flex items-center justify-center font-black text-sm border border-orange-100 shadow-sm">
-                {user?.name?.charAt(0).toUpperCase()}
-              </div>
-              <button onClick={logout} className="p-2 text-slate-300 hover:text-red-500 transition-colors text-lg">
-                 🚪
+              <button onClick={handleLogout} className="p-2 text-slate-400 hover:text-red-500 transition-all active:scale-90">
+                <LogOut size={18} />
               </button>
             </div>
           ) : (
-            <Link href="/auth" className="bg-orange-500 text-white px-6 py-2 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-orange-600 transition-all shadow-lg shadow-orange-100">
+            <Link href="/auth/login" className="bg-slate-900 text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-orange-500 transition-all shadow-lg shadow-slate-200">
               Đăng nhập
             </Link>
           )}
@@ -73,6 +78,4 @@ const Header = () => {
       </div>
     </header>
   );
-};
-
-export default Header;
+}

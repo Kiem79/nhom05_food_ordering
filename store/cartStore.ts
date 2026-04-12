@@ -1,31 +1,44 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
-export const useCartStore = create()(
+interface CartItem {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+  image: string;
+}
+
+interface CartState {
+  items: CartItem[];
+  addItem: (product: any) => void;
+  removeItem: (id: string) => void;
+  clearCart: () => void;
+  totalPrice: () => number;
+}
+
+export const useCartStore = create<CartState>()(
   persist(
-    (set, get: any) => ({ // Thêm 'get' ở đây để lấy dữ liệu trong store
+    (set, get) => ({
       items: [],
-      addItem: (product: any) => 
-        set((state: any) => {
-          const existingItem = state.items.find((item: any) => item.id === product.id);
-          if (existingItem) {
-            return {
-              items: state.items.map((item: any) =>
-                item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-              ),
-            };
-          }
-          return { items: [...state.items, { ...product, quantity: 1 }] };
-        }),
-      
-      // HÀM QUAN TRỌNG ĐỂ FIX LỖI ĐANG GẶP:
-      getTotalPrice: () => {
-        const items = get().items || [];
-        return items.reduce((total: number, item: any) => total + (item.price * item.quantity), 0);
-      },
+      addItem: (product) => {
+        const currentItems = get().items;
+        const existingItem = currentItems.find((item) => item.id === product.id);
 
+        if (existingItem) {
+          set({
+            items: currentItems.map((item) =>
+              item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+            ),
+          });
+        } else {
+          set({ items: [...currentItems, { ...product, quantity: 1 }] });
+        }
+      },
+      removeItem: (id) => set({ items: get().items.filter((i) => i.id !== id) }),
       clearCart: () => set({ items: [] }),
+      totalPrice: () => get().items.reduce((acc, item) => acc + item.price * item.quantity, 0),
     }),
-    { name: 'foodie-cart-storage' }
+    { name: "cart-storage" }
   )
 );

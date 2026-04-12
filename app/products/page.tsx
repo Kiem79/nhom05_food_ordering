@@ -1,119 +1,119 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import data from '@/lib/data.json';
-import { Button } from '@/components/ui/button';
-import { Plus, ShoppingCart, ArrowRight, Star } from 'lucide-react';
-import { useCartStore } from "@/store/cartStore"; 
+import React, { useState } from "react";
+import useProductStore from "@/store/productStore";
+import { useCartStore } from "@/store/cartStore";
+import { motion, AnimatePresence } from "framer-motion";
+import { Plus, Star, ShoppingBag, Search } from "lucide-react";
 import { toast } from "sonner";
-import Link from "next/link";
-import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 
 export default function ProductsPage() {
-  const { addItem, items } = useCartStore() as any;
-  const [isMounted, setIsMounted] = useState(false);
-  useEffect(() => {
-  const timer = setTimeout(() => {
-    setIsMounted(true);
-  }, 0);
+  const { products } = useProductStore();
+  const { addItem } = useCartStore();
+  
+  // State quản lý lọc danh mục
+  const categories = ["Tất cả", "Cơm", "Bún/Phở", "Ăn vặt", "Đồ uống"];
+  const [activeTab, setActiveTab] = useState("Tất cả");
 
-  return () => clearTimeout(timer);
-}, []);
-
-  const totalItems = items?.reduce((acc: number, item: any) => acc + (item.quantity || 0), 0) || 0;
+  const filteredProducts = activeTab === "Tất cả" 
+    ? products 
+    : products.filter(p => p.category === activeTab);
 
   const handleAddToCart = (product: any) => {
     addItem(product);
-    toast.success(`Đã thêm ${product.name} vào đơn nhóm!`);
+    toast.success(`Đã thêm ${product.name}`, {
+      icon: <ShoppingBag className="text-orange-500" />,
+    });
   };
 
   return (
-    <div className="py-12 px-4 max-w-7xl mx-auto min-h-screen relative animate-in fade-in duration-500">
-      
-      {/* THANH ĐIỀU HƯỚNG */}
-      <Breadcrumbs />
-
-      {/* HEADER SECTION */}
-      <div className="mb-12 space-y-2">
-        <div className="flex items-center gap-2 text-orange-500 font-black text-xs uppercase tracking-[0.3em]">
-          <span className="w-10 h-[2px] bg-orange-500"></span>
-          HCMUTE Foodie
+    <div className="max-w-7xl mx-auto px-6 py-12">
+      {/* HEADER TRANG */}
+      <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div className="space-y-4">
+          <h1 className="text-5xl font-black text-slate-900 uppercase italic tracking-tighter">
+            Thực đơn <span className="text-orange-500">Foodie.</span>
+          </h1>
+          <p className="text-slate-400 font-bold uppercase tracking-[0.2em] text-[10px]">
+            {filteredProducts.length} Món ăn đã sẵn sàng phục vụ bạn 
+          </p>
         </div>
-        <h2 className="text-5xl font-black text-slate-900 tracking-tighter italic uppercase">
-          Thực đơn <span className="text-orange-500">hôm nay</span>
-        </h2>
-        <p className="text-slate-500 font-medium italic">Chọn món và gom đơn cùng đồng đội nào!</p>
+
+        {/* TABS LỌC (CỰC NGĂN NẮP) */}
+        <div className="flex bg-slate-100 p-1.5 rounded-2xl overflow-x-auto no-scrollbar">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setActiveTab(cat)}
+              className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${
+                activeTab === cat 
+                ? "bg-white text-orange-500 shadow-sm" 
+                : "text-slate-400 hover:text-slate-600"
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* GRID DANH SÁCH MÓN ĂN */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-        {data.products.map((p: any) => (
-          <div key={p.id} className="bg-white rounded-[2.5rem] overflow-hidden border border-slate-100 group hover:shadow-[0_20px_50px_rgba(0,0,0,0.05)] transition-all duration-500 flex flex-col h-full">
-            {/* Ảnh món ăn */}
-            <div className="relative h-56 overflow-hidden">
-              <img 
-                src={p.image} 
-                alt={p.name} 
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
-              />
-              <div className="absolute top-4 left-4">
-                <span className="text-[10px] font-black text-white bg-slate-900/80 backdrop-blur-md px-3 py-1.5 rounded-full uppercase tracking-widest">
-                  {p.category}
-                </span>
+      {/* GRID SẢN PHẨM */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        <AnimatePresence mode="popLayout">
+          {filteredProducts.map((product, index) => (
+            <motion.div
+              layout
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.3 }}
+              key={product.id}
+              className="group bg-white rounded-[2rem] p-4 border border-slate-50 shadow-xl shadow-slate-100/50 flex flex-col h-full"
+            >
+              {/* Image Container: Cố định tỷ lệ 4:3 để luôn đều nhau */}
+              <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl mb-6">
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+                <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1">
+                  <Star className="text-orange-500 fill-orange-500" size={10} />
+                  <span className="text-[9px] font-black text-slate-900">4.9</span>
+                </div>
               </div>
-            </div>
 
-            {/* Nội dung Card */}
-            <div className="p-6 flex flex-col flex-1">
-              <div className="flex items-center gap-1 text-yellow-500 mb-2">
-                <Star size={12} fill="currentColor" />
-                <span className="text-[10px] font-bold text-slate-400 tracking-tighter">4.8 (100+ đơn hàng)</span>
-              </div>
-              
-              <h3 className="font-black text-xl text-slate-900 leading-tight mb-4 group-hover:text-orange-500 transition-colors line-clamp-2">
-                {p.name}
-              </h3>
-              
-              <div className="mt-auto pt-6 border-t border-slate-50 flex justify-between items-center">
-                <div className="flex flex-col">
-                  <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1">Giá bán</span>
-                  <span className="text-2xl font-black text-slate-900 leading-none tracking-tighter">
-                    {p.price.toLocaleString('en-US').replace(/,/g, '.')}đ
+              {/* Nội dung Card */}
+              <div className="px-1 flex flex-col flex-1">
+                <div className="flex justify-between items-start mb-2">
+                  <span className="text-[8px] font-black text-orange-500 uppercase tracking-widest italic leading-none">
+                    {product.category}
                   </span>
+                  <p className="text-sm font-black text-orange-600 italic leading-none">
+                    {product.price.toLocaleString()}đ
+                  </p>
                 </div>
                 
-                <Button 
-                  onClick={() => handleAddToCart(p)}
-                  size="icon" 
-                  className="w-12 h-12 rounded-2xl bg-slate-900 hover:bg-orange-500 hover:scale-110 active:scale-95 transition-all shadow-lg flex items-center justify-center shrink-0"
-                >
-                  <Plus className="w-6 h-6 text-white" strokeWidth={3} />
-                </Button>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+                <h3 className="text-base font-black text-slate-900 leading-tight mb-2 min-h-[2.5rem] line-clamp-2">
+                  {product.name}
+                </h3>
 
-      {/* NÚT GIỎ HÀNG NỔI (Chỉ hiển thị khi đã mounted và có món) */}
-      {isMounted && totalItems > 0 && (
-        <div className="fixed bottom-10 right-10 z-50">
-          <Link href="/group-order">
-            <button className="flex items-center gap-5 bg-orange-500 text-white p-2 pr-10 rounded-full shadow-[0_20px_50px_rgba(249,115,22,0.4)] hover:scale-105 transition-all border-4 border-white animate-in slide-in-from-bottom-10">
-              <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center text-orange-500 relative shadow-inner">
-                <ShoppingCart size={24} />
-                <span className="absolute -top-1 -right-1 bg-slate-900 text-white text-[10px] font-black w-6 h-6 rounded-full flex items-center justify-center border-2 border-white">
-                  {totalItems}
-                </span>
+                <p className="text-[10px] text-slate-400 font-medium leading-relaxed mb-6 line-clamp-2">
+                  {product.description}
+                </p>
+
+                {/* Nút bấm ở cuối Card */}
+                <button
+                  onClick={() => handleAddToCart(product)}
+                  className="mt-auto w-full h-12 bg-slate-900 text-white rounded-xl font-black text-[9px] uppercase tracking-[0.2em] flex items-center justify-center gap-2 hover:bg-orange-500 transition-all active:scale-95"
+                >
+                  <Plus size={14} /> Thêm vào giỏ
+                </button>
               </div>
-              <div className="text-left">
-                <p className="text-[10px] font-black uppercase tracking-widest opacity-80 mb-0.5">Giỏ hàng của Mạnh</p>
-                <p className="text-sm font-black flex items-center gap-2 uppercase">XEM ĐƠN NHÓM <ArrowRight size={16} /></p>
-              </div>
-            </button>
-          </Link>
-        </div>
-      )}
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
     </div>
   );
 }

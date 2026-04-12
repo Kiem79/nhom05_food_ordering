@@ -1,18 +1,14 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/layout/header";
-import Footer from "@/components/layout/footer";
-import { Toaster } from "sonner"; // Thêm import
+import Header from "@/components/layout/Header";
+import { Toaster } from "sonner";
 
-const inter = Inter({
-  subsets: ["latin", "vietnamese"],
-  display: "swap",
-});
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Foodie - Đặt món nhóm thông minh",
-  description: "Đồ án thiết kế Web - Nhóm 05 - HCMUTE",
+  title: "Foodie - Smart Office Meal",
+  description: "Giải pháp đặt cơm nhóm thông minh cho dân văn phòng",
 };
 
 export default function RootLayout({
@@ -22,11 +18,29 @@ export default function RootLayout({
 }) {
   return (
     <html lang="vi">
-      <body className={`${inter.className} antialiased text-secondary`}>
+      <body className={inter.className}>
+        {/* Header hiển thị cố định trên tất cả các trang */}
         <Header />
-        <main className="min-h-screen pt-16">{children}</main>
-        <Footer />
-        <Toaster position="top-right" richColors /> {/* Thêm dòng này */}
+        
+        {/* Phần nội dung chính của các trang. 
+          pt-16 (padding-top: 64px) để tránh việc nội dung bị Header (thường cao 64px) che khuất.
+        */}
+        <main className="pt-16 min-h-screen bg-white">
+          {children}
+        </main>
+
+        {/* Cấu hình hệ thống thông báo Toaster.
+          - position="top-right": Hiển thị ở góc trên bên phải theo yêu cầu.
+          - expand={true}: Hiển thị chi tiết các thông báo khi có nhiều thông báo cùng lúc.
+          - richColors: Hiển thị màu sắc tương ứng với trạng thái (thành công, lỗi...).
+        */}
+        <Toaster 
+          position="top-right" 
+          expand={true} 
+          richColors 
+          closeButton
+          duration={3000}
+        />
       </body>
     </html>
   );

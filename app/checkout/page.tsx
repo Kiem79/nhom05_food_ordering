@@ -2,41 +2,62 @@
 
 import React, { useState, useEffect } from "react";
 import { useCartStore } from "@/store/cartStore";
-import { Button } from "@/components/ui/button";
-import { MapPin, CreditCard, Banknote, CheckCircle2, ArrowLeft, Loader2, Sparkles } from "lucide-react";
+import { Button } from "@/components/ui/Button";
+import { 
+  MapPin, 
+  CreditCard, 
+  Banknote, 
+  CheckCircle2, 
+  ArrowLeft, 
+  Loader2, 
+  Sparkles 
+} from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react"; // Thư viện bảo mật
 import Link from "next/link";
 
 export default function CheckoutPage() {
+  // 1. Cấu hình bảo mật & Session
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  // 2. Lấy dữ liệu từ Cart Store
   const { items, getTotalPrice, clearCart } = useCartStore() as any;
+
+  // 3. Các State quản lý giao diện
   const [paymentMethod, setPaymentMethod] = useState("cod");
   const [location, setLocation] = useState("cong-a");
   const [isSuccess, setIsSuccess] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  
-  // --- BƯỚC 1: THÊM STATE ĐỂ KIỂM TRA MOUNT ---
   const [isMounted, setIsMounted] = useState(false);
-  
-  const router = useRouter();
 
+  // --- BƯỚC 1: KIỂM TRA ĐĂNG NHẬP (Bảo vệ trang) ---
   useEffect(() => {
-  const timer = setTimeout(() => {
+    if (status === "unauthenticated") {
+      toast.error("Vui lòng đăng nhập để thực hiện đặt món!");
+      router.push("/auth/login");
+    }
+  }, [status, router]);
+
+  // --- BƯỚC 2: TRÁNH LỖI HYDRATION (Đồng bộ Server/Client) ---
+  useEffect(() => {
     setIsMounted(true);
-  }, 0);
+  }, []);
 
-  return () => clearTimeout(timer);
-}, []);
-
+  // Xử lý khi nhấn nút Đặt hàng
   const handleOrder = () => {
+    if (!session) {
+        toast.error("Phiên đăng nhập hết hạn. Vui lòng thử lại!");
+        return;
+    }
+
     setIsProcessing(true);
     const loadingId = toast.loading("Đang xử lý đơn hàng...");
 
     setTimeout(() => {
       toast.dismiss(loadingId); 
-      
-      // BƯỚC 3: Hiện thông báo thành công mới
-      toast.success("Đặt hàng thành công! Shipper đang chuẩn bị đồ cho Mạnh.");
+      toast.success("Đặt hàng thành công! Shipper đang chuẩn bị đồ cho bạn");
       
       clearCart();
       setIsSuccess(true);
@@ -44,6 +65,19 @@ export default function CheckoutPage() {
     }, 2000);
   };
 
+  // --- MÀN HÌNH CHỜ KHI CHECK QUYỀN TRUY CẬP ---
+  if (status === "loading" || !isMounted) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4">
+        <Loader2 className="animate-spin text-orange-500" size={40} />
+        <p className="font-black text-slate-400 uppercase tracking-widest text-xs">
+            Đang kiểm tra quyền truy cập...
+        </p>
+      </div>
+    );
+  }
+
+  // --- MÀN HÌNH THÀNH CÔNG ---
   if (isSuccess) {
     return (
       <div className="max-w-xl mx-auto py-32 text-center space-y-10 animate-in zoom-in duration-500">
@@ -72,6 +106,7 @@ export default function CheckoutPage() {
     );
   }
 
+  // --- GIAO DIỆN CHÍNH ---
   return (
     <div className="max-w-6xl mx-auto py-16 px-6">
       <Link href="/group-order" className="inline-flex items-center gap-2 text-slate-400 hover:text-orange-500 font-bold text-xs uppercase tracking-[0.2em] mb-12 transition-all group">
@@ -84,6 +119,7 @@ export default function CheckoutPage() {
             Thanh <br /> <span className="text-orange-500">toán</span>
           </h1>
           
+          {/* 01. ĐỊA ĐIỂM HẸN */}
           <div className="space-y-6">
             <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.4em] flex items-center gap-3">
               <MapPin size={18} className="text-orange-500" /> 01. Điểm hẹn tại HCMUTE
@@ -106,6 +142,7 @@ export default function CheckoutPage() {
             </div>
           </div>
 
+          {/* 02. PHƯƠNG THỨC THANH TOÁN */}
           <div className="space-y-6">
             <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.4em] flex items-center gap-3">
               <CreditCard size={18} className="text-orange-500" /> 02. Hình thức trả tiền
@@ -140,6 +177,7 @@ export default function CheckoutPage() {
           </div>
         </div>
 
+        {/* CỘT PHẢI: TÓM TẮT ĐƠN HÀNG */}
         <div className="h-fit lg:sticky lg:top-24">
           <div className="bg-slate-900 text-white p-10 rounded-[3rem] shadow-[0_40px_80px_-15px_rgba(0,0,0,0.3)] relative overflow-visible">
             <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
@@ -158,7 +196,6 @@ export default function CheckoutPage() {
                     <span className="font-bold text-sm uppercase">Tổng cộng</span>
                 </div>
                 
-                {/* --- BƯỚC 3: KIỂM TRA ĐIỀU KIỆN KHI HIỂN THỊ GIÁ --- */}
                 <span className="text-4xl font-black text-orange-500 tabular-nums leading-none tracking-tighter">
                   {isMounted ? `${getTotalPrice().toLocaleString()}đ` : "0đ"}
                 </span>
@@ -180,7 +217,7 @@ export default function CheckoutPage() {
             </Button>
             
             <p className="mt-8 text-center text-[10px] text-slate-500 font-bold uppercase tracking-tighter leading-relaxed">
-              * Bằng cách nhấn đặt đơn, bạn hãy đồng ý <br /> với các điều khoản của Foodie.
+              * Bằng cách nhấn xác nhận, bạn đồng ý với <br /> các điều khoản dịch vụ của Foodie.
             </p>
           </div>
         </div>
