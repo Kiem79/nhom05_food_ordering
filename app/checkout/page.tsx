@@ -38,7 +38,7 @@ export default function CheckoutPage() {
       toast.dismiss(loadingId); 
       
       // BƯỚC 3: Hiện thông báo thành công mới
-      toast.success("Đặt hàng thành công! Shipper đang chuẩn bị đồ cho Mạnh.");
+      toast.success("Đặt hàng thành công! Shipper đang chuẩn bị đồ cho bạn.");
       
       clearCart();
       setIsSuccess(true);
@@ -62,7 +62,7 @@ export default function CheckoutPage() {
         <div className="space-y-4">
           <h1 className="text-5xl font-black text-slate-900 tracking-tighter uppercase italic">Thành công rồi!</h1>
           <p className="text-slate-500 font-medium px-10 leading-relaxed text-lg">
-            Đơn hàng đã được xác nhận. <br /> Mạnh nhớ ra <span className="text-orange-500 font-black underline decoration-orange-200 decoration-4">
+            Đơn hàng đã được xác nhận. <br /> Bạn nhớ ra <span className="text-orange-500 font-black underline decoration-orange-200 decoration-4">
                 {location === 'cong-a' ? 'Cổng A' : location === 'cong-b' ? 'Cổng B' : 'Thư viện'}
             </span> lấy đồ nhé!
           </p>
