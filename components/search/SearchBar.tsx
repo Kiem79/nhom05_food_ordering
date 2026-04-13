@@ -103,7 +103,7 @@ export default function SearchBar() {
                       {product.name}
                     </h4>
                     <div className="flex items-center gap-2 mt-1">
-                      <span className="text-[10px] font-black text-orange-500 bg-orange-100 px-1.5 py-0.5 rounded uppercase tracking-wider truncate max-w-[80px]">
+                      <span className="text-[10px] font-black text-orange-500 bg-orange-100 px-1.5 py-0.5 rounded uppercase tracking-wider truncate max-w-20">
                         {product.category}
                       </span>
                       <span className="text-xs font-black text-slate-600 whitespace-nowrap">

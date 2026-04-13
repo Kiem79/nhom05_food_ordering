@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, ShoppingBag, Users, Zap, ShieldCheck } from "lucide-react";
+import Image from "next/image";
 
 export default function HomePage() {
   return (
@@ -49,11 +50,13 @@ export default function HomePage() {
             transition={{ duration: 1, delay: 0.2 }}
             className="relative"
           >
-            <div className="relative z-10 w-full aspect-[5/4] rounded-[3.5rem] overflow-hidden shadow-[0_40px_80px_-15px_rgba(0,0,0,0.15)] border-4 border-white">
-              <img 
+            <div className="relative z-10 w-full aspect-5/4 rounded-[3.5rem] overflow-hidden shadow-[0_40px_80px_-15px_rgba(0,0,0,0.15)] border-4 border-white">
+              <Image
                 src="https://images.unsplash.com/photo-1551248429-40975aa4de74?q=80&w=1200" 
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
                 alt="Premium Office Bento Box"
+                fill // Sử dụng fill thay vì w-full h-full thủ công
+                priority // Thêm priority nếu đây là ảnh đầu trang (LCP)
               />
             </div>
             <div className="absolute -top-12 -right-12 w-48 h-48 bg-orange-100 rounded-full blur-3xl opacity-60 animate-pulse"></div>

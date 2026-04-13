@@ -11,8 +11,8 @@ export default function CheckoutLoading() {
         <div className="lg:col-span-2 space-y-12">
           
           <div className="space-y-4">
-            <Skeleton className="h-14 md:h-[4.5rem] w-48 rounded-2xl" />
-            <Skeleton className="h-14 md:h-[4.5rem] w-64 rounded-2xl" />
+            <Skeleton className="h-14 md:h-18 w-48 rounded-2xl" />
+            <Skeleton className="h-14 md:h-18 w-64 rounded-2xl" />
           </div>
           
           <div className="space-y-6">
@@ -34,7 +34,7 @@ export default function CheckoutLoading() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               {[1, 2].map((item) => (
                 <div key={item} className="p-7 rounded-[2.5rem] border-2 border-slate-100 bg-white flex items-center gap-5">
-                  <Skeleton className="w-14 h-14 rounded-2xl flex-shrink-0" />
+                  <Skeleton className="w-14 h-14 rounded-2xl shrink-0" />
                   
                   <div className="space-y-2 w-full">
                     <Skeleton className="h-6 w-32 rounded-md" />
