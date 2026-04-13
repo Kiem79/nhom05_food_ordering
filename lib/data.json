@@ -1,8 +1,0 @@
-{
-  "products": [
-    { "id": 1, "name": "Bánh Mì Đặc Biệt", "price": 35000, "category": "Món chính", "image": "https://images.unsplash.com/photo-1600454021970-351eff4a6554?q=80&w=500" },
-    { "id": 2, "name": "Phở Bò Tái Lăn", "price": 55000, "category": "Món chính", "image": "https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?q=80&w=500" },
-    { "id": 3, "name": "Trà Sữa Trân Châu", "price": 25000, "category": "Đồ uống", "image": "https://images.unsplash.com/photo-1576092768241-dec231879fc3?q=80&w=500" },
-    { "id": 4, "name": "Cơm Tấm Sườn Bì", "price": 45000, "category": "Món chính", "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=500" }
-  ]
-}

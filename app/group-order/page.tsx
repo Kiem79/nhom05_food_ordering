@@ -7,10 +7,11 @@ import useAuthStore from "@/store/authStore";
 import { 
   Trash2, Users, Receipt, Wallet, 
   ArrowRight, ShoppingBag, UserPlus, 
-  Lock, LogIn, AlertCircle 
+  Lock, LogIn, AlertCircle, Store 
 } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
+import Image from "next/image"; // Import Image từ next/image
 import { useRouter } from "next/navigation";
 
 export default function GroupOrderPage() {
@@ -19,9 +20,12 @@ export default function GroupOrderPage() {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
 
-  // Đảm bảo dữ liệu Zustand đã được load xong trên Client
+  // --- SỬA LỖI CASACADING RENDERS ---
   useEffect(() => {
-    setMounted(true);
+    const timer = setTimeout(() => {
+      setMounted(true);
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
 
   if (!mounted) return null;
@@ -36,7 +40,7 @@ export default function GroupOrderPage() {
     }, 1500);
   };
 
-  // --- CASE 1: CHƯA ĐĂNG NHẬP (Màn hình khóa bảo mật) ---
+  // --- CASE 1: CHƯA ĐĂNG NHẬP ---
   if (!user) {
     return (
       <div className="min-h-[85vh] flex items-center justify-center px-6 bg-slate-50/30">
@@ -70,7 +74,7 @@ export default function GroupOrderPage() {
             >
               ĐĂNG NHẬP NGAY <LogIn size={20} />
             </Link>
-            <Link href="/products" className="block text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] hover:text-slate-900 transition-colors">
+            <Link href="/restaurants" className="block text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] hover:text-slate-900 transition-colors">
               Tiếp tục xem Menu
             </Link>
           </div>
@@ -93,14 +97,14 @@ export default function GroupOrderPage() {
         <h2 className="text-3xl font-black text-slate-900 uppercase italic tracking-tighter text-center">
             Giỏ hàng đang trống <br/> <span className="text-orange-500">bạn ơi!</span>
         </h2>
-        <Link href="/products" className="bg-slate-900 text-white px-10 py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-orange-500 transition-all shadow-xl active:scale-95">
+        <Link href="/restaurants" className="bg-slate-900 text-white px-10 py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-orange-500 transition-all shadow-xl active:scale-95">
           QUAY LẠI ĐẶT MÓN
         </Link>
       </motion.div>
     );
   }
 
-  // --- CASE 3: GIAO DIỆN CHÍNH (Đã đăng nhập & Có món) ---
+  // --- CASE 3: GIAO DIỆN CHÍNH ---
   const mockMembers = [
     { id: "m1", name: "Thảo Nguyên", avatar: "https://i.pravatar.cc/150?u=thao" },
     { id: "m2", name: "Anh Tuấn", avatar: "https://i.pravatar.cc/150?u=tuan" },
@@ -125,24 +129,25 @@ export default function GroupOrderPage() {
       <div className="mb-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
         <div className="space-y-2">
             <h1 className="text-6xl font-black text-slate-900 uppercase italic tracking-tighter leading-none">
-            Order <span className="text-orange-500">Group</span>
+              Order <span className="text-orange-500">Group</span>
             </h1>
-            <p className="text-slate-400 font-bold uppercase tracking-[0.3em] text-[10px] pt-2">
+            <p className="text-slate-400 font-bold uppercase tracking-[0.3em] text-[10px] pt-2 pl-1">
                 Chào mừng trở lại, {user.name}! 👋
             </p>
         </div>
         <div className="flex -space-x-3">
             {mockMembers.slice(0, 4).map((m) => (
-                <img key={m.id} src={m.avatar} className="w-10 h-10 rounded-full border-4 border-white shadow-sm" alt="" />
+                <div key={m.id} className="relative w-10 h-10 rounded-full border-4 border-white shadow-sm overflow-hidden bg-slate-100">
+                   <Image src={m.avatar} alt={m.name} fill sizes="40px" className="object-cover" />
+                </div>
             ))}
-            <div className="w-10 h-10 rounded-full bg-slate-100 border-4 border-white flex items-center justify-center text-[10px] font-black text-slate-400 shadow-sm">
+            <div className="w-10 h-10 rounded-full bg-slate-100 border-4 border-white flex items-center justify-center text-[10px] font-black text-slate-400 shadow-sm relative z-10">
                 +{mockMembers.length - 4}
             </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-        {/* --- CỘT TRÁI: DANH SÁCH MÓN & THÀNH VIÊN --- */}
         <div className="lg:col-span-2 space-y-10">
           
           {/* Bill Chi Tiết */}
@@ -157,8 +162,24 @@ export default function GroupOrderPage() {
                     layout initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}
                     key={item.id} className="flex items-center gap-8 group"
                   >
-                    <img src={item.image} className="w-24 h-24 rounded-3xl object-cover shadow-lg" alt={item.name} />
+                    <div className="relative w-24 h-24 rounded-3xl overflow-hidden shadow-lg group-hover:scale-105 transition-transform shrink-0">
+                        <Image 
+                            src={item.images ? item.images[0] : (item.images || "/placeholder-food.png")} 
+                            alt={item.name} 
+                            fill
+                            sizes="96px"
+                            className="object-cover"
+                        />
+                    </div>
+                    
                     <div className="flex-1">
+                      <div className="flex items-center gap-1.5 text-orange-500 mb-1">
+                        <Store size={14} />
+                        <span className="text-[10px] font-black uppercase tracking-widest">
+                          {item.restaurantName || "Cửa hàng đối tác"}
+                        </span>
+                      </div>
+
                       <h4 className="font-black text-slate-900 text-xl tracking-tight uppercase leading-none">{item.name}</h4>
                       <p className="text-orange-500 font-black italic text-lg mt-1">
                         {item.price.toLocaleString()}đ <span className="text-slate-300 text-sm not-italic ml-2 tracking-widest uppercase">x {item.quantity}</span>
@@ -184,18 +205,20 @@ export default function GroupOrderPage() {
               </button>
             </div>
             <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-9 gap-6">
-              {/* Leader/User */}
               <div className="flex flex-col items-center gap-3">
                 <div className="relative">
-                  <img src="https://i.pravatar.cc/150?u=manh" className="w-14 h-14 rounded-full border-2 border-orange-500 p-1 shadow-lg shadow-orange-100" />
-                  <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 bg-orange-500 text-[6px] text-white px-2 py-0.5 rounded-full font-black uppercase">Host</div>
+                  <div className="w-14 h-14 rounded-full border-2 border-orange-500 p-1 shadow-lg shadow-orange-100 relative overflow-hidden">
+                    <Image src="https://i.pravatar.cc/150?u=manh" alt="Host" fill sizes="56px" className="object-cover rounded-full" />
+                  </div>
+                  <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 bg-orange-500 text-[6px] text-white px-2 py-0.5 rounded-full font-black uppercase z-10">Host</div>
                 </div>
                 <p className="text-[8px] font-black text-slate-900 uppercase truncate w-14 text-center">{user.name}</p>
               </div>
-              {/* Members */}
               {mockMembers.map((m) => (
                 <div key={m.id} className="flex flex-col items-center gap-3 group">
-                  <img src={m.avatar} className="w-14 h-14 rounded-full border border-slate-100 grayscale hover:grayscale-0 hover:scale-110 transition-all duration-300" />
+                  <div className="w-14 h-14 rounded-full border border-slate-100 grayscale hover:grayscale-0 hover:scale-110 transition-all duration-300 relative overflow-hidden bg-slate-50">
+                    <Image src={m.avatar} alt={m.name} fill sizes="56px" className="object-cover" />
+                  </div>
                   <p className="text-[8px] font-bold text-slate-400 uppercase truncate w-14 text-center group-hover:text-slate-900">{m.name}</p>
                 </div>
               ))}
@@ -209,7 +232,7 @@ export default function GroupOrderPage() {
           </div>
         </div>
 
-        {/* --- CỘT PHẢI: THANH TOÁN & CHIA BILL --- */}
+        {/* --- CỘT PHẢI --- */}
         <div className="relative">
           <div className="bg-slate-900 text-white rounded-[4rem] p-12 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.4)] sticky top-28 overflow-hidden border border-white/5">
             <div className="absolute -top-24 -right-24 w-64 h-64 bg-orange-500/20 rounded-full blur-3xl"></div>
@@ -238,14 +261,13 @@ export default function GroupOrderPage() {
               </div>
             </div>
 
-            {/* Box Chia tiền */}
             <div className="bg-white/5 backdrop-blur-md rounded-[2.5rem] p-8 mb-10 border border-white/10 group hover:bg-white/10 transition-all">
               <div className="flex items-center gap-3 mb-4">
                 <Wallet className="text-orange-500" size={20} />
                 <span className="text-[11px] font-black uppercase tracking-[0.2em] text-orange-500">Auto Split ({totalPeople} người)</span>
               </div>
               <p className="text-3xl font-black italic text-white group-hover:scale-105 transition-transform origin-left">
-                {splitAmount.toLocaleString()}đ
+                {Math.round(splitAmount).toLocaleString()}đ
               </p>
               <p className="text-[8px] font-medium text-slate-500 mt-4 leading-relaxed italic opacity-70">
                 *Hệ thống đã tự động chia đều hóa đơn dựa trên số lượng thành viên thực tế.

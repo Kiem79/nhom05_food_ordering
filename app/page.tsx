@@ -34,7 +34,7 @@ export default function HomePage() {
             </p>
 
             <div className="flex flex-wrap gap-5 pt-6">
-              <Link href="/products" className="bg-slate-900 text-white px-12 py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-orange-500 transition-all shadow-2xl shadow-slate-200 flex items-center gap-3 active:scale-95 text-sm">
+              <Link href="/restaurants" className="bg-slate-900 text-white px-12 py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-orange-500 transition-all shadow-2xl shadow-slate-200 flex items-center gap-3 active:scale-95 text-sm">
                 ĐẶT MÓN NGAY <ArrowRight size={18} />
               </Link>
               <Link href="/group-order" className="bg-white text-slate-900 border-2 border-slate-100 px-12 py-5 rounded-2xl font-black uppercase tracking-widest hover:border-orange-500 transition-all flex items-center gap-3 active:scale-95 text-sm hover:shadow-lg hover:shadow-slate-100">
