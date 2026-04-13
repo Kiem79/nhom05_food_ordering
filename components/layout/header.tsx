@@ -21,7 +21,7 @@ export default function Header() {
   ];
 
   const handleLogout = () => {
-    if (confirm("Bạn muốn đăng xuất thật à?")) {
+    if(confirm("Bạn muốn đăng xuất thật à?")) {
       logout();
       clearCart?.();
       router.push("/");
