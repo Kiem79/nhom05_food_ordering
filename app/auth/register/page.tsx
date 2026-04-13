@@ -47,7 +47,7 @@ export default function RegisterPage() {
           description: "Chào mừng bạn gia nhập hội ăn ngon!",
         });
         
-        router.push("/products");
+        router.push("/restaurants");
       } catch (error) {
         toast.error("Lỗi đăng ký!");
       } finally {
