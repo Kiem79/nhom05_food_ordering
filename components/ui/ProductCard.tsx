@@ -2,9 +2,10 @@
 
 import Image from "next/image";
 import { toast } from "sonner";
+import { useCartStore } from "@/store/cartStore";
 
 type Product = {
-  id: number;
+  id: string;
   name: string;
   description: string;
   price: number;
@@ -16,51 +17,51 @@ type Props = {
 };
 
 const ProductCard = ({ product }: Props) => {
+  const addItem = useCartStore((state) => state.addItem);
+
   const handleAddToCart = () => {
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.images?.[0] || "",
+    });
+
     toast.success("Đã thêm vào giỏ hàng 🛒");
   };
-
+  const imageSrc =
+  product.images?.[0] && product.images[0].trim() !== ""
+    ? product.images[0]
+    : "/images/fallback.webp";
   return (
-    <div className="bg-white border border-gray-100 rounded-foodie shadow-sm overflow-hidden hover:shadow-md transition">
-      
-      {/* Image */}
-      <div className="relative w-full h-48">
-        <Image
-          src={product.images[0]}
-          alt={product.name}
-          fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          className="object-cover"
-          loading="lazy"
-        />
+    <div className="bg-white border rounded-foodie overflow-hidden">
+      <div className="relative w-full h-64">
+  <Image
+    src={product.images[0]}
+    alt={product.name}
+    fill
+    className="object-cover"
+  />
       </div>
 
-      {/* Content */}
       <div className="p-4">
-        
-        <h3 className="text-lg font-semibold text-primary line-clamp-1">
-          {product.name}
-        </h3>
+        <h3 className="font-semibold">{product.name}</h3>
 
-        <p className="text-sm text-secondary mt-1 line-clamp-2">
+        <p className="text-sm text-gray-500">
           {product.description}
         </p>
 
-        <div className="flex items-center justify-between mt-4">
-          
-          <span className="text-primary font-bold">
+        <div className="flex justify-between mt-4">
+          <span className="font-bold">
             {product.price.toLocaleString()}đ
           </span>
 
           <button
-            type="button"
             onClick={handleAddToCart}
-            className="bg-primary text-white px-4 py-2 rounded-foodie text-sm hover:opacity-90 transition focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-            aria-label={`Thêm ${product.name} vào giỏ hàng`}
+            className="bg-black text-white px-3 py-1 rounded"
           >
             Thêm
           </button>
-
         </div>
       </div>
     </div>

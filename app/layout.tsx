@@ -29,20 +29,21 @@ export default function RootLayout({
         {/* Header */}
         <Header />
 
-        {/* Main content */}
-        <main className="flex-1">
+        {/* Main */}
+        <main className="flex-1 pt-16">
           {children}
         </main>
 
         {/* Footer */}
         <Footer />
 
-        {/* Toast */}
+        {/* Toaster */}
         <Toaster
           position="top-right"
           richColors
           closeButton
           expand
+          duration={3000}
         />
       </body>
     </html>

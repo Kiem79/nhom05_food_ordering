@@ -1,113 +1,99 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { ShoppingCart, User, UtensilsCrossed, Search, Menu } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-
-const NAV_LINKS = [
-  { name: "Trang chủ", href: "/" },
-  { name: "Thực đơn", href: "/products" },
-  { name: "Đặt nhóm", href: "/group-order" },
-  { name: "Thành viên", href: "/about" },
-] as const;
+import { usePathname, useRouter } from "next/navigation";
+import { ShoppingCart, LogOut } from "lucide-react";
+import { useCartStore } from "@/store/cartStore";
+import useAuthStore from "@/store/authStore";
 
 export default function Header() {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const { user, logout } = useAuthStore();
+  const { items, clearCart } = useCartStore();
+
+  const navLinks = [
+    { name: "Trang chủ", href: "/" },
+    { name: "Thực đơn", href: "/products" },
+    { name: "Đặt nhóm", href: "/group-order" },
+    { name: "Thành viên", href: "/about" },
+  ];
+
+  const handleLogout = () => {
+    if (confirm("Bạn muốn đăng xuất thật à?")) {
+      logout();
+      clearCart?.();
+      router.push("/");
+    }
+  };
 
   return (
-    <header className="fixed top-0 z-50 w-full bg-[#F97316] shadow-lg shadow-orange-900/20">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b">
+      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+
         {/* LOGO */}
-        <Link href="/" className="group flex items-center gap-2" aria-label="Trang chủ">
-          <div className="rounded-xl bg-white p-2 shadow-sm transition-transform group-hover:scale-110">
-            <UtensilsCrossed className="h-6 w-6 text-[#F97316]" />
+        <Link href="/" className="flex items-center gap-2">
+          <div className="w-8 h-8 bg-primary text-white rounded-foodie flex items-center justify-center font-bold">
+            F
           </div>
-          <span className="text-2xl font-black tracking-tighter text-white">
-            Foodie<span className="text-white/60">.</span>
+          <span className="text-lg font-bold text-primary">
+            Foodie
           </span>
         </Link>
 
-        {/* MENU */}
-        <nav className="hidden items-center gap-6 md:flex">
-          {NAV_LINKS.map((link) => {
-            const isActive = pathname === link.href;
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                aria-label={link.name}
-                className={cn(
-                  "relative text-sm font-bold px-3 py-2 transition-all duration-300",
-                  isActive 
-                    ? "text-white after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-full after:bg-white" 
-                    : "text-white/80 hover:text-white"
-                )}
-              >
-                {link.name}
-              </Link>
-            );
-          })}
+        {/* NAV */}
+        <nav className="hidden md:flex items-center gap-6">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={`text-sm font-semibold transition ${
+                pathname === link.href
+                  ? "text-primary"
+                  : "text-secondary hover:text-primary"
+              }`}
+            >
+              {link.name}
+            </Link>
+          ))}
         </nav>
 
         {/* ACTIONS */}
-        <div className="flex items-center gap-2">
-          
-          {/* Search */}
-          <Button
-            variant="ghost"
-            size="icon"
-            aria-label="Tìm kiếm"
-            className="text-white hover:bg-white/10 rounded-full min-h-\[40px\] {
-    min-height: 40px;
-} min-h-\[40px\] {
-    min-height: 40px;
-}"
-          >
-            <Search className="h-5 w-5" />
-          </Button>
+        <div className="flex items-center gap-4">
 
-          {/* Cart */}
-          <Link
-            href="/cart"
-            aria-label="Giỏ hàng"
-            className="group relative rounded-full p-2 min-w-\[40px\] {
-    min-width: 40px;
-} min-h-\[40px\] {
-    min-height: 40px;
-} flex items-center justify-center transition-colors hover:bg-white/10"
-          >
-            <ShoppingCart className="h-5 w-5 text-white" />
-            <span className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center rounded-full border-2 border-[#F97316] bg-white text-[10px] font-black text-[#F97316]">
-              3
-            </span>
+          {/* CART */}
+          <Link href="/cart" className="relative p-2">
+            <ShoppingCart className="text-primary" size={20} />
+            {items?.length > 0 && (
+              <span className="absolute top-0 right-0 w-4 h-4 bg-primary text-white text-[10px] rounded-full flex items-center justify-center">
+                {items.length}
+              </span>
+            )}
           </Link>
 
-          {/* Login */}
-          <Button
-            asChild
-            className="hidden rounded-full bg-white px-6 font-black text-[#F97316] hover:bg-orange-50 sm:flex shadow-md min-h-\[40px\] {
-    min-height: 40px;
-}"
-          >
-            <Link href="/auth" aria-label="Đăng nhập">
-              <User className="mr-2 h-4 w-4" /> Đăng nhập
-            </Link>
-          </Button>
+          {/* USER */}
+          {user ? (
+            <div className="flex items-center gap-3">
+              <span className="text-sm text-primary font-medium hidden sm:block">
+                {user.name}
+              </span>
 
-          {/* Mobile menu */}
-          <Button
-            variant="ghost"
-            size="icon"
-            aria-label="Mở menu"
-            className="text-white md:hidden min-w-\[40px\] {
-    min-width: 40px;
-}"
-          >
-            <Menu className="h-6 w-6" />
-          </Button>
+              <button
+                onClick={handleLogout}
+                className="p-2 text-secondary hover:text-primary"
+              >
+                <LogOut size={18} />
+              </button>
+            </div>
+          ) : (
+            <Link
+              href="/auth/login"
+              className="bg-primary text-white px-4 py-2 rounded-foodie text-sm font-semibold hover:opacity-90"
+            >
+              Đăng nhập
+            </Link>
+          )}
         </div>
       </div>
     </header>

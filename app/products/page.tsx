@@ -1,42 +1,123 @@
-import data from '@/lib/data.json';
-import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
+"use client";
+
+import React, { useState } from "react";
+import useProductStore  from "@/store/productStore";
+import { useCartStore } from "@/store/cartStore";
+import { motion, AnimatePresence } from "framer-motion";
+import { Plus, ShoppingBag, Star } from "lucide-react";
+import { toast } from "sonner";
 import Image from "next/image";
+import type { Product } from "@/store/productStore";
 export default function ProductsPage() {
+  const { products } = useProductStore();
+  const { addItem } = useCartStore();
+
+  const categories = ["Tất cả", "Cơm", "Bún/Phở", "Ăn vặt", "Đồ uống"];
+  const [activeTab, setActiveTab] = useState("Tất cả");
+
+  const filteredProducts =
+    activeTab === "Tất cả"
+      ? products
+      : products.filter((p) => p.category === activeTab);
+
+  const handleAddToCart = (product: Product) => {
+  addItem(product);
+  toast.success(`Đã thêm ${product.name}`, {
+    icon: <ShoppingBag className="text-primary" />,
+  });
+};
+
   return (
-    <div className="py-10">
-      <div className="flex justify-between items-end mb-10">
-        <div>
-          <h2 className="text-3xl font-bold">Thực đơn hôm nay</h2>
-          <p className="text-slate-500">Khám phá hơn 100 món ăn hấp dẫn</p>
+    <div className="max-w-7xl mx-auto px-6 py-12">
+      {/* HEADER */}
+      <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div className="space-y-4">
+          <h1 className="text-5xl font-black text-primary uppercase italic tracking-tighter">
+            Thực đơn <span className="text-primary">Foodie.</span>
+          </h1>
+          <p className="text-secondary font-bold uppercase tracking-[0.2em] text-[10px]">
+            {filteredProducts.length} Món ăn đã sẵn sàng phục vụ bạn
+          </p>
         </div>
-        <div className="flex gap-2">
-          {/* Chỗ này để sau này làm Filter */}
-          <Button variant="outline">Lọc theo giá</Button>
+
+        {/* Tabs */}
+        <div className="flex bg-secondary/10 p-1.5 rounded-foodie overflow-x-auto">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setActiveTab(cat)}
+              className={`px-6 py-2.5 rounded-foodie text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${
+                activeTab === cat
+                  ? "bg-white text-primary shadow-sm"
+                  : "text-secondary hover:text-primary"
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {data.map((p) => (
-          <div key={p.id} className="bg-white rounded-xl overflow-hidden border group hover:shadow-xl transition-all">
-            <div className="relative h-48 overflow-hidden">
-              <Image
-  src={p.images[0]}
-  alt={p.name}
-  fill
-  className="object-cover"
-/>
-            </div>
-            <div className="p-4 space-y-3">
-              <span className="text-xs font-semibold text-orange-600 bg-orange-50 px-2 py-1 rounded-full">{p.category}</span>
-              <h3 className="font-bold text-lg leading-tight line-clamp-1">{p.name}</h3>
-              <div className="flex justify-between items-center pt-2">
-                <span className="text-xl font-bold text-slate-900">{p.price.toLocaleString()}đ</span>
-                <Button size="icon" className="rounded-full bg-slate-900"><Plus className="w-5 h-5" /></Button>
+      {/* GRID */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        <AnimatePresence mode="popLayout">
+          {filteredProducts.map((product) => (
+            <motion.div
+              key={product.id}
+              layout
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.3 }}
+              className="group bg-white rounded-foodie p-4 border shadow-sm flex flex-col h-full"
+            >
+              {/* Image */}
+              <div className="relative aspect-\[4\/3\] {
+    aspect-ratio: 4/3 w-full overflow-hidden rounded-foodie mb-6">
+                <Image
+                  src={product.image}
+                  alt={product.name}
+                  fill
+                  className="object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+
+                <div className="absolute top-3 left-3 bg-white/90 px-3 py-1 rounded-foodie flex items-center gap-1">
+                  <Star className="text-primary fill-primary" size={10} />
+                  <span className="text-[9px] font-black text-primary">
+                    4.9
+                  </span>
+                </div>
               </div>
-            </div>
-          </div>
-        ))}
+
+              {/* Content */}
+              <div className="px-1 flex flex-col flex-1">
+                <div className="flex justify-between items-start mb-2">
+                  <span className="text-[8px] font-black text-primary uppercase tracking-widest italic">
+                    {product.category}
+                  </span>
+                  <p className="text-sm font-black text-primary italic">
+                    {product.price.toLocaleString()}đ
+                  </p>
+                </div>
+
+                <h3 className="text-base font-black text-primary mb-2 line-clamp-2">
+                  {product.name}
+                </h3>
+
+                <p className="text-[10px] text-secondary mb-6 line-clamp-2">
+                  {product.description}
+                </p>
+
+                <button
+                  onClick={() => handleAddToCart(product)}
+                  className="mt-auto w-full h-12 bg-primary text-white rounded-foodie font-black text-[9px] uppercase tracking-[0.2em] flex items-center justify-center gap-2 hover:opacity-90 transition-all active:scale-95"
+                >
+                  <Plus size={14} /> Thêm vào giỏ
+                </button>
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
     </div>
   );

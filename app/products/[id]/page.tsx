@@ -2,30 +2,26 @@ import data from "@/lib/data.json";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
-// BẮT BUỘC: Cho Next.js biết không có dữ liệu động nào khác ngoài danh sách đã khai báo
-// Điều này giúp vượt qua lỗi build "output: export"
 export const dynamicParams = false;
 
-// 1. Khai báo hàm generateStaticParams để tạo các trang tĩnh tại thời điểm build
 export async function generateStaticParams() {
   return data.map((item) => ({
     id: item.id.toString(),
   }));
 }
 
-// 2. Định nghĩa Interface cho Props
+// ✅ Params chuẩn Next.js 15 (KHÔNG dùng Promise)
 interface Props {
-  params: Promise<{ id: string }> | { id: string };
+  params: { id: string };
 }
 
-export default async function ProductDetail({ params }: Props) {
-  // Giải quyết params (Next.js 15+ yêu cầu await params)
-  const resolvedParams = await params;
-  const { id } = resolvedParams;
+export default function ProductDetail({ params }: Props) {
+  const { id } = params;
 
+  // Tìm sản phẩm theo id
   const product = data.find((item) => item.id.toString() === id);
 
-  // Nếu không tìm thấy sản phẩm trong data.json
+  // Không có thì 404
   if (!product) {
     notFound();
   }
@@ -33,11 +29,11 @@ export default async function ProductDetail({ params }: Props) {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="grid md:grid-cols-2 gap-8">
-        
-        {/* Hình ảnh sản phẩm */}
+
+        {/* Hình ảnh */}
         <div className="relative w-full h-80 rounded-foodie overflow-hidden bg-gray-100">
           <Image
-            src={product.images[0]}
+            src={product.images?.[0] || "/images/placeholder.png"}
             alt={product.name}
             fill
             className="object-cover"
@@ -46,7 +42,7 @@ export default async function ProductDetail({ params }: Props) {
           />
         </div>
 
-        {/* Thông tin chi tiết */}
+        {/* Thông tin */}
         <div>
           <h1 className="text-3xl font-bold text-primary mb-4">
             {product.name}
@@ -61,7 +57,7 @@ export default async function ProductDetail({ params }: Props) {
           </p>
 
           <button
-            className="bg-primary text-white px-6 py-3 rounded-foodie hover:opacity-90 transition focus:outline-none focus:ring-2 focus:ring-primary"
+            className="bg-primary text-white px-6 py-3 rounded-foodie hover:opacity-90 transition"
             type="button"
           >
             Thêm vào giỏ
