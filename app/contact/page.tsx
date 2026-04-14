@@ -2,14 +2,15 @@
 
 import { useState, useEffect } from 'react';
 import { Mail, User, MessageSquare, Send, MapPin, Phone, Clock, Sun, Moon } from 'lucide-react';
+import confetti from 'canvas-confetti';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [errors, setErrors] = useState({ name: '', email: '', message: '' });
-  const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDark, setIsDark] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
 
   // Dark mode
   useEffect(() => {
@@ -21,7 +22,6 @@ export default function ContactPage() {
     } else {
       document.documentElement.classList.remove('dark');
     }
-    // Trigger animation khi component mount
     setTimeout(() => setIsVisible(true), 100);
   }, []);
 
@@ -59,15 +59,51 @@ export default function ContactPage() {
     return valid;
   };
 
+  const triggerConfetti = () => {
+    confetti({
+      particleCount: 150,
+      spread: 70,
+      origin: { y: 0.6 },
+      startVelocity: 15,
+      colors: ['#f97316', '#fb923c', '#f59e0b', '#ef4444']
+    });
+    // thêm một đợt nhỏ từ bên trái
+    setTimeout(() => {
+      confetti({
+        particleCount: 50,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0, y: 0.7 },
+        colors: ['#f97316', '#fbbf24']
+      });
+    }, 150);
+    setTimeout(() => {
+      confetti({
+        particleCount: 50,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1, y: 0.7 },
+        colors: ['#f97316', '#fbbf24']
+      });
+    }, 300);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validate()) {
       setIsSubmitting(true);
       await new Promise(resolve => setTimeout(resolve, 1000));
       console.log('Gửi liên hệ:', formData);
-      setSubmitted(true);
+      
+      // Bắn pháo hoa
+      triggerConfetti();
+      
+      // Hiển thị toast thông báo nổi lên (có hiệu ứng rung)
+      setToastMessage('✓ Cảm ơn bạn! Chúng tôi sẽ phản hồi sớm nhất.');
+      setTimeout(() => setToastMessage(''), 4000);
+      
+      // Reset form
       setFormData({ name: '', email: '', message: '' });
-      setTimeout(() => setSubmitted(false), 4000);
       setIsSubmitting(false);
     }
   };
@@ -79,14 +115,11 @@ export default function ContactPage() {
 
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-gradient-to-br from-orange-100 via-orange-50 to-amber-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300">
-      {/* BACKGROUND XỊN XÒ - BLOB & PARTICLE */}
+      {/* BACKGROUND XỊN XÒ - BLOB & PARTICLE (giống About) */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Blob shapes */}
         <div className="absolute top-0 -left-20 w-96 h-96 bg-orange-300 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob"></div>
         <div className="absolute top-1/2 -right-20 w-96 h-96 bg-amber-300 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob animation-delay-2000"></div>
         <div className="absolute -bottom-20 left-1/3 w-96 h-96 bg-orange-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000"></div>
-        
-        {/* Particle nhẹ */}
         <div className="absolute inset-0">
           {[...Array(40)].map((_, i) => (
             <div
@@ -103,6 +136,16 @@ export default function ContactPage() {
         </div>
       </div>
 
+      {/* Toast thông báo nổi */}
+      {toastMessage && (
+        <div className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 animate-toast-shake">
+          <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-3 text-base font-semibold backdrop-blur-sm">
+            <span className="text-xl">🎉</span>
+            {toastMessage}
+          </div>
+        </div>
+      )}
+
       {/* Nội dung chính */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
         {/* Nút Dark Mode */}
@@ -116,7 +159,7 @@ export default function ContactPage() {
           </button>
         </div>
 
-        {/* Header với hiệu ứng xuất hiện */}
+        {/* Header */}
         <div className={`text-center mb-12 transition-all duration-700 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
           <h1 className="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-amber-600 dark:from-orange-400 dark:to-amber-400 inline-block drop-shadow-lg">
             Liên Hệ Với Chúng Tôi
@@ -128,7 +171,7 @@ export default function ContactPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-          {/* FORM LIÊN HỆ - nâng cấp */}
+          {/* FORM LIÊN HỆ */}
           <div className={`transform transition-all duration-700 delay-100 ${isVisible ? 'translate-x-0 opacity-100' : '-translate-x-10 opacity-0'}`}>
             <div className="group bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-3xl shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-[1.02] overflow-hidden border border-white/50 dark:border-gray-700/50">
               <div className="bg-gradient-to-r from-orange-500 to-amber-500 px-6 py-4">
@@ -200,17 +243,11 @@ export default function ContactPage() {
                     </>
                   )}
                 </button>
-
-                {submitted && (
-                  <div className="mt-4 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-200 p-4 rounded-2xl text-center animate-fadeInUp">
-                    ✓ Cảm ơn bạn! Chúng tôi sẽ phản hồi sớm nhất.
-                  </div>
-                )}
               </form>
             </div>
           </div>
 
-          {/* BẢN ĐỒ & THÔNG TIN - nâng cấp */}
+          {/* BẢN ĐỒ & THÔNG TIN */}
           <div className={`space-y-6 transform transition-all duration-700 delay-200 ${isVisible ? 'translate-x-0 opacity-100' : 'translate-x-10 opacity-0'}`}>
             {/* Card bản đồ */}
             <div className="group bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-3xl shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-[1.02] overflow-hidden border border-white/50 dark:border-gray-700/50">
@@ -266,7 +303,7 @@ export default function ContactPage() {
         </div>
       </div>
 
-      {/* CSS animations */}
+      {/* CSS animations (thêm toast-shake) */}
       <style jsx>{`
         @keyframes shake {
           0%, 100% { transform: translateX(0); }
@@ -277,14 +314,8 @@ export default function ContactPage() {
           animation: shake 0.3s ease-in-out;
         }
         @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
         }
         .animate-fadeInUp {
           animation: fadeInUp 0.4s ease-out;
@@ -311,6 +342,16 @@ export default function ContactPage() {
         }
         .animate-float {
           animation: float linear infinite;
+        }
+        /* Toast rung + fade in out */
+        @keyframes toastShake {
+          0% { transform: translateX(-50%) translateY(-20px); opacity: 0; }
+          10%, 30%, 50% { transform: translateX(calc(-50% - 4px)) translateY(0); }
+          20%, 40% { transform: translateX(calc(-50% + 4px)) translateY(0); }
+          60%, 100% { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+        .animate-toast-shake {
+          animation: toastShake 0.5s ease-out forwards;
         }
       `}</style>
     </div>
