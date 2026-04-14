@@ -1,77 +1,44 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
-import type { Product } from "@/types";
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
-// Định nghĩa lại CartItem dựa trên Product nhưng ép thêm restaurantName
-export interface CartItem extends Product {
+interface CartItem {
+  id: string | number;
+  name: string;
+  price: number;
   quantity: number;
-  restaurantName: string; // Bỏ dấu '?' để bắt buộc phải có tên nhà hàng
+  images?: string[];
+  restaurantName?: string;
 }
 
-interface CartState {
+interface CartStore {
   items: CartItem[];
-  // Cập nhật tham số: restaurantName là bắt buộc để đồng bộ Dashboard
-  addItem: (product: Product, restaurantName: string) => void; 
-  removeItem: (id: number) => void;
-  updateQuantity: (id: number, delta: number) => void;
+  addItem: (item: CartItem) => void;
+  removeItem: (id: string | number) => void;
   clearCart: () => void;
   totalPrice: () => number;
 }
 
-export const useCartStore = create<CartState>()(
+export const useCartStore = create<CartStore>()(
   persist(
     (set, get) => ({
       items: [],
-
-      addItem: (product, restaurantName) => {
+      addItem: (item) => {
         const currentItems = get().items;
-        const existingItem = currentItems.find((item) => item.id === product.id);
-
+        const existingItem = currentItems.find((i) => i.id === item.id);
         if (existingItem) {
-          // Nếu đã có món này trong giỏ, tăng số lượng
           set({
-            items: currentItems.map((item) =>
-              item.id === product.id 
-                ? { ...item, quantity: item.quantity + 1 } 
-                : item
+            items: currentItems.map((i) =>
+              i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
             ),
           });
         } else {
-          // Nếu món mới, thêm vào giỏ kèm thông tin nhà hàng "snapshot"
-          set({ 
-            items: [
-              ...currentItems, 
-              { 
-                ...product, 
-                quantity: 1, 
-                restaurantName: restaurantName // Lưu tên nhà hàng ngay tại đây
-              }
-            ] 
-          });
+          set({ items: [...currentItems, { ...item, quantity: 1 }] });
         }
       },
-
-      removeItem: (id) => 
-        set({ items: get().items.filter((i) => i.id !== id) }),
-
-      updateQuantity: (id, delta) => {
-        const currentItems = get().items;
-        set({
-          items: currentItems.map((item) =>
-            item.id === id 
-              ? { ...item, quantity: Math.max(1, item.quantity + delta) } 
-              : item
-          ),
-        });
-      },
-
+      removeItem: (id) => set({ items: get().items.filter((i) => i.id !== id) }),
       clearCart: () => set({ items: [] }),
-
-      totalPrice: () => 
-        get().items.reduce((acc, item) => acc + item.price * item.quantity, 0),
+      totalPrice: () => get().items.reduce((total, item) => total + item.price * item.quantity, 0),
     }),
-    { 
-      name: "foodie-cart-storage", // Đổi tên key cho chuyên nghiệp
-    }
+    { name: 'foodie-cart' }
   )
 );

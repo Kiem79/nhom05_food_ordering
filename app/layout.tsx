@@ -2,13 +2,18 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
 import { Toaster } from "sonner";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({
+  subsets: ["latin", "vietnamese"],
+  display: "swap",
+});
 
 export const metadata: Metadata = {
-  title: "Foodie - Smart Office Meal",
-  description: "Giải pháp đặt cơm nhóm thông minh cho dân văn phòng",
+  metadataBase: new URL("http://localhost:3000"),
+  title: "Foodie - Đặt món nhóm thông minh",
+  description: "Đồ án thiết kế Web - Nhóm 05 - HCMUTE",
 };
 
 export default function RootLayout({
@@ -17,28 +22,27 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="vi">
-      <body className={inter.className}>
-        {/* Header hiển thị cố định trên tất cả các trang */}
+    <html lang="vi" suppressHydrationWarning>
+      <body
+        className={`${inter.className} antialiased text-primary bg-white min-h-screen flex flex-col`}
+      >
+        {/* Header */}
         <Header />
-        
-        {/* Phần nội dung chính của các trang. 
-          pt-16 (padding-top: 64px) để tránh việc nội dung bị Header (thường cao 64px) che khuất.
-        */}
-        <main className="pt-16 min-h-screen bg-white">
+
+        {/* Main */}
+        <main className="flex-1 pt-16">
           {children}
         </main>
 
-        {/* Cấu hình hệ thống thông báo Toaster.
-          - position="top-right": Hiển thị ở góc trên bên phải theo yêu cầu.
-          - expand={true}: Hiển thị chi tiết các thông báo khi có nhiều thông báo cùng lúc.
-          - richColors: Hiển thị màu sắc tương ứng với trạng thái (thành công, lỗi...).
-        */}
-        <Toaster 
-          position="top-right" 
-          expand={true} 
-          richColors 
+        {/* Footer */}
+        <Footer />
+
+        {/* Toaster */}
+        <Toaster
+          position="top-right"
+          richColors
           closeButton
+          expand
           duration={3000}
         />
       </body>

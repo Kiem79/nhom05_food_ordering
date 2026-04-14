@@ -78,8 +78,9 @@ export default function OrderSuccessPage() {
         </div>
 
         <div className="space-y-4">
-          <h1 className="text-5xl font-black text-slate-900 uppercase italic tracking-tighter">
-            Đã nhận đơn <span className="text-green-500">Thành công!</span>
+         <h1 className="text-5xl md:text-6xl font-black text-slate-900 uppercase italic tracking-tighter leading-[1.1]">
+            <span className="block">Đã nhận đơn</span>
+            <span className="block text-green-500">Thành công!</span>
           </h1>
           <p className="text-slate-500 font-medium leading-relaxed">
             Món ăn của team bạn đang được chuyển đến nhà bếp. <br />
