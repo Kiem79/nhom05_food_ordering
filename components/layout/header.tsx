@@ -10,19 +10,21 @@ export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
   const { user, logout } = useAuthStore();
-  const { items, clearCart } = useCartStore(); // Giả sử sếp đã có store này
+  const { items, clearCart } = useCartStore();
 
+  // ĐÃ THÊM LINK "Liên hệ" (href: "/contact")
   const navLinks = [
     { name: "Trang chủ", href: "/" },
     { name: "Thực đơn", href: "/products" },
     { name: "Đặt nhóm", href: "/group-order" },
     { name: "Thành viên", href: "/about" },
+    { name: "Liên hệ", href: "/contact" },   // <--- Thêm dòng này
   ];
 
   const handleLogout = () => {
-    if(confirm("Bạnmuốn đăng xuất thật à?")) {
+    if (confirm("Bạn muốn đăng xuất thật à?")) {
       logout();
-      if(clearCart) clearCart();
+      if (clearCart) clearCart();
       router.push("/");
     }
   };
