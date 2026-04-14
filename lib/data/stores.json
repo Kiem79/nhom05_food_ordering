@@ -1,0 +1,180 @@
+{
+  "restaurants": [
+    {
+      "id": 1,
+      "name": "Cơm tấm Cô Ba",
+      "slug": "com-tam-co-ba",
+      "description": "Ra đời từ một xe cơm nhỏ hơn 15 năm trước trong con hẻm Sài Gòn, Cơm tấm Cô Ba dần trở thành địa chỉ quen thuộc của dân văn phòng và sinh viên nhờ hương vị cơm tấm truyền thống chuẩn vị Nam Bộ.\n\nĐiểm đặc trưng của quán nằm ở phần sườn nướng than được tẩm ướp theo công thức gia truyền, thơm mật ong và ngũ vị, kết hợp cùng bì heo trộn thính, chả trứng hấp béo mềm và nước mắm pha đậm đà.",
+      "address": "12 Nguyễn Gia Trí, Bình Thạnh, TP.HCM",
+      "phoneNumber": "0901234561",
+      "openingHours": "06:00 - 21:00",
+      "rating": 4.8,
+      "category": ["Cơm", "Đồ ăn Healthy"],
+      "averagePrice": 40000,
+      "images": ["/restaurants/comtamcoba.jpg"],
+      "menuIds": [1, 2, 3, 4, 5],
+      "contact": {
+        "phone": "0901234561",
+        "email": "comtamcoba@gmail.com"
+      },
+      "status": "Đang mở cửa",
+      "tags": ["Best Seller", "Ăn trưa văn phòng", "Giá tốt"],
+      "badges": ["Quán Yêu Thích", "Giao Nhanh"],
+      "popularProductIds": [1, 2, 5]
+    },
+    {
+      "id": 2,
+      "name": "Bún Phở Ba Miền",
+      "slug": "bun-pho-ba-mien",
+      "description": "Lấy cảm hứng từ tinh hoa ẩm thực Bắc - Trung - Nam, Bún Phở Ba Miền được mở ra bởi một gia đình có truyền thống nấu nước dùng hơn 20 năm. Mỗi món đều mang dấu ấn vùng miền rõ nét nhưng vẫn được tinh chỉnh để hợp khẩu vị người Sài Gòn.\n\nQuán nổi bật với bún bò Huế đậm vị, phở bò trong ngọt xương hầm và các món bún đặc trưng như bún chả, bún riêu, bún mắm. Ngoài món mặn, quán còn có lựa chọn chay như bún Thái chay để phục vụ đa dạng khách hàng.",
+      "address": "88 Điện Biên Phủ, Bình Thạnh, TP.HCM",
+      "phoneNumber": "0901234562",
+      "openingHours": "06:00 - 22:00",
+      "rating": 4.7,
+      "category": ["Bún/Phở/Mì", "Đồ ăn Healthy", "Đồ chay"],
+      "averagePrice": 46000,
+      "images": ["/restaurants/bunphobamien.jpg"],
+      "menuIds": [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 39],
+      "contact": {
+        "phone": "0901234562",
+        "email": "bunphobamien@gmail.com"
+      },
+      "status": "Đang mở cửa",
+      "tags": ["Best Seller", "Ăn sáng", "Nước dùng đậm vị"],
+      "badges": ["Quán Yêu Thích"],
+      "popularProductIds": [6, 11, 15]
+    },
+    {
+      "id": 3,
+      "name": "Bếp Bánh Ngọc Thảo",
+      "slug": "bep-banh-ngoc-thao",
+      "description": "Khởi đầu là căn bếp gia đình chuyên làm bánh truyền thống cho các dịp lễ, Bếp Bánh Ngọc Thảo dần phát triển thành quán ăn vặt và ăn sáng được nhiều bạn trẻ yêu thích.\n\nMenu của quán quy tụ nhiều món dân dã như bánh xèo, bánh cuốn, bánh khọt. Mỗi món đều giữ nét mộc mạc, hương vị gần gũi như bữa ăn nhà nhưng vẫn được trình bày hiện đại, bắt mắt.",
+      "address": "45 Phan Văn Trị, Gò Vấp, TP.HCM",
+      "phoneNumber": "0901234563",
+      "openingHours": "07:00 - 21:30",
+      "rating": 4.6,
+      "category": ["Bánh Truyền Thống", "Đồ ăn Vặt", "Bánh mì/Xôi", "Cháo/Súp", "Đồ ăn Healthy"],
+      "averagePrice": 22000,
+      "images": ["/restaurants/bepbanhngocthao.jpg"],
+      "menuIds": [16, 17, 18, 19, 20, 21, 24, 26, 27],
+      "contact": {
+        "phone": "0901234563",
+        "email": "ngocthaobakery@gmail.com"
+      },
+      "status": "Đang mở cửa",
+      "tags": ["Ăn vặt", "Ăn sáng tiện lợi", "Món truyền thống"],
+      "badges": ["Giá Sinh Viên", "Giao Nhanh"],
+      "popularProductIds": [16, 21, 24]
+    },
+    {
+      "id": 4,
+      "name": "Ellen's Healthy Kitchen",
+      "slug": "ellens-healthy-kitchen",
+      "description": "Được sáng lập bởi một HLV dinh dưỡng trẻ, Ellen’s Healthy Kitchen hướng đến phong cách sống lành mạnh nhưng vẫn ngon miệng và tiện lợi cho người bận rộn.\n\nQuán chuyên các món salad, smoothie bowl, sushi, nước ép tươi và tráng miệng ít ngọt. Đây là lựa chọn lý tưởng cho dân gym, dân văn phòng hoặc người đang theo chế độ eat-clean.",
+      "address": "102 Võ Văn Tần, Quận 3, TP.HCM",
+      "phoneNumber": "0901234564",
+      "openingHours": "08:00 - 21:00",
+      "rating": 4.9,
+      "category": ["Đồ ăn Healthy", "Bánh mì/Xôi", "Ẩm thực quốc tế", "Tráng miệng", "Đồ uống"],
+      "averagePrice": 45000,
+      "images": ["/restaurants/ellenshealthy.jpg"],
+      "menuIds": [22, 23, 34, 41, 42, 48, 49],
+      "contact": {
+        "phone": "0901234564",
+        "email": "hello@ellenskitchen.vn"
+      },
+      "status": "Đang mở cửa",
+      "tags": ["Healthy", "Eat Clean", "Detox"],
+      "badges": ["Quán Yêu Thích", "Healthy Choice"],
+      "popularProductIds": [22, 34, 42]
+    },
+    {
+      "id": 5,
+      "name": "Bunkr - Fast Food",
+      "slug": "bunkr-fast-food",
+      "description": "Bunkr là thánh đường của những chiếc Burger đẫm sốt và thức ăn nhanh đúng điệu. Chúng tôi không làm đồ ăn sẵn, chúng tôi kiến tạo những 'cú hích' vị giác với thịt bò nướng lửa hồng, phô mai tan chảy và lớp vỏ bánh giòn thơm. Dù là bữa trưa vội vã hay cuộc vui thâu đêm, Bunkr luôn sẵn sàng nuông chiều cơn thèm của bạn bằng những hương vị gây nghiện nhất.",
+      "address": "210 Nguyễn Thái Học, Quận 1, TP.HCM",
+      "phoneNumber": "0901234565",
+      "openingHours": "10:00 - 23:00",
+      "rating": 4.7,
+      "category": ["Bánh mì/Xôi", "Thức ăn nhanh", "Ẩm thực quốc tế", "Đồ ăn Vặt", "Bún/Phở/Mì", "Đặt món theo nhóm"],
+      "averagePrice": 65000,
+      "images": ["/restaurants/bunkr.jpg"],
+      "menuIds": [25, 31, 32, 33, 45, 46, 50],
+      "contact": {
+        "phone": "0901234565",
+        "email": "urbanbites@gmail.com"
+      },
+      "status": "Đang mở cửa",
+      "tags": ["Best Seller", "Ăn đêm", "Đặt món theo nhóm"],
+      "badges": ["Giao Nhanh", "Quán Hot"],
+      "popularProductIds": [31, 32, 50]
+    },
+    {
+      "id": 6,
+      "name": "Hot N' Grilled Saigon",
+      "slug": "hot-n-grilled-saigon",
+      "description": "Từ một quán nướng nhỏ chuyên phục vụ sinh viên, Hot N' Grilled Saigon đã mở rộng thành điểm hẹn quen thuộc cho các buổi tụ tập bạn bè.\n\nThế mạnh của quán là các món lẩu và nướng đậm phong cách Hàn - Âu như lẩu kim chi, các set nướng. Menu rất hợp cho nhóm đông người thích chia sẻ món.",
+      "address": "300 Sư Vạn Hạnh, Quận 10, TP.HCM",
+      "phoneNumber": "0901234566",
+      "openingHours": "11:00 - 23:30",
+      "rating": 4.8,
+      "category": ["Lẩu & nướng", "Ẩm thực quốc tế", "Thức ăn nhanh"],
+      "averagePrice": 123000,
+      "images": ["/restaurants/hotngrilled.jpg"],
+      "menuIds": [40, 43, 44, 47],
+      "contact": {
+        "phone": "0901234566",
+        "email": "hotngrilled@gmail.com"
+      },
+      "status": "Đang mở cửa",
+      "tags": ["Ăn nhóm", "BBQ", "Lẩu đêm"],
+      "badges": ["Quán Hot", "Giao Nhanh"],
+      "popularProductIds": [43, 44]
+    },
+    {
+      "id": 7,
+      "name": "1997 Drinks",
+      "slug": "1997-drinks",
+      "description": "Mang tinh thần retro pha chút hiện đại, 1997 Drinks là quán nước được giới trẻ yêu thích nhờ menu đồ uống dễ uống, giá mềm và không gian rất chill.\n\nQuán tập trung vào các món signature như trà đào cam sả, cà phê sữa đá và matcha latte, phù hợp cho học nhóm, làm việc hoặc nghỉ giữa buổi.",
+      "address": "77 Nguyễn Oanh, Gò Vấp, TP.HCM",
+      "phoneNumber": "0901234567",
+      "openingHours": "07:00 - 22:30",
+      "rating": 4.6,
+      "category": ["Đồ uống"],
+      "averagePrice": 32000,
+      "images": ["/restaurants/1997drinks.jpg"],
+      "menuIds": [28, 29, 30],
+      "contact": {
+        "phone": "0901234567",
+        "email": "1997drinks@gmail.com"
+      },
+      "status": "Đang mở cửa",
+      "tags": ["Cafe học bài", "Giá tốt", "Best Seller"],
+      "badges": ["Quán Yêu Thích"],
+      "popularProductIds": [28, 29]
+    },
+    {
+      "id": 8,
+      "name": "Tiệm Chay An Nhiên",
+      "slug": "tiem-chay-an-nhien",
+      "description": "Tiệm Chay An Nhiên được mở ra với mong muốn mang những bữa ăn thanh đạm nhưng đủ dinh dưỡng đến người bận rộn nơi phố thị. Với triết lý lấy sự thanh đạm làm gốc, chúng tôi chắt lọc tinh hoa từ nấm tươi, rau củ tầng và đậu hũ truyền thống để tạo nên những món thuần Việt đậm đà. Mỗi phần ăn tại An Nhiên là sự cân bằng hoàn hảo, giúp bạn tìm lại sự cân bằng sau những giờ làm việc hối hả.",
+      "address": "19 Lê Văn Sỹ, Phú Nhuận, TP.HCM",
+      "phoneNumber": "0901234568",
+      "openingHours": "09:00 - 20:30",
+      "rating": 4.9,
+      "category": ["Cơm", "Đồ chay", "Đồ ăn Healthy", "Lẩu & nướng"],
+      "averagePrice": 40000,
+      "images": ["/restaurants/tiemchayannhien.jpg"],
+      "menuIds": [35, 36, 37, 38],
+      "contact": {
+        "phone": "0901234568",
+        "email": "annhienchay@gmail.com"
+      },
+      "status": "Đang mở cửa",
+      "tags": ["Thanh đạm", "Healthy", "Món chay"],
+      "badges": ["Healthy Choice"],
+      "popularProductIds": [38]
+    }
+  ]
+}

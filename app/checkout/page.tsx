@@ -3,10 +3,21 @@
 import React, { useState, useEffect } from "react";
 import { useCartStore } from "@/store/cartStore";
 import { Button } from "@/components/ui/button";
+<<<<<<< HEAD
 import {
   CheckCircle2,
   Loader2,
   Sparkles,
+=======
+import { 
+  MapPin, 
+  CreditCard, 
+  Banknote, 
+  CheckCircle2, 
+  ArrowLeft, 
+  Loader2, 
+  Sparkles 
+>>>>>>> main
 } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";

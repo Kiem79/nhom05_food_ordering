@@ -8,7 +8,7 @@ export default function ProductsLoading() {
 
       <div className="mb-12 space-y-4">
         <div className="flex items-center gap-2">
-          <Skeleton className="w-10 h-[2px] rounded-full" />
+          <Skeleton className="w-10 h-0.5 rounded-full" />
           <Skeleton className="w-32 h-4 rounded-full" />
         </div>
         

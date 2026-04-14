@@ -46,12 +46,18 @@ export default function HomePage() {
               Giải pháp đặt món nhóm thông minh, tiết kiệm phí ship và chia bill tự động.
             </p>
 
+<<<<<<< HEAD
             <div className="flex gap-4">
               <Link
                 href="/products"
                 className="bg-primary text-white px-8 py-4 rounded-foodie font-bold flex items-center gap-2 hover:opacity-90"
               >
                 Đặt món <ArrowRight size={18} />
+=======
+            <div className="flex flex-wrap gap-5 pt-6">
+              <Link href="/restaurants" className="bg-slate-900 text-white px-12 py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-orange-500 transition-all shadow-2xl shadow-slate-200 flex items-center gap-3 active:scale-95 text-sm">
+                ĐẶT MÓN NGAY <ArrowRight size={18} />
+>>>>>>> main
               </Link>
 
               <Link

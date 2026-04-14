@@ -1,62 +1,44 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 interface CartItem {
   id: string | number;
   name: string;
   price: number;
   quantity: number;
-  image: string;
+  images?: string[];
+  restaurantName?: string;
 }
 
-interface CartState {
+interface CartStore {
   items: CartItem[];
-  addItem: (product: Omit<CartItem, "quantity">) => void;
+  addItem: (item: CartItem) => void;
   removeItem: (id: string | number) => void;
   clearCart: () => void;
-  getTotalPrice: () => number;
+  totalPrice: () => number;
 }
 
-export const useCartStore = create<CartState>()(
+export const useCartStore = create<CartStore>()(
   persist(
     (set, get) => ({
       items: [],
-
-      addItem: (product) => {
-        const items = get().items;
-        const exist = items.find((i) => i.id === product.id);
-
-        if (exist) {
+      addItem: (item) => {
+        const currentItems = get().items;
+        const existingItem = currentItems.find((i) => i.id === item.id);
+        if (existingItem) {
           set({
-            items: items.map((i) =>
-              i.id === product.id
-                ? { ...i, quantity: i.quantity + 1 }
-                : i
+            items: currentItems.map((i) =>
+              i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
             ),
           });
         } else {
-          set({
-            items: [
-              ...items,
-              { ...product, quantity: 1 }, // ✅ FIX ở đây
-            ],
-          });
+          set({ items: [...currentItems, { ...item, quantity: 1 }] });
         }
       },
-
-      removeItem: (id) =>
-        set({
-          items: get().items.filter((i) => i.id !== id),
-        }),
-
+      removeItem: (id) => set({ items: get().items.filter((i) => i.id !== id) }),
       clearCart: () => set({ items: [] }),
-
-      getTotalPrice: () =>
-        get().items.reduce(
-          (sum, item) => sum + item.price * item.quantity,
-          0
-        ),
+      totalPrice: () => get().items.reduce((total, item) => total + item.price * item.quantity, 0),
     }),
-    { name: "cart-storage" }
+    { name: 'foodie-cart' }
   )
 );

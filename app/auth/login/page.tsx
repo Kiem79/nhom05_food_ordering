@@ -42,7 +42,7 @@ export default function LoginPage() {
         toast.success("ĐĂNG NHẬP THÀNH CÔNG!", {
           description: "Chào mừng bạn quay trở lại với Foodie.",
         });
-        router.push("/products");
+        router.push("/restaurants");
       } else {
         toast.error("Sai tài khoản hoặc mật khẩu rồi!");
       }
