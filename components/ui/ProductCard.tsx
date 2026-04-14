@@ -24,7 +24,8 @@ const ProductCard = ({ product }: Props) => {
       id: product.id,
       name: product.name,
       price: product.price,
-      image: product.images?.[0] || "",
+      images: [product.images?.[0] || ""], 
+      quantity: 1,
     });
 
     toast.success("Đã thêm vào giỏ hàng 🛒");

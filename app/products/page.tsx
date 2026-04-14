@@ -1,31 +1,47 @@
 "use client";
 
-import React, { useState } from "react";
-import useProductStore  from "@/store/productStore";
+import React, { useState, useEffect } from "react";
+import useProductStore from "@/store/productStore";
 import { useCartStore } from "@/store/cartStore";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, ShoppingBag, Star } from "lucide-react";
 import { toast } from "sonner";
 import Image from "next/image";
-import type { Product } from "@/store/productStore";
+// FIX 1: Import đúng interface Product từ types
+import type { Product } from "@/types"; 
+
 export default function ProductsPage() {
   const { products } = useProductStore();
   const { addItem } = useCartStore();
 
   const categories = ["Tất cả", "Cơm", "Bún/Phở", "Ăn vặt", "Đồ uống"];
   const [activeTab, setActiveTab] = useState("Tất cả");
+  const [mounted, setMounted] = useState(false);
 
+  // Tránh lỗi Hydration
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // FIX 2: Đảm bảo p.category tồn tại và so sánh chuẩn xác
   const filteredProducts =
     activeTab === "Tất cả"
       ? products
-      : products.filter((p) => p.category === activeTab);
+      : products.filter((p) => p.category.includes(activeTab));
 
   const handleAddToCart = (product: Product) => {
-  addItem(product);
-  toast.success(`Đã thêm ${product.name}`, {
-    icon: <ShoppingBag className="text-primary" />,
-  });
-};
+    // FIX 3: Chuyển đổi format nếu addItem yêu cầu CartItem cụ thể
+    addItem({
+      ...product,
+      quantity: 1
+    } as any); 
+    
+    toast.success(`Đã thêm ${product.name}`, {
+      icon: <ShoppingBag className="text-primary" />,
+    });
+  };
+
+  if (!mounted) return null;
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-12">
@@ -71,11 +87,11 @@ export default function ProductsPage() {
               transition={{ duration: 0.3 }}
               className="group bg-white rounded-foodie p-4 border shadow-sm flex flex-col h-full"
             >
-              {/* Image */}
-              <div className="relative aspect-\[4\/3\] {
-    aspect-ratio: 4/3 w-full overflow-hidden rounded-foodie mb-6">
+              {/* Image Container */}
+              <div className="relative aspect-[4/3] w-full overflow-hidden rounded-foodie mb-6">
+                {/* FIX 4: product.images là mảng nên phải lấy index [0] */}
                 <Image
-                  src={product.image}
+                  src={product.images?.[0] || "/placeholder-food.jpg"}
                   alt={product.name}
                   fill
                   className="object-cover group-hover:scale-110 transition-transform duration-500"

@@ -12,11 +12,13 @@ interface AuthState {
   user: User | null;
   login: (user: User) => void;
   logout: () => void;
+  isLoading: boolean;
 }
 
 const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
+      isLoading: false,
       user: null,
       login: (user) => set({ user }),
       logout: () => set({ user: null }),
