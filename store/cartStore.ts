@@ -12,7 +12,7 @@ interface CartItem {
 
 interface CartStore {
   items: CartItem[];
-  addItem: (item: CartItem) => void;
+  addItem: (product: any, restaurantName: string) => void; // Fix tham số truyền vào
   removeItem: (id: string | number) => void;
   clearCart: () => void;
   totalPrice: () => number;
@@ -22,17 +22,24 @@ export const useCartStore = create<CartStore>()(
   persist(
     (set, get) => ({
       items: [],
-      addItem: (item) => {
+      addItem: (product, restaurantName) => {
         const currentItems = get().items;
-        const existingItem = currentItems.find((i) => i.id === item.id);
+        const existingItem = currentItems.find((i) => i.id === product.id);
+        
         if (existingItem) {
           set({
             items: currentItems.map((i) =>
-              i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
+              i.id === product.id ? { ...i, quantity: i.quantity + 1 } : i
             ),
           });
         } else {
-          set({ items: [...currentItems, { ...item, quantity: 1 }] });
+          // Gộp thông tin món ăn và tên quán vào 1 object
+          const newItem: CartItem = {
+            ...product,
+            quantity: 1,
+            restaurantName: restaurantName
+          };
+          set({ items: [...currentItems, newItem] });
         }
       },
       removeItem: (id) => set({ items: get().items.filter((i) => i.id !== id) }),

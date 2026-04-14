@@ -1,10 +1,11 @@
 "use client";
 
+import React from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ShoppingCart, LogOut } from "lucide-react";
-import { useCartStore } from "@/store/cartStore";
 import useAuthStore from "@/store/authStore";
+import { useCartStore } from "@/store/cartStore";
 
 export default function Header() {
   const pathname = usePathname();
@@ -17,12 +18,12 @@ export default function Header() {
     { name: "Trang chủ", href: "/" },
     { name: "Thực đơn", href: "/restaurants" },
     { name: "Đặt nhóm", href: "/group-order" },
-    { name: "Lịch sử", href: "/dashboard" },
+    { name: "Lịch sử", href: "/dashboard" },   
     { name: "Thành viên", href: "/about" },
   ];
 
   const handleLogout = () => {
-    if(confirm("Bạn muốn đăng xuất thật à?")) {
+    if (confirm("Bạn muốn đăng xuất thật à?")) {
       logout();
       clearCart?.();
       router.push("/");
@@ -30,29 +31,27 @@ export default function Header() {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b">
+    <header className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md z-50 border-b border-slate-100 font-sans">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
 
         {/* LOGO */}
-        <Link href="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-primary text-white rounded-foodie flex items-center justify-center font-bold">
-            F
+        <Link href="/" className="flex items-center gap-2 group">
+          <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center text-white font-black italic shadow-lg shadow-orange-200 group-hover:bg-slate-900 transition-colors">
+            F.
           </div>
-          <span className="text-lg font-bold text-primary">
-            Foodie
+          <span className="text-xl font-black tracking-tighter text-slate-900 uppercase italic">
+            Foodie.
           </span>
         </Link>
 
-        {/* NAV */}
+        {/* NAVIGATION */}
         <nav className="hidden md:flex items-center gap-6">
-          {navLinks.map((link) => (
+          {navLinks.map((link, index) => (
             <Link
-              key={link.href}
+              key={`${link.href}-${index}`}
               href={link.href}
-              className={`text-sm font-semibold transition ${
-                pathname === link.href
-                  ? "text-primary"
-                  : "text-secondary hover:text-primary"
+              className={`text-[10px] font-black uppercase tracking-[0.2em] transition-colors ${
+                pathname === link.href ? "text-orange-500" : "text-slate-400 hover:text-slate-900"
               }`}
             >
               {link.name}
@@ -62,40 +61,46 @@ export default function Header() {
 
         {/* ACTIONS */}
         <div className="flex items-center gap-4">
-
-          {/* CART */}
-          <Link href="/cart" className="relative p-2">
-            <ShoppingCart className="text-primary" size={20} />
+          
+          {/* CART ICON - ĐÃ ĐỔI HREF SANG GROUP-ORDER */}
+          <Link 
+            href="/group-order" 
+            className={`relative p-2 transition-all duration-300 rounded-xl ${
+                pathname === '/group-order' ? "text-orange-500 bg-orange-50" : "text-slate-400 hover:text-orange-500 hover:bg-slate-50"
+            }`}
+          >
+            <ShoppingCart size={20} />
             {items?.length > 0 && (
-              <span className="absolute top-0 right-0 w-4 h-4 bg-primary text-white text-[10px] rounded-full flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 w-4.5 h-4.5 bg-orange-600 text-white text-[9px] font-black rounded-full flex items-center justify-center border-2 border-white shadow-sm animate-bounce">
                 {items.length}
               </span>
             )}
           </Link>
 
-          {/* USER */}
+          {/* USER SECTION */}
           {user ? (
-            <div className="flex items-center gap-3">
-              <span className="text-sm text-primary font-medium hidden sm:block">
-                {user.name}
-              </span>
-
-              <button
-                onClick={handleLogout}
-                className="p-2 text-secondary hover:text-primary"
+            <div className="flex items-center gap-3 pl-4 border-l border-slate-100">
+              <div className="text-right hidden sm:block">
+                <p className="text-[9px] font-black text-slate-400 uppercase leading-none mb-1 tracking-tighter">Leader</p>
+                <p className="text-xs font-black text-slate-900 leading-none">{user.name}</p>
+              </div>
+              <button 
+                onClick={handleLogout} 
+                className="p-2 text-slate-400 hover:text-red-500 transition-all active:scale-90"
               >
                 <LogOut size={18} />
               </button>
             </div>
           ) : (
-            <Link
-              href="/auth/login"
-              className="bg-primary text-white px-4 py-2 rounded-foodie text-sm font-semibold hover:opacity-90"
+            <Link 
+              href="/auth/login" 
+              className="bg-slate-900 text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-orange-500 transition-all shadow-lg shadow-slate-200"
             >
               Đăng nhập
             </Link>
           )}
         </div>
+
       </div>
     </header>
   );

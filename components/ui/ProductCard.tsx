@@ -1,71 +1,85 @@
+// components/ui/RestaurantCard.tsx
 "use client";
 
+import React from "react";
 import Image from "next/image";
-import { toast } from "sonner";
-import { useCartStore } from "@/store/cartStore";
+import Link from "next/link";
+import { Star, MapPin, Clock } from "lucide-react";
+import type { Restaurant } from "@/types";
 
-type Product = {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  images: string[];
-};
+const basePath = "/nhom05_food_ordering";
 
-type Props = {
-  product: Product;
-};
+export default function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
+  // 1. CÂU LỆNH "CỨU MẠNG": Nếu không có dữ liệu quán, không vẽ gì cả để tránh crash app
+  if (!restaurant) return null;
 
-const ProductCard = ({ product }: Props) => {
-  const addItem = useCartStore((state) => state.addItem);
+  // 2. Sử dụng Optional Chaining (?) để an toàn tuyệt đối
+  const imageUrl = restaurant.images?.[0] || "/images/restaurant-placeholder.jpg";
+  
+  const finalImageSrc = imageUrl.startsWith("http") 
+    ? imageUrl 
+    : `${basePath}${imageUrl}`;
 
-  const handleAddToCart = () => {
-    addItem({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      image: product.images?.[0] || "",
-    });
-
-    toast.success("Đã thêm vào giỏ hàng 🛒");
-  };
-  const imageSrc =
-  product.images?.[0] && product.images[0].trim() !== ""
-    ? product.images[0]
-    : "/images/fallback.webp";
   return (
-    <div className="bg-white border rounded-foodie overflow-hidden">
-      <div className="relative w-full h-64">
-  <Image
-    src={product.images[0]}
-    alt={product.name}
-    fill
-    className="object-cover"
-  />
-      </div>
+    <Link href={`/restaurants/${restaurant.id}`} className="group">
+      <div className="bg-white rounded-[2.5rem] overflow-hidden border border-slate-50 shadow-xl shadow-slate-100/50 hover:shadow-2xl hover:shadow-orange-100/50 transition-all duration-500">
+        
+        {/* IMAGE SECTION */}
+        <div className="relative aspect-[16/10] overflow-hidden">
+          <Image
+            src={finalImageSrc}
+            alt={restaurant.name || "Restaurant"}
+            fill
+            className="object-cover group-hover:scale-110 transition-transform duration-700"
+            unoptimized={true}
+          />
+          <div className="absolute top-4 left-4 flex gap-2">
+             <div className="bg-white/90 backdrop-blur-md px-3 py-1 rounded-xl flex items-center gap-1 shadow-sm">
+                <Star size={12} className="text-orange-500 fill-orange-500" />
+                <span className="text-[10px] font-black text-slate-900">{restaurant.rating || 0}</span>
+             </div>
+          </div>
+          <div className="absolute top-4 right-4 bg-slate-900/80 backdrop-blur-md text-white px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest">
+            {restaurant.status || "Đang cập nhật"}
+          </div>
+        </div>
 
-      <div className="p-4">
-        <h3 className="font-semibold">{product.name}</h3>
+        {/* INFO SECTION */}
+        <div className="p-8">
+          <div className="flex justify-between items-start mb-4">
+            <h3 className="text-2xl font-black text-slate-900 uppercase italic tracking-tighter group-hover:text-orange-500 transition-colors">
+              {restaurant.name}
+            </h3>
+            <span className="text-orange-500 font-black text-sm">
+              ~{restaurant.averagePrice?.toLocaleString() || 0}đ
+            </span>
+          </div>
 
-        <p className="text-sm text-gray-500">
-          {product.description}
-        </p>
+          <p className="text-xs text-slate-400 font-medium mb-6 line-clamp-2 leading-relaxed italic">
+            {restaurant.description}
+          </p>
 
-        <div className="flex justify-between mt-4">
-          <span className="font-bold">
-            {product.price.toLocaleString()}đ
-          </span>
+          <div className="space-y-3 border-t border-slate-50 pt-6">
+            <div className="flex items-center gap-3 text-slate-400">
+              <MapPin size={14} className="text-orange-500" />
+              <span className="text-[11px] font-bold truncate">{restaurant.address}</span>
+            </div>
+            <div className="flex items-center gap-3 text-slate-400">
+              <Clock size={14} className="text-orange-500" />
+              <span className="text-[11px] font-bold">{restaurant.openingHours}</span>
+            </div>
+          </div>
 
-          <button
-            onClick={handleAddToCart}
-            className="bg-black text-white px-3 py-1 rounded"
-          >
-            Thêm
-          </button>
+          {/* TAGS */}
+          <div className="flex flex-wrap gap-2 mt-6">
+            {restaurant.category?.map((cat, idx) => (
+              <span key={idx} className="bg-slate-50 text-slate-400 px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest">
+                {cat}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
-};
-
-export default ProductCard;
+}

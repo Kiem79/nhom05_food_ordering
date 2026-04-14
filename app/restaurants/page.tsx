@@ -6,8 +6,11 @@ import productsData from "@/lib/data/products.json";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, MapPin, Clock, ChevronRight } from "lucide-react"; // Đổi sang ChevronRight
+import { Star, MapPin, Clock, ChevronRight } from "lucide-react";
 import type { Restaurant, Product } from "@/types";
+
+// QUAN TRỌNG: Khai báo basePath để fix lỗi ảnh
+const basePath = "/nhom05_food_ordering";
 
 export default function RestaurantsPage() {
   const restaurants = restaurantsData.restaurants as Restaurant[];
@@ -19,7 +22,7 @@ export default function RestaurantsPage() {
   ];
 
   const [activeTab, setActiveTab] = useState("Tất cả");
-  const [isExpanded, setIsExpanded] = useState(false); // Trạng thái đóng mở thanh category
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const filteredRestaurants = useMemo(() => {
     if (activeTab === "Tất cả") return restaurants;
@@ -36,7 +39,7 @@ export default function RestaurantsPage() {
   }, [activeTab, restaurants, products]);
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-12">
+    <div className="max-w-7xl mx-auto px-6 py-24"> {/* Tăng padding top để không bị đè bởi Header */}
       {/* HEADER */}
       <div className="mb-12 flex flex-col gap-6">
         <div className="space-y-3">
@@ -49,14 +52,13 @@ export default function RestaurantsPage() {
           </p>
         </div>
 
-        {/* CATEGORY FILTER - Đổi sang bên trái, đẩy từ trái sang phải */}
+        {/* CATEGORY FILTER */}
         <div className="flex justify-start items-center gap-2">
           <motion.div 
             initial={false}
             animate={{ width: isExpanded ? "100%" : "auto" }}
             className="flex bg-slate-100 p-1.5 rounded-2xl overflow-hidden shadow-inner items-center"
           >
-            {/* MŨI TÊN CAM ĐIỀU KHIỂN - NẰM BÊN TRÁI */}
             <button 
               onClick={() => setIsExpanded(!isExpanded)}
               className="shrink-0 p-2.5 bg-orange-500 rounded-xl text-white shadow-lg shadow-orange-200 transition-transform active:scale-95 mr-1"
@@ -66,14 +68,12 @@ export default function RestaurantsPage() {
               </motion.div>
             </button>
 
-            {/* HIỂN THỊ TAB ĐANG CHỌN KHI ĐÓNG */}
             {!isExpanded && (
               <span className="px-5 py-2.5 text-[10px] font-black uppercase text-orange-500 bg-white rounded-xl shadow-sm whitespace-nowrap">
                 {activeTab}
               </span>
             )}
 
-            {/* DANH SÁCH CATEGORY - ĐẨY RA TỪ TRÁI SANG PHẢI */}
             <div className={`flex gap-1 overflow-x-auto no-scrollbar transition-all duration-500 ${isExpanded ? "opacity-100 w-full ml-1" : "w-0 opacity-0 invisible"}`}>
               {categories.map((cat) => (
                 <button
@@ -124,6 +124,12 @@ export default function RestaurantsPage() {
                 ...new Set(menuProducts.flatMap((p) => p.category)),
               ];
 
+              // --- LOGIC XỬ LÝ ẢNH CHỐT HẠ ---
+              const rawImg = restaurant.images[0];
+              const finalImg = rawImg.startsWith("http") 
+                ? rawImg 
+                : `${basePath}${rawImg.startsWith("/") ? "" : "/"}${rawImg}`;
+
               return (
                 <motion.div
                   key={restaurant.id}
@@ -139,15 +145,16 @@ export default function RestaurantsPage() {
                   <Link href={`/restaurants/${restaurant.id}`}>
                     <motion.div
                       whileHover={{ y: -6 }}
-                      className="group bg-white rounded-[2rem] overflow-hidden border border-slate-100 shadow-lg hover:shadow-2xl hover:shadow-orange-100/40 transition-all duration-300 h-full"
+                      className="group bg-white rounded-[2rem] overflow-hidden border border-slate-100 shadow-lg hover:shadow-2xl hover:shadow-orange-100/40 transition-all duration-300 h-full flex flex-col"
                     >
                       {/* IMAGE */}
-                      <div className="relative aspect-4/3 w-full overflow-hidden">
+                      <div className="relative aspect-4/3 w-full overflow-hidden bg-slate-200">
                         <Image
-                          src={restaurant.images[0]}
+                          src={finalImg} // Dùng link đã fix ở trên
                           alt={restaurant.name}
                           fill
                           className="object-cover group-hover:scale-110 transition-transform duration-700"
+                          unoptimized={true} // Bắt buộc để hiện ảnh local
                         />
 
                         <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-2xl flex items-center gap-2 shadow-lg">
@@ -166,9 +173,9 @@ export default function RestaurantsPage() {
                       </div>
 
                       {/* CONTENT */}
-                      <div className="p-5 flex flex-col h-full">
+                      <div className="p-6 flex flex-col flex-1">
                         <div className="flex justify-between items-start gap-3">
-                          <h3 className="text-lg font-black text-slate-900 line-clamp-1 uppercase tracking-tight">
+                          <h3 className="text-lg font-black text-slate-900 line-clamp-1 uppercase tracking-tight group-hover:text-orange-500 transition-colors">
                             {restaurant.name}
                           </h3>
 
@@ -177,57 +184,41 @@ export default function RestaurantsPage() {
                           </span>
                         </div>
 
-                        <p className="text-xs text-slate-400 mt-2 line-clamp-2 leading-5">
+                        <p className="text-xs text-slate-400 mt-2 line-clamp-2 leading-5 italic">
                           {restaurant.description}
                         </p>
 
                         {/* ADDRESS + HOURS */}
-                        <div className="mt-4 space-y-2 text-xs text-slate-500">
+                        <div className="mt-auto pt-4 space-y-2 text-xs text-slate-500">
                           <div className="flex items-center gap-2">
-                            <MapPin size={14} />
+                            <MapPin size={14} className="text-orange-500 shrink-0" />
                             <span className="line-clamp-1">
                               {restaurant.address}
                             </span>
                           </div>
 
                           <div className="flex items-center gap-2">
-                            <Clock size={14} />
+                            <Clock size={14} className="text-orange-500 shrink-0" />
                             <span>{restaurant.openingHours}</span>
                           </div>
                         </div>
 
-                        {/* MENU CATEGORIES */}
-                        <div className="mt-4 flex flex-wrap gap-2">
-                          {allCategories.slice(0, 3).map((cat) => (
+                        {/* MENU CATEGORIES & TAGS */}
+                        <div className="mt-4 flex flex-wrap gap-1.5">
+                          {allCategories.slice(0, 2).map((cat) => (
                             <span
                               key={cat}
-                              className="px-2 py-1 bg-slate-100 text-slate-600 rounded-full text-[9px] font-black uppercase"
+                              className="px-2 py-1 bg-slate-100 text-slate-500 rounded-lg text-[8px] font-black uppercase tracking-widest"
                             >
                               {cat}
                             </span>
                           ))}
-                        </div>
-
-                        {/* BADGES */}
-                        <div className="mt-4 flex flex-wrap gap-2">
-                          {restaurant.badges.map((badge) => (
+                          {restaurant.badges.slice(0, 1).map((badge) => (
                             <span
                               key={badge}
-                              className="px-2 py-1 bg-orange-50 text-orange-500 rounded-full text-[9px] font-black uppercase"
+                              className="px-2 py-1 bg-orange-50 text-orange-500 rounded-lg text-[8px] font-black uppercase tracking-widest"
                             >
                               {badge}
-                            </span>
-                          ))}
-                        </div>
-
-                        {/* TAGS */}
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          {restaurant.tags.map((tag) => (
-                            <span
-                              key={tag}
-                              className="text-[10px] text-slate-400 font-bold"
-                            >
-                              #{tag}
                             </span>
                           ))}
                         </div>
