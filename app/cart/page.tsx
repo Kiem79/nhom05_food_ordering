@@ -32,8 +32,8 @@ export default function Cart() {
       <hr className="my-4" />
 
       <p className="font-bold">
-  Tổng: {totalPrice().toLocaleString()}đ
-</p>
+        Tổng: {totalPrice().toLocaleString()}đ
+      </p>
     </div>
   );
 }

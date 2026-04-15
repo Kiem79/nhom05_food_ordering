@@ -3,12 +3,8 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Bike, MapPin, ChefHat, CheckCircle2, Wallet, Navigation, Clock } from "lucide-react";
-
-export default function OrderTrackingPage() {
-  const [step, setStep] = useState(2); 
-
-  // --- MOCK GPS MAP COMPONENT ---
-  const FakeGPSMap = () => (
+// --- MOCK GPS MAP COMPONENT ---
+const FakeGPSMap = () => (
     <div className="relative w-full h-[400px] bg-slate-100 rounded-[3rem] overflow-hidden border-4 border-white shadow-inner">
       <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(#000 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
       
@@ -65,7 +61,11 @@ export default function OrderTrackingPage() {
         <span className="text-[10px] font-black uppercase tracking-widest text-slate-900">Shipper đang cách bạn 1.2km</span>
       </div>
     </div>
-  );
+);
+export default function OrderTrackingPage() {
+  const [step, setStep] = useState(2); 
+
+
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-12 font-sans">

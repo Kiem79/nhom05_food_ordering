@@ -121,7 +121,7 @@ export default function HomePage() {
         ) : (
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
             {data.slice(0, 6).map((item) => (
-              <ProductCard key={item.id} product={item} />
+              <ProductCard key={item.id} product={{...item, id: item.id.toString()}} />
             ))}
           </div>
         )}
