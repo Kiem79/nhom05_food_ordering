@@ -36,8 +36,8 @@ export default function ContactPage() {
       
       {/* Background Decor */}
       <div className="fixed inset-0 pointer-events-none opacity-40">
-        <div className="absolute top-0 right-0 w-80 h-80 bg-orange-500/10 rounded-full blur-[120px]" />
-        <div className="absolute bottom-0 left-0 w-80 h-80 bg-amber-500/10 rounded-full blur-[120px]" />
+        <div className="absolute top-0 right-0 w-80 h-80 bg-orange-500/10 dark:bg-orange-500/20 rounded-full blur-[120px]" />
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-amber-500/10 dark:bg-amber-500/20 rounded-full blur-[120px]" />
       </div>
 
       <div className="relative z-10 container mx-auto px-6 py-24">
@@ -50,7 +50,7 @@ export default function ContactPage() {
           >
             Liên hệ <span className="text-orange-500">Foodie</span>
           </motion.h1>
-          <p className="text-slate-400 font-black uppercase tracking-[0.3em] text-[10px] mt-6">
+          <p className="text-slate-400 dark:text-slate-500 font-black uppercase tracking-[0.3em] text-[10px] mt-6">
             Smart Office Meal Support — 24/7
           </p>
         </div>
@@ -69,42 +69,42 @@ export default function ContactPage() {
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2 text-left">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">Họ và tên</label>
+                <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-4">Họ và tên</label>
                 <input 
                   required
                   type="text" 
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
                   placeholder="NGUYỄN VĂN A"
-                  className="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-2xl px-6 py-4 text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-orange-500 transition-all outline-none"
+                  className="w-full bg-slate-50 dark:bg-slate-800/50 border-none rounded-2xl px-6 py-4 text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-orange-500 transition-all outline-none"
                 />
               </div>
 
               <div className="space-y-2 text-left">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">Email liên hệ</label>
+                <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-4">Email liên hệ</label>
                 <input 
                   required
                   type="email" 
                   value={formData.email}
                   onChange={(e) => setFormData({...formData, email: e.target.value})}
                   placeholder="EXAMPLE@DOMAIN.COM"
-                  className="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-2xl px-6 py-4 text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-orange-500 transition-all outline-none"
+                  className="w-full bg-slate-50 dark:bg-slate-800/50 border-none rounded-2xl px-6 py-4 text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-orange-500 transition-all outline-none"
                 />
               </div>
 
               <div className="space-y-2 text-left">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">Nội dung hỗ trợ</label>
+                <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-4">Nội dung hỗ trợ</label>
                 <textarea 
                   required
                   rows={4}
                   value={formData.message}
                   onChange={(e) => setFormData({...formData, message: e.target.value})}
                   placeholder="HÃY ĐỂ LẠI LỜI NHẮN TẠI ĐÂY..."
-                  className="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-3xl px-6 py-5 text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-orange-500 transition-all outline-none resize-none"
+                  className="w-full bg-slate-50 dark:bg-slate-800/50 border-none rounded-3xl px-6 py-5 text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-orange-500 transition-all outline-none resize-none"
                 />
               </div>
 
-              <button type="submit" className="w-full py-5 bg-orange-500 hover:bg-slate-900 text-white rounded-[2rem] font-black uppercase text-xs tracking-[0.2em] transition-all duration-500 flex items-center justify-center gap-3 shadow-xl active:scale-95 group">
+              <button type="submit" className="w-full py-5 bg-orange-500 hover:bg-slate-900 dark:hover:bg-white dark:hover:text-slate-900 text-white rounded-[2rem] font-black uppercase text-xs tracking-[0.2em] transition-all duration-500 flex items-center justify-center gap-3 shadow-xl active:scale-95 group">
                 Xác nhận gửi <Send size={16} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
               </button>
             </form>
@@ -119,7 +119,7 @@ export default function ContactPage() {
                 <p className="text-slate-900 dark:text-white font-black italic text-2xl tracking-tighter">1900 1234</p>
               </div>
 
-              <div className="bg-slate-900 p-8 rounded-[2.5rem] text-left shadow-xl">
+              <div className="bg-slate-900 dark:bg-slate-800 p-8 rounded-[2.5rem] text-left shadow-xl border dark:border-slate-700">
                 <Clock size={20} className="text-orange-500 mb-4" />
                 <p className="text-slate-400 font-black uppercase text-[9px] tracking-widest mb-1">Open</p>
                 <p className="text-white font-black italic text-xl tracking-tighter">08:00 — 22:00</p>
@@ -133,12 +133,11 @@ export default function ContactPage() {
               <div className="flex items-start gap-4 mb-6 text-left">
                 <MapPin size={24} className="text-orange-500 shrink-0" />
                 <div>
-                  <p className="text-slate-400 font-black uppercase text-[8px] tracking-widest mb-1">Vị trí của chúng tôi</p>
-                  {/* CẬP NHẬT TÊN TRƯỜNG MỚI TẠI ĐÂY */}
+                  <p className="text-slate-400 dark:text-slate-500 font-black uppercase text-[8px] tracking-widest mb-1">Vị trí của chúng tôi</p>
                   <p className="text-slate-900 dark:text-white font-black italic text-sm leading-tight uppercase tracking-tight">
                     Đại học Công nghệ Kỹ thuật TP.HCM
                   </p>
-                  <p className="text-slate-400 font-medium text-[12px] mt-1">1 Võ Văn Ngân, Linh Chiểu, Thủ Đức</p>
+                  <p className="text-slate-400 dark:text-slate-500 font-medium text-[12px] mt-1">1 Võ Văn Ngân, Linh Chiểu, Thủ Đức</p>
                 </div>
               </div>
 
@@ -174,7 +173,7 @@ export default function ContactPage() {
               <p className="text-slate-500 dark:text-slate-400 font-medium italic text-sm mb-8 leading-relaxed">Đại học Công nghệ Kỹ thuật TP.HCM đã nhận được tin nhắn của bạn.</p>
               <button 
                 onClick={() => setIsSuccess(false)}
-                className="w-full py-4 bg-slate-900 dark:bg-orange-500 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest hover:scale-105 transition-all shadow-lg"
+                className="w-full py-4 bg-slate-900 dark:bg-orange-500 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest hover:scale-105 transition-all shadow-lg dark:hover:bg-white dark:hover:text-slate-900"
               >
                 QUAY LẠI TRANG
               </button>
@@ -184,7 +183,7 @@ export default function ContactPage() {
       </AnimatePresence>
 
       <footer className="py-20 text-center border-t border-slate-50 dark:border-slate-900">
-        <div className="inline-flex items-center gap-2.5 bg-slate-900 text-white px-7 py-3 rounded-full text-[9px] font-black uppercase tracking-[0.2em] shadow-xl">
+        <div className="inline-flex items-center gap-2.5 bg-slate-900 dark:bg-slate-800 text-white px-7 py-3 rounded-full text-[9px] font-black uppercase tracking-[0.2em] shadow-xl border dark:border-slate-700">
           SUPPORT TEAM <Heart size={12} className="text-red-500 fill-red-500 animate-pulse" /> NHOM 05
         </div>
       </footer>

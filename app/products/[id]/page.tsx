@@ -52,12 +52,12 @@ export default function ProductPage({ params }: PageProps) {
   };
 
   return (
-    <div className="relative min-h-screen bg-white pb-20">
+    <div className="relative min-h-screen bg-white dark:bg-slate-950 pb-20 transition-colors duration-500">
       {/* Background Decor */}
-      <div className="absolute top-0 right-0 -z-10 w-full h-full opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]" />
+      <div className="absolute top-0 right-0 -z-10 w-full h-full opacity-[0.03] dark:opacity-[0.05] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] dark:invert" />
       
       <div className="max-w-7xl mx-auto px-6 py-12">
-        <Link href={`/restaurants/${restaurant?.id}`} className="inline-flex items-center gap-2 text-slate-400 hover:text-orange-500 font-bold text-xs uppercase tracking-widest mb-10 transition-colors group">
+        <Link href={`/restaurants/${restaurant?.id}`} className="inline-flex items-center gap-2 text-slate-400 dark:text-slate-500 hover:text-orange-500 dark:hover:text-orange-400 font-bold text-xs uppercase tracking-widest mb-10 transition-colors group">
           <ChevronLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> Quay lại thực đơn
         </Link>
 
@@ -69,7 +69,7 @@ export default function ProductPage({ params }: PageProps) {
             <motion.div 
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="relative aspect-4/3 rounded-[3rem] overflow-hidden shadow-2xl shadow-orange-100 border-4 border-white"
+              className="relative aspect-4/3 rounded-[3rem] overflow-hidden shadow-2xl shadow-orange-100 dark:shadow-black/50 border-4 border-white dark:border-slate-900"
             >
               <Image
                 src={product.images[0]}
@@ -80,22 +80,22 @@ export default function ProductPage({ params }: PageProps) {
               />
               <button 
                 onClick={() => setIsLiked(!isLiked)}
-                className="absolute top-6 right-6 w-12 h-12 bg-white/90 backdrop-blur-md rounded-2xl flex items-center justify-center shadow-lg active:scale-75 transition-all"
+                className="absolute top-6 right-6 w-12 h-12 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md rounded-2xl flex items-center justify-center shadow-lg active:scale-75 transition-all"
               >
-                <Heart className={`transition-colors ${isLiked ? "fill-red-500 text-red-500" : "text-slate-300"}`} size={22} />
+                <Heart className={`transition-colors ${isLiked ? "fill-red-500 text-red-500" : "text-slate-300 dark:text-slate-600"}`} size={22} />
               </button>
             </motion.div>
 
             {/* BỘ CHỌN SỐ LƯỢNG & NÚT GIỎ HÀNG */}
             <div className="space-y-4">
-              <div className="flex items-center justify-between bg-slate-50 p-2 rounded-3xl border border-slate-100">
-                <span className="ml-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Số lượng</span>
-                <div className="flex items-center gap-6 bg-white rounded-2xl p-1.5 shadow-sm border border-slate-50">
-                  <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-10 h-10 flex items-center justify-center hover:bg-slate-50 rounded-xl transition-colors text-slate-400 hover:text-orange-500">
+              <div className="flex items-center justify-between bg-slate-50 dark:bg-slate-900 p-2 rounded-3xl border border-slate-100 dark:border-slate-800">
+                <span className="ml-6 text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">Số lượng</span>
+                <div className="flex items-center gap-6 bg-white dark:bg-slate-800 rounded-2xl p-1.5 shadow-sm border border-slate-50 dark:border-slate-700">
+                  <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-10 h-10 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-700 rounded-xl transition-colors text-slate-400 dark:text-slate-500 hover:text-orange-500">
                     <Minus size={18} strokeWidth={3} />
                   </button>
-                  <span className="text-xl font-black w-6 text-center text-slate-900">{quantity}</span>
-                  <button onClick={() => setQuantity(quantity + 1)} className="w-10 h-10 flex items-center justify-center hover:bg-slate-50 rounded-xl transition-colors text-orange-500">
+                  <span className="text-xl font-black w-6 text-center text-slate-900 dark:text-white">{quantity}</span>
+                  <button onClick={() => setQuantity(quantity + 1)} className="w-10 h-10 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-700 rounded-xl transition-colors text-orange-500">
                     <Plus size={18} strokeWidth={3} />
                   </button>
                 </div>
@@ -103,7 +103,7 @@ export default function ProductPage({ params }: PageProps) {
 
               <button
                 onClick={handleAddToCart}
-                className="group relative w-full h-20 bg-slate-900 text-white rounded-[2rem] font-black text-sm uppercase tracking-[0.2em] flex items-center justify-center gap-4 hover:bg-orange-500 transition-all active:scale-[0.98] shadow-2xl shadow-slate-200 overflow-hidden"
+                className="group relative w-full h-20 bg-slate-900 dark:bg-orange-500 text-white rounded-[2rem] font-black text-sm uppercase tracking-[0.2em] flex items-center justify-center gap-4 hover:bg-orange-500 dark:hover:bg-orange-600 transition-all active:scale-[0.98] shadow-2xl shadow-slate-200 dark:shadow-none overflow-hidden"
               >
                 <ShoppingBag size={22} className="group-hover:rotate-12 transition-transform" />
                 Thêm vào đơn • {(product.price * quantity).toLocaleString()}đ
@@ -114,50 +114,45 @@ export default function ProductPage({ params }: PageProps) {
           {/* CỘT PHẢI: THÔNG TIN */}
           <div className="space-y-8">
             <div>
-              <p className="text-orange-500 font-black uppercase tracking-[0.2em] text-xs mb-3 flex items-center gap-2">
+              <p className="text-orange-500 dark:text-orange-400 font-black uppercase tracking-[0.2em] text-xs mb-3 flex items-center gap-2">
                 <Sparkles size={14} /> {product.category[0]}
               </p>
-              <h1 className="text-5xl font-black text-slate-900 leading-[1.1] mb-4 uppercase italic tracking-tighter">
+              <h1 className="text-5xl font-black text-slate-900 dark:text-white leading-[1.1] mb-4 uppercase italic tracking-tighter">
                 {product.name}
               </h1>
               <div className="flex items-center gap-4">
-                <p className="text-3xl font-black text-orange-500 tracking-tight">{product.price.toLocaleString()}đ</p>
-                {restaurant && <div className="h-8 w-px bg-slate-200 mx-2" />}
+                <p className="text-3xl font-black text-orange-500 dark:text-orange-400 tracking-tight">{product.price.toLocaleString()}đ</p>
+                {restaurant && <div className="h-8 w-px bg-slate-200 dark:bg-slate-800 mx-2" />}
                 {restaurant && (
-                  <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">
-                    Quán: <span className="text-slate-900">{restaurant.name}</span>
+                  <p className="text-sm font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+                    Quán: <span className="text-slate-900 dark:text-slate-200">{restaurant.name}</span>
                   </p>
                 )}
               </div>
             </div>
 
-            <div className="bg-white rounded-[2.5rem] p-8 shadow-xl shadow-slate-100 border border-slate-50">
-              <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4">Mô tả món ăn</h2>
-              <p className="text-slate-500 leading-relaxed font-medium text-lg">{product.description}</p>
+            <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 shadow-xl shadow-slate-100 dark:shadow-none border border-slate-50 dark:border-slate-800">
+              <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500 mb-4">Mô tả món ăn</h2>
+              <p className="text-slate-500 dark:text-slate-400 leading-relaxed font-medium text-lg">{product.description}</p>
             </div>
 
             {/* SECTION DINH DƯỠNG */}
-            <div className="bg-white rounded-[2rem] p-6 shadow-xl shadow-slate-100 border border-slate-100">
-              <h2 className="font-black text-slate-900 mb-4 uppercase italic tracking-widest text-xs">
+            <div className="bg-white dark:bg-slate-900 rounded-[2rem] p-6 shadow-xl shadow-slate-100 dark:shadow-none border border-slate-100 dark:border-slate-800">
+              <h2 className="font-black text-slate-900 dark:text-white mb-4 uppercase italic tracking-widest text-xs">
                 Giá trị dinh dưỡng
               </h2>
               <div className="grid grid-cols-4 gap-4">
-                <div className="bg-orange-50 rounded-2xl p-4 text-center">
-                  <p className="text-xs text-slate-400 font-bold">Calo</p>
-                  <p className="text-xl font-black text-orange-500">{product.calories}</p>
-                </div>
-                <div className="bg-orange-50 rounded-2xl p-4 text-center">
-                  <p className="text-xs text-slate-400 font-bold">Protein</p>
-                  <p className="text-xl font-black text-orange-500">{product.protein}g</p>
-                </div>
-                <div className="bg-orange-50 rounded-2xl p-4 text-center">
-                  <p className="text-xs text-slate-400 font-bold">Carbs</p>
-                  <p className="text-xl font-black text-orange-500">{product.carbs}g</p>
-                </div>
-                <div className="bg-orange-50 rounded-2xl p-4 text-center">
-                  <p className="text-xs text-slate-400 font-bold">Fat</p>
-                  <p className="text-xl font-black text-orange-500">{product.fat}g</p>
-                </div>
+                {[
+                  { label: "Calo", val: product.calories, unit: "" },
+                  { label: "Protein", val: product.protein, unit: "g" },
+                  { label: "Carbs", val: product.carbs, unit: "g" },
+                  { label: "Fat", val: product.fat, unit: "g" },
+                ].map((stat, i) => (
+                  <div key={i} className="bg-orange-50 dark:bg-orange-500/10 rounded-2xl p-4 text-center">
+                    <p className="text-xs text-slate-400 dark:text-slate-500 font-bold">{stat.label}</p>
+                    <p className="text-xl font-black text-orange-500 dark:text-orange-400">{stat.val}{stat.unit}</p>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -170,7 +165,7 @@ export default function ProductPage({ params }: PageProps) {
           viewport={{ once: true }}
           className="relative mb-24 overflow-hidden group"
         >
-          <div className="absolute inset-0 bg-linear-to-r from-orange-600 to-orange-400 rounded-[2.5rem] shadow-2xl shadow-orange-200" />
+          <div className="absolute inset-0 bg-linear-to-r from-orange-600 to-orange-400 dark:from-orange-500 dark:to-orange-700 rounded-[2.5rem] shadow-2xl shadow-orange-200 dark:shadow-none" />
           <div className="relative p-8 md:p-12 flex flex-col md:flex-row items-center gap-8">
             <div className="bg-white/20 backdrop-blur-md p-5 rounded-3xl border border-white/30">
               <Leaf className="text-white" size={40} />
@@ -188,20 +183,20 @@ export default function ProductPage({ params }: PageProps) {
         {/* --- PHẦN 3: MÓN LIÊN QUAN --- */}
         <div className="mt-32">
           <div className="flex items-center justify-between mb-12">
-            <h2 className="text-4xl font-black text-slate-900 uppercase italic tracking-tighter">
+            <h2 className="text-4xl font-black text-slate-900 dark:text-white uppercase italic tracking-tighter">
               Món liên <span className="text-orange-500">quan</span>
             </h2>
-            <div className="h-0.5 flex-1 bg-slate-100 ml-10 hidden md:block" />
+            <div className="h-0.5 flex-1 bg-slate-100 dark:bg-slate-900 ml-10 hidden md:block" />
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {relatedProducts.map((item) => (
-              <Link key={item.id} href={`/products/${item.id}`} className="group bg-white rounded-[2.5rem] p-5 border border-slate-50 shadow-lg hover:shadow-2xl hover:shadow-orange-100 transition-all duration-500">
+              <Link key={item.id} href={`/products/${item.id}`} className="group bg-white dark:bg-slate-900 rounded-[2.5rem] p-5 border border-slate-50 dark:border-slate-800 shadow-lg dark:shadow-none hover:shadow-2xl hover:shadow-orange-100 dark:hover:shadow-orange-500/10 transition-all duration-500">
                 <div className="relative aspect-4/3 rounded-2xl overflow-hidden mb-5">
                   <Image src={item.images[0]} alt={item.name} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
                 </div>
-                <h3 className="font-black text-slate-900 uppercase italic text-sm line-clamp-1 mb-2 px-2">{item.name}</h3>
-                <p className="text-orange-500 font-black px-2">{item.price.toLocaleString()}đ</p>
+                <h3 className="font-black text-slate-900 dark:text-white uppercase italic text-sm line-clamp-1 mb-2 px-2">{item.name}</h3>
+                <p className="text-orange-500 dark:text-orange-400 font-black px-2">{item.price.toLocaleString()}đ</p>
               </Link>
             ))}
           </div>

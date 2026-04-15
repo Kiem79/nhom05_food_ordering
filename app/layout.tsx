@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
+import Header from "@/components/layout/header";
+import Footer from "@/components/layout/footer";
 import { Toaster } from "sonner";
+import { ThemeProvider } from "@/components/ThemeProvider"; 
 
 const inter = Inter({
   subsets: ["latin", "vietnamese"],
@@ -24,27 +25,34 @@ export default function RootLayout({
   return (
     <html lang="vi" suppressHydrationWarning>
       <body
-        className={`${inter.className} antialiased text-primary bg-white min-h-screen flex flex-col`}
+        className={`${inter.className} antialiased text-primary bg-white dark:bg-slate-950 min-h-screen flex flex-col`}
       >
-        {/* Header */}
-        <Header />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {/* Header */}
+          <Header />
 
-        {/* Main */}
-        <main className="flex-1 pt-16">
-          {children}
-        </main>
+          {/* Main */}
+          <main className="flex-1 pt-16">
+            {children}
+          </main>
 
-        {/* Footer */}
-        <Footer />
+          {/* Footer */}
+          <Footer />
 
-        {/* Toaster */}
-        <Toaster
-          position="top-right"
-          richColors
-          closeButton
-          expand
-          duration={3000}
-        />
+          {/* Toaster */}
+          <Toaster
+            position="top-right"
+            richColors
+            closeButton
+            expand
+            duration={3000}
+          />
+        </ThemeProvider>
       </body>
     </html>
   );
