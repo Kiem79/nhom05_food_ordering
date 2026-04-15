@@ -15,6 +15,7 @@ import {
 import { useCartStore } from "@/store/cartStore";
 import useAuthStore from "@/store/authStore";
 import productsData from "@/lib/data/products.json";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 
 const basePath = "/nhom05_food_ordering";
 const FAKE_FRIENDS = ["Hoàng Huy", "Bảo Ngọc", "Gia Bảo", "Hải Yến", "Minh Thư"];
@@ -101,6 +102,9 @@ export default function GroupOrderPage() {
   if (!user) {
     return (
       <div className="min-h-[85vh] flex items-center justify-center px-6 bg-transparent dark:bg-slate-950 transition-colors duration-500">
+        <div className="mb-8">
+          <Breadcrumbs />
+        </div>
         <motion.div 
           initial={{ opacity: 0, y: 20 }} 
           animate={{ opacity: 1, y: 0 }}
@@ -138,6 +142,9 @@ export default function GroupOrderPage() {
   if (items.length === 0) {
     return (
       <div className="min-h-[80vh] flex flex-col items-center justify-center space-y-8 px-6 bg-transparent dark:bg-slate-950 transition-colors duration-500">
+        <div className="mb-12">
+          <Breadcrumbs />
+        </div>
         <div className="w-40 h-40 bg-slate-50 dark:bg-slate-900 rounded-full flex items-center justify-center relative shadow-inner">
           <ShoppingBag size={64} className="text-slate-200 dark:text-slate-800" />
           <AlertCircle className="absolute top-8 right-8 text-orange-500 animate-pulse" />
@@ -172,7 +179,9 @@ export default function GroupOrderPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-24 font-sans bg-slate-50/10 dark:bg-slate-950 transition-colors duration-500 min-h-screen">
-      
+      <div className="mb-8">
+        <Breadcrumbs />
+      </div>
       {/* HEADER SECTION */}
       <div className="mb-16 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
         <div className="space-y-4">

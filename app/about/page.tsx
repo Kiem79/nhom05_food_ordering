@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sun, Moon, Zap, Heart, X } from "lucide-react";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 
 const basePath = "/nhom05_food_ordering";
 
@@ -112,13 +113,13 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-white dark:bg-slate-950 transition-colors duration-500 overflow-x-hidden">
       
-      {/* Background Decor - Đã có dark mode bạn làm lúc nãy */}
       <div className="fixed inset-0 pointer-events-none opacity-40 dark:opacity-20 transition-opacity">
         <div className="absolute top-0 left-0 w-80 h-80 bg-orange-500/10 dark:bg-orange-500/20 rounded-full blur-[100px]" />
         <div className="absolute bottom-0 right-0 w-80 h-80 bg-amber-500/10 dark:bg-amber-500/20 rounded-full blur-[100px]" />
       </div>
 
       <div className="relative z-10 container mx-auto px-6 py-20">
+        <Breadcrumbs />
         
         {/* --- HEADER --- */}
         <div className="flex justify-between items-end mb-16">
@@ -133,7 +134,6 @@ export default function AboutPage() {
               Smart Office Meal Project — 2026
             </p>
           </div>
-          {/* NÚT DARKMODE CŨ ĐÃ ĐƯỢC XÓA TẠI ĐÂY */}
         </div>
 
         {/* --- INTRO CARD --- */}

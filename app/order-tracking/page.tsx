@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Bike, MapPin, ChefHat, CheckCircle2, Wallet, Navigation, Clock } from "lucide-react";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 // --- MOCK GPS MAP COMPONENT ---
 const FakeGPSMap = () => (
     <div className="relative w-full h-[400px] bg-slate-100 dark:bg-slate-900 rounded-[3rem] overflow-hidden border-4 border-white dark:border-slate-800 shadow-inner transition-colors duration-500">
@@ -81,6 +82,9 @@ export default function OrderTrackingPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-12 font-sans bg-transparent dark:bg-slate-950 transition-colors duration-500 min-h-screen">
+      <div className="mb-8">
+        <Breadcrumbs />
+      </div>
       <div className="mb-12">
         <h1 className="text-6xl font-black text-slate-900 dark:text-white uppercase italic tracking-tighter leading-none">
           Tracking <span className="text-orange-500">Order</span>

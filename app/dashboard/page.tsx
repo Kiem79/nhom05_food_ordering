@@ -10,6 +10,7 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import useAuthStore from "@/store/authStore"; 
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 
 // --- 1. ĐỊNH NGHĨA INTERFACES (TypeScript) ---
 interface OrderItem {
@@ -109,7 +110,7 @@ export default function DashboardPage() {
   // --- 4. GIAO DIỆN CHÍNH (Dashboard Layout) ---
   return (
     <div className="max-w-7xl mx-auto px-6 py-12 font-sans bg-slate-50/30 dark:bg-slate-950 transition-colors duration-500 min-h-screen relative">
-      
+      <Breadcrumbs />
       {/* MODAL XÁC NHẬN XÓA (Custom UI của Nhi) */}
       <AnimatePresence>
         {showConfirmDelete && (

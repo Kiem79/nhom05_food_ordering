@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, Zap, Clock, Heart, MapPin, CheckCircle2, X } from "lucide-react";
 import confetti from "canvas-confetti";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 
 export default function ContactPage() {
   const [mounted, setMounted] = useState(false);
@@ -44,6 +45,7 @@ export default function ContactPage() {
         
         {/* --- HEADER --- */}
         <div className="text-center mb-16">
+          <Breadcrumbs />
           <motion.h1 
             initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
             className="text-5xl md:text-7xl font-black text-slate-900 dark:text-white uppercase italic tracking-tighter leading-none"
