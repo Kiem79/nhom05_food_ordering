@@ -43,7 +43,7 @@ export default function RestaurantDetailPage() {
     e.stopPropagation();
     
     // CẬP NHẬT: Truyền thêm restaurant.name để đồng bộ với cartStore mới
-    addItem(product, restaurant.name);
+    addItem({ ...product, restaurantName: restaurant.name } as any);
     
     toast.success(`Đã thêm ${product.name}`, {
       icon: <ShoppingBag className="text-orange-500" />,

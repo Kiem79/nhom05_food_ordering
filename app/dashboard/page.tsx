@@ -167,7 +167,7 @@ export default function DashboardPage() {
           <div className="flex items-center gap-3">
             <span className="h-1 w-12 bg-orange-500 rounded-full" />
             <p className="text-slate-400 font-bold uppercase tracking-[0.3em] text-[10px]">
-               {orders.length} ĐƠN HÀNG CỦA {user?.name.toUpperCase()}
+               {orders.length} ĐƠN HÀNG CỦA {user?.name?.toUpperCase()|| "Guest"}
             </p>
           </div>
         </div>

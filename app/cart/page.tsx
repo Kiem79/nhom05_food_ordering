@@ -3,7 +3,7 @@
 import { useCartStore } from "@/store/cartStore";
 
 export default function Cart() {
-  const { items, getTotalPrice } = useCartStore();
+  const { items, totalPrice } = useCartStore();
 
   if (items.length === 0) {
     return (
@@ -32,7 +32,7 @@ export default function Cart() {
       <hr className="my-4" />
 
       <p className="font-bold">
-        Tổng: {getTotalPrice().toLocaleString()}đ
+        Tổng: {totalPrice().toLocaleString()}đ
       </p>
     </div>
   );
