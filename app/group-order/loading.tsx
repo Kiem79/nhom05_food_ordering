@@ -1,83 +1,77 @@
-import { Skeleton } from "@/components/ui/skeleton";
+"use client";
 
-export default function GroupOrderLoading() {
+import React from "react";
+
+export default function Loading() {
   return (
-    <div className="max-w-7xl mx-auto py-12 px-4 md:px-6 min-h-screen bg-white animate-in fade-in duration-500">
+    <div className="max-w-7xl mx-auto px-6 py-24 bg-slate-50/10 dark:bg-slate-950 transition-colors duration-500 min-h-screen">
       
-      <Skeleton className="h-4 w-32 rounded-md mb-10" />
+      <div className="mb-16 flex flex-col md:flex-row justify-between items-start md:items-end gap-6 animate-pulse">
+        <div className="space-y-4">
+          <div className="h-16 md:h-20 w-80 md:w-[450px] bg-slate-200 dark:bg-slate-800 rounded-2xl" />
+          <div className="h-3 w-48 bg-slate-100 dark:bg-slate-800/50 rounded-full" />
+        </div>
+        <div className="flex gap-3">
+          <div className="h-14 w-32 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800" />
+          <div className="h-14 w-40 bg-orange-50 dark:bg-orange-500/10 rounded-2xl border border-orange-100 dark:border-orange-500/20" />
+        </div>
+      </div>
 
-      <div className="flex flex-col lg:flex-row gap-12 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
         
-        <div className="w-full lg:flex-[2] space-y-8">
-          
-          <div className="flex justify-between items-end border-b border-slate-100 pb-6">
-            <div className="space-y-3">
-              <Skeleton className="h-10 w-64 rounded-xl" />
-              <Skeleton className="h-4 w-32 rounded-md" />
-            </div>
-            <Skeleton className="h-4 w-20 rounded-md" />
-          </div>
-
-          <div className="space-y-4">
-            {[1, 2, 3].map((item) => (
-              <div key={item} className="flex flex-col sm:flex-row items-start sm:items-center gap-6 bg-slate-50 p-6 rounded-[2.5rem] border border-slate-100 shadow-sm">
-                
-                <Skeleton className="h-24 w-24 shrink-0 rounded-3xl" />
-                
-                <div className="flex-1 w-full">
-                  <div className="flex justify-between items-start">
-                    <div className="space-y-2">
-                      <Skeleton className="h-6 w-40 sm:w-56 rounded-md" />
-                      <Skeleton className="h-5 w-16 rounded-md" />
-                    </div>
-                    <Skeleton className="w-10 h-10 rounded-xl shrink-0" />
-                  </div>
+        <div className="lg:col-span-2 space-y-10 animate-pulse">
+          <div className="bg-white dark:bg-slate-900 rounded-[4rem] p-10 md:p-14 border border-slate-50 dark:border-slate-800 shadow-2xl shadow-slate-200/50 dark:shadow-none">
+            {/* Title Line */}
+            <div className="h-10 w-64 bg-slate-200 dark:bg-slate-800 rounded-xl mb-12" />
+            
+            <div className="space-y-12">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="flex items-center gap-8">
+                  <div className="w-28 h-28 bg-slate-100 dark:bg-slate-800 rounded-[2rem] shrink-0" />
                   
-                  <div className="flex justify-between items-center mt-6">
-                    <Skeleton className="h-6 w-24 rounded-md" />
-                    <Skeleton className="h-8 w-28 rounded-xl" />
+                  <div className="flex-1 space-y-4">
+                    <div className="h-3 w-32 bg-orange-500/20 rounded-full" />
+                    <div className="h-8 w-3/4 bg-slate-200 dark:bg-slate-800 rounded-lg" />
+                    <div className="flex gap-4">
+                      <div className="h-6 w-24 bg-slate-100 dark:bg-slate-800 rounded-md" />
+                      <div className="h-6 w-16 bg-blue-500/10 rounded-md" />
+                    </div>
                   </div>
+
+                  <div className="w-14 h-14 bg-slate-50 dark:bg-slate-800/50 rounded-2xl" />
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
 
-        <div className="w-full lg:flex-1 lg:sticky lg:top-24">
-          <div className="bg-slate-900 p-10 rounded-[3rem] shadow-[0_30px_60px_-15px_rgba(15,23,42,0.3)]">
-            
-            <Skeleton className="h-3 w-32 rounded-full bg-slate-800 mb-10" />
+        <div className="relative animate-pulse">
+          <div className="bg-slate-900 dark:bg-slate-900/80 rounded-[4rem] p-12 border-4 border-white/5 dark:border-slate-800">
+            {/* Title */}
+            <div className="h-10 w-32 bg-orange-500/30 rounded-lg mb-10" />
             
             <div className="space-y-6 mb-12">
-              <div className="flex justify-between items-center">
-                <Skeleton className="h-4 w-24 rounded-md bg-slate-800" />
-                <Skeleton className="h-4 w-16 rounded-md bg-slate-800" />
+              <div className="flex justify-between">
+                <div className="h-3 w-20 bg-slate-700 rounded-full" />
+                <div className="h-3 w-24 bg-slate-700 rounded-full" />
               </div>
-              
-              <div className="flex justify-between items-center">
-                <Skeleton className="h-4 w-24 rounded-md bg-slate-800" />
-                <Skeleton className="h-6 w-20 rounded-full bg-slate-800" />
-              </div>
-
-              <div className="border-t border-white/10 pt-8 flex justify-between items-end">
-                <div className="space-y-2">
-                  <Skeleton className="h-2 w-20 rounded-full bg-slate-800" />
-                  <Skeleton className="h-4 w-24 rounded-md bg-slate-800" />
-                </div>
-                <Skeleton className="h-10 w-32 rounded-xl bg-slate-800" />
-              </div>
+              <div className="h-12 w-full bg-white/5 rounded-2xl border border-white/5" />
             </div>
 
-            <Skeleton className="w-full h-16 rounded-2xl bg-slate-700/50" />
-            
-            <div className="mt-8 flex flex-col items-center space-y-2">
-              <Skeleton className="h-2 w-48 rounded-full bg-slate-800" />
-              <Skeleton className="h-2 w-32 rounded-full bg-slate-800" />
+            <div className="space-y-4 mb-12">
+              <div className="h-3 w-32 bg-slate-700 rounded-full" />
+              <div className="h-16 w-3/4 bg-white/10 rounded-2xl" />
             </div>
-            
+
+            <div className="bg-white/5 rounded-[3rem] p-8 mb-10 border border-white/10">
+              <div className="h-4 w-40 bg-orange-500/20 rounded-full mb-4" />
+              <div className="h-12 w-32 bg-white/10 rounded-xl" />
+            </div>
+
+            <div className="h-20 w-full bg-orange-500/40 rounded-[2.5rem]" />
           </div>
         </div>
-        
+
       </div>
     </div>
   );
