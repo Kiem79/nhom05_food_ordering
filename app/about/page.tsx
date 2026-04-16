@@ -100,32 +100,22 @@ Nâng cao trải nghiệm người dùng (UI/UX) với giao diện hiện đại
 
 export default function AboutPage() {
   const [selectedMember, setSelectedMember] = useState<any>(null);
-  const [isDark, setIsDark] = useState(false);
   const [mounted, setMounted] = useState(false);
 
+  // Chỉ giữ lại mounted để tránh lỗi hydration của Next.js
   useEffect(() => {
     setMounted(true);
-    const savedTheme = localStorage.getItem('theme');
-    const isDarkMode = savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    setIsDark(isDarkMode);
   }, []);
-
-  const toggleDarkMode = () => {
-    const newTheme = !isDark;
-    setIsDark(newTheme);
-    document.documentElement.classList.toggle('dark');
-    localStorage.setItem('theme', newTheme ? 'dark' : 'light');
-  };
 
   if (!mounted) return null;
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-950 transition-colors duration-500 overflow-x-hidden">
       
-      {/* Background Decor */}
-      <div className="fixed inset-0 pointer-events-none opacity-40">
-        <div className="absolute top-0 left-0 w-80 h-80 bg-orange-500/10 rounded-full blur-[100px]" />
-        <div className="absolute bottom-0 right-0 w-80 h-80 bg-amber-500/10 rounded-full blur-[100px]" />
+      {/* Background Decor - Đã có dark mode bạn làm lúc nãy */}
+      <div className="fixed inset-0 pointer-events-none opacity-40 dark:opacity-20 transition-opacity">
+        <div className="absolute top-0 left-0 w-80 h-80 bg-orange-500/10 dark:bg-orange-500/20 rounded-full blur-[100px]" />
+        <div className="absolute bottom-0 right-0 w-80 h-80 bg-amber-500/10 dark:bg-amber-500/20 rounded-full blur-[100px]" />
       </div>
 
       <div className="relative z-10 container mx-auto px-6 py-20">
@@ -143,15 +133,13 @@ export default function AboutPage() {
               Smart Office Meal Project — 2026
             </p>
           </div>
-          <button onClick={toggleDarkMode} className="w-12 h-12 bg-slate-50 dark:bg-slate-900 rounded-2xl flex items-center justify-center text-slate-900 dark:text-white border border-slate-100 dark:border-slate-800 shadow-xl">
-            {isDark ? <Sun size={20} /> : <Moon size={20} />}
-          </button>
+          {/* NÚT DARKMODE CŨ ĐÃ ĐƯỢC XÓA TẠI ĐÂY */}
         </div>
 
         {/* --- INTRO CARD --- */}
         <motion.div 
           initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}
-          className="bg-slate-900 dark:bg-slate-900/50 rounded-[2.5rem] p-10 md:p-14 mb-24 text-white relative overflow-hidden shadow-2xl"
+          className="bg-slate-900 dark:bg-slate-800/50 rounded-[2.5rem] p-10 md:p-14 mb-24 text-white relative overflow-hidden shadow-2xl"
         >
           <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/15 rounded-full blur-3xl" />
           <p className="text-base md:text-lg font-medium italic leading-relaxed text-slate-300 max-w-4xl relative z-10">
@@ -173,15 +161,13 @@ export default function AboutPage() {
                 <Image src={`${basePath}${member.avatar}`} alt={member.name} fill className="object-cover group-hover:scale-105 transition-transform duration-700" unoptimized />
               </div>
               <div className="space-y-3.5 text-left">
-                {/* TÊN TO RÕ RÀNG */}
                 <h3 className="text-2xl font-black text-slate-900 dark:text-white uppercase italic leading-none group-hover:text-orange-500 transition-colors">
                   {member.name}
                 </h3>
-                {/* CHỮ CAM NỔI BẬT */}
                 <p className="text-orange-500 font-black uppercase tracking-widest text-xs">
                   {member.role}
                 </p>
-                <button className="w-full py-4 bg-slate-900 dark:bg-slate-800 text-white rounded-xl font-black uppercase text-[10px] tracking-widest group-hover:bg-orange-500 transition-all active:scale-95 shadow-lg shadow-slate-200 dark:shadow-none">
+                <button className="w-full py-4 bg-slate-900 dark:bg-slate-800 text-white rounded-xl font-black uppercase text-[10px] tracking-widest group-hover:bg-orange-500 transition-all active:scale-95 shadow-lg shadow-slate-200 dark:shadow-none border-none">
                   XEM CHI TIẾT
                 </button>
               </div>
@@ -190,7 +176,7 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* --- MODAL CHI TIẾT (KEEPING DETAILED DESCRIPTIONS) --- */}
+      {/* --- MODAL CHI TIẾT --- */}
       <AnimatePresence>
         {selectedMember && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
@@ -203,7 +189,7 @@ export default function AboutPage() {
               initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
               className="relative w-full max-w-4xl bg-white dark:bg-slate-900 rounded-[3.5rem] overflow-hidden shadow-3xl overflow-y-auto max-h-[90vh]"
             >
-              <button onClick={() => setSelectedMember(null)} className="absolute top-8 right-8 z-10 text-slate-400 hover:text-orange-500">
+              <button onClick={() => setSelectedMember(null)} className="absolute top-8 right-8 z-10 text-slate-400 hover:text-orange-500 transition-colors">
                 <X size={28} />
               </button>
               <div className="flex flex-col md:flex-row">
@@ -212,11 +198,9 @@ export default function AboutPage() {
                 </div>
                 <div className="md:w-3/5 p-12 md:p-16 space-y-8 text-left">
                   <div>
-                    {/* TÊN TRONG MODAL TO NÉT */}
                     <h2 className="text-4xl font-black text-slate-900 dark:text-white uppercase italic leading-none">{selectedMember.name}</h2>
                     <p className="text-slate-400 font-black uppercase tracking-widest text-[11px] mt-4 leading-none">MSSV: {selectedMember.mssv}</p>
                   </div>
-                  {/* VAI TRÒ MÀU CAM TO RÕ */}
                   <div className="bg-orange-50 dark:bg-orange-500/5 p-6 rounded-2xl border border-orange-100 dark:border-orange-500/10">
                     <p className="text-orange-500 font-black uppercase text-xs tracking-widest mb-1.5 flex items-center gap-2">
                       <Zap size={14} fill="currentColor" /> VAI TRÒ
@@ -229,7 +213,7 @@ export default function AboutPage() {
                         {selectedMember.description}
                      </p>
                   </div>
-                  <Link href={selectedMember.github} target="_blank" className="inline-flex items-center gap-3 bg-slate-900 text-white px-7 py-4 rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-orange-500 transition-all shadow-xl">
+                  <Link href={selectedMember.github} target="_blank" className="inline-flex items-center gap-3 bg-slate-900 dark:bg-slate-800 text-white px-7 py-4 rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-orange-500 transition-all shadow-xl">
                     <GithubIcon size={16} /> GITHUB CÁ NHÂN
                   </Link>
                 </div>
@@ -240,7 +224,7 @@ export default function AboutPage() {
       </AnimatePresence>
 
       <footer className="py-20 text-center border-t border-slate-50 dark:border-slate-900 relative z-10">
-        <div className="inline-flex items-center gap-2.5 bg-slate-900 text-white px-7 py-3 rounded-full text-[10px] font-black uppercase tracking-[0.2em]">
+        <div className="inline-flex items-center gap-2.5 bg-slate-900 dark:bg-slate-800 text-white px-7 py-3 rounded-full text-[10px] font-black uppercase tracking-[0.2em]">
           MADE WITH <Heart size={12} className="text-red-500 fill-red-500" /> BY NHOM 05
         </div>
       </footer>

@@ -54,7 +54,7 @@ export default function OrderSuccessPage() {
   }, [items, totalPrice, clearCart]);
 
   return (
-    <div className="min-h-[90vh] flex items-center justify-center bg-white px-6">
+    <div className="min-h-[90vh] flex items-center justify-center bg-white dark:bg-slate-950 px-6 transition-colors duration-500">
       <motion.div 
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -65,7 +65,7 @@ export default function OrderSuccessPage() {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ type: "spring", stiffness: 200, damping: 10 }}
-            className="w-32 h-32 bg-green-500 rounded-full flex items-center justify-center shadow-2xl shadow-green-100"
+            className="w-32 h-32 bg-green-500 rounded-full flex items-center justify-center shadow-2xl shadow-green-100 dark:shadow-green-900/20"
           >
             <CheckCircle size={64} className="text-white" />
           </motion.div>
@@ -73,33 +73,33 @@ export default function OrderSuccessPage() {
           <motion.div 
             animate={{ rotate: 360 }}
             transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-            className="absolute -top-4 -left-4 -right-4 -bottom-4 border-2 border-dashed border-green-200 rounded-full"
+            className="absolute -top-4 -left-4 -right-4 -bottom-4 border-2 border-dashed border-green-200 dark:border-green-900/30 rounded-full"
           />
         </div>
 
         <div className="space-y-4">
-         <h1 className="text-5xl md:text-6xl font-black text-slate-900 uppercase italic tracking-tighter leading-[1.1]">
+         <h1 className="text-5xl md:text-6xl font-black text-slate-900 dark:text-white uppercase italic tracking-tighter leading-[1.1]">
             <span className="block">Đã nhận đơn</span>
             <span className="block text-green-500">Thành công!</span>
           </h1>
-          <p className="text-slate-500 font-medium leading-relaxed">
+          <p className="text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
             Món ăn của team bạn đang được chuyển đến nhà bếp. <br />
-            Mã đơn: <span className="font-bold text-slate-900 underline underline-offset-4 tracking-wider">
+            Mã đơn: <span className="font-bold text-slate-900 dark:text-white underline underline-offset-4 tracking-wider">
               #{orderId || "XÁC NHẬN..."}
             </span>
           </p>
         </div>
 
         <div className="grid grid-cols-1 gap-4 pt-6">
-          <Link href="/order-tracking" className="h-16 bg-slate-900 text-white rounded-2xl font-black uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-orange-500 transition-all shadow-2xl shadow-slate-200 active:scale-95">
+          <Link href="/order-tracking" className="h-16 bg-slate-900 dark:bg-orange-500 text-white rounded-2xl font-black uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-orange-500 dark:hover:bg-white dark:hover:text-slate-900 transition-all shadow-2xl shadow-slate-200 dark:shadow-none active:scale-95">
             THEO DÕI SHIPPER <PackageCheck size={20} />
           </Link>
           
-          <Link href="/dashboard" className="h-16 border-2 border-slate-100 text-slate-900 rounded-2xl font-black uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-slate-50 transition-all active:scale-95">
+          <Link href="/dashboard" className="h-16 border-2 border-slate-100 dark:border-slate-800 text-slate-900 dark:text-white rounded-2xl font-black uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all active:scale-95">
             LỊCH SỬ ĐƠN HÀNG <UserCircle size={20} />
           </Link>
 
-          <Link href="/restaurants" className="text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-orange-500 transition-colors pt-4">
+          <Link href="/restaurants" className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest hover:text-orange-500 dark:hover:text-orange-400 transition-colors pt-4">
             Quay lại nhà hàng
           </Link>
         </div>
