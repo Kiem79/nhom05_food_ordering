@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import useAuthStore from "@/store/authStore";
 import Link from "next/link";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 
 const HCMC_DISTRICTS = [
   { id: 'q_td', label: 'Quận Thủ Đức', fee: 15000 },
@@ -86,6 +87,7 @@ export default function CheckoutPage() {
     <div className="min-h-screen transition-colors duration-500 bg-white dark:bg-slate-950">
       <div className="max-w-7xl mx-auto py-12 px-6 font-sans grid grid-cols-1 lg:grid-cols-3 gap-12 text-slate-900 dark:text-white">
         <div className="lg:col-span-2 space-y-12">
+          <Breadcrumbs />
           <Link href="/group-order" className="text-slate-400 dark:text-slate-500 font-black uppercase text-[10px] tracking-[0.2em] flex items-center gap-2 hover:text-orange-500 transition-colors">
             <ArrowLeft size={16} /> Quay lại giỏ hàng nhóm
           </Link>

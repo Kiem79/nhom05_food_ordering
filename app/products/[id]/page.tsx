@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import { Plus, Minus, ShoppingBag, Heart, Sparkles, ChevronLeft, Leaf } from "lucide-react";
 import { toast } from "sonner";
 import { useCartStore } from "@/store/cartStore";
-
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 // Data & Types
 import productsData from "@/lib/data/products.json";
 import storesData from "@/lib/data/stores.json";
@@ -60,6 +60,7 @@ export default function ProductPage({ params }: PageProps) {
         <Link href={`/restaurants/${restaurant?.id}`} className="inline-flex items-center gap-2 text-slate-400 dark:text-slate-500 hover:text-orange-500 dark:hover:text-orange-400 font-bold text-xs uppercase tracking-widest mb-10 transition-colors group">
           <ChevronLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> Quay lại thực đơn
         </Link>
+        <Breadcrumbs />
 
         {/* --- PHẦN 1: THÔNG TIN CHI TIẾT --- */}
         <div className="grid lg:grid-cols-2 gap-16 items-start mb-12">

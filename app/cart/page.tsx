@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useCartStore } from "@/store/cartStore";
 import { ShoppingBag, ArrowRight, Trash2 } from "lucide-react";
 import Link from "next/link";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 
 export default function Cart() {
   const { items, removeItem, getFinalTotal } = useCartStore();
@@ -33,6 +34,7 @@ export default function Cart() {
   return (
     <div className="min-h-screen transition-colors duration-500 bg-white dark:bg-slate-950">
       <div className="max-w-4xl mx-auto px-6 py-24 font-sans">
+        <Breadcrumbs />
         <h1 className="text-5xl font-black mb-12 uppercase italic tracking-tighter text-slate-900 dark:text-white">
           Giỏ <span className="text-orange-500">Hàng</span>
         </h1>

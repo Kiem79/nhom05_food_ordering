@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import Image from "next/image";
 // FIX 1: Import đúng interface Product từ types
 import type { Product } from "@/types"; 
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 
 export default function ProductsPage() {
   const { products } = useProductStore();
@@ -48,6 +49,7 @@ export default function ProductsPage() {
       {/* HEADER */}
       <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div className="space-y-4">
+          <Breadcrumbs />
           <h1 className="text-5xl font-black text-primary dark:text-white uppercase italic tracking-tighter">
             Thực đơn <span className="text-primary dark:text-orange-500">Foodie.</span>
           </h1>

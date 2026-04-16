@@ -8,6 +8,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Star, MapPin, Clock, ChevronRight } from "lucide-react";
 import type { Restaurant, Product } from "@/types";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 
 // QUAN TRỌNG: Khai báo basePath để fix lỗi ảnh
 const basePath = "/nhom05_food_ordering";
@@ -42,6 +43,7 @@ export default function RestaurantsPage() {
     <div className="max-w-7xl mx-auto px-6 py-24 transition-colors duration-500"> {/* Tăng padding top để không bị đè bởi Header */}
       {/* HEADER */}
       <div className="mb-12 flex flex-col gap-6">
+        <Breadcrumbs />
         <div className="space-y-3">
           <h1 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white uppercase italic tracking-tight">
             Chọn quán <span className="text-orange-500">Foodie.</span>
