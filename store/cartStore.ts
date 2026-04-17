@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
+
 const RESTAURANT_NAMES = [
   "Cơm tấm Cô Ba",
   "Bún Phở Ba Miền",
@@ -12,6 +13,7 @@ const RESTAURANT_NAMES = [
   "Tiệm Chay An Nhiên"
 ];
 
+
 export interface Product {
   id: string | number;
   name: string;
@@ -20,6 +22,7 @@ export interface Product {
   images?: string[];
   restaurantId?: number | string;
 }
+
 
 export interface CartItem {
   id: string | number;
@@ -31,10 +34,12 @@ export interface CartItem {
   owner: string;
 }
 
+
 interface CartStore {
   items: CartItem[];
   shippingFee: number;
   discountPercent: number;
+
 
   addItem: (product: Product, owner?: string) => void;
   removeItem: (id: string | number, owner: string) => void;
@@ -43,10 +48,12 @@ interface CartStore {
   setShippingFee: (fee: number) => void;
   applyVoucher: (code: string) => { success: boolean; message: string };
 
+
   getSubTotal: () => number;
   getDiscountAmount: () => number;
   getFinalTotal: () => number;
 }
+
 
 export const useCartStore = create<CartStore>()(
   persist(
@@ -55,10 +62,13 @@ export const useCartStore = create<CartStore>()(
       shippingFee: 15000,
       discountPercent: 0,
 
+
       addItem: (product, owner = "Host") => {
         const currentItems = get().items;
 
+
         let safeOwner = owner || "Host";
+
 
         if (
           RESTAURANT_NAMES.some(
@@ -68,10 +78,12 @@ export const useCartStore = create<CartStore>()(
           safeOwner = "Host";
         }
 
+
         const existingItem = currentItems.find(
           (item) =>
             item.id === product.id && item.owner === safeOwner
         );
+
 
         if (existingItem) {
           set({
@@ -83,6 +95,7 @@ export const useCartStore = create<CartStore>()(
           });
           return;
         }
+
 
         const newItem: CartItem = {
           id: product.id,
@@ -96,8 +109,10 @@ export const useCartStore = create<CartStore>()(
           owner: safeOwner,
         };
 
+
         set({ items: [...currentItems, newItem] });
       },
+
 
       removeItem: (id, owner) => {
         set({
@@ -106,6 +121,7 @@ export const useCartStore = create<CartStore>()(
           ),
         });
       },
+
 
       updateQuantity: (id, owner, quantity) => {
         set({
@@ -117,6 +133,7 @@ export const useCartStore = create<CartStore>()(
         });
       },
 
+
       clearCart: () =>
         set({
           items: [],
@@ -124,10 +141,13 @@ export const useCartStore = create<CartStore>()(
           shippingFee: 15000,
         }),
 
+
       setShippingFee: (fee) => set({ shippingFee: fee }),
+
 
       applyVoucher: (code) => {
         const c = code.trim().toUpperCase();
+
 
         if (c === "GIAM20" || c === "FOODIE20") {
           set({ discountPercent: 20 });
@@ -137,6 +157,7 @@ export const useCartStore = create<CartStore>()(
           };
         }
 
+
         if (c === "NHOM05") {
           set({ discountPercent: 50 });
           return {
@@ -145,11 +166,13 @@ export const useCartStore = create<CartStore>()(
           };
         }
 
+
         return {
           success: false,
           message: "Mã giảm giá không tồn tại!",
         };
       },
+
 
       getSubTotal: () => {
         return get().items.reduce(
@@ -158,15 +181,18 @@ export const useCartStore = create<CartStore>()(
         );
       },
 
+
       getDiscountAmount: () => {
         const sub = get().getSubTotal();
         return (sub * get().discountPercent) / 100;
       },
 
+
       getFinalTotal: () => {
         const sub = get().getSubTotal();
         const discount = get().getDiscountAmount();
         const shipping = get().shippingFee;
+
 
         return sub - discount + shipping;
       },
@@ -176,3 +202,4 @@ export const useCartStore = create<CartStore>()(
     }
   )
 );
+

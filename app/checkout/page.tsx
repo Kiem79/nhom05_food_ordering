@@ -1,5 +1,6 @@
 "use client";
 
+
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useCartStore } from "@/store/cartStore";
@@ -9,6 +10,7 @@ import { useRouter } from "next/navigation";
 import useAuthStore from "@/store/authStore";
 import Link from "next/link";
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
+
 
 const HCMC_DISTRICTS = [
   { id: 'q1', label: 'Quận 1', fee: 35000 },
@@ -22,7 +24,9 @@ const HCMC_DISTRICTS = [
   { id: 'q11', label: 'Quận 11', fee: 28000 },
   { id: 'q12', label: 'Quận 12', fee: 35000 },
 
+
   { id: 'q_td', label: 'Thủ Đức', fee: 15000 },
+
 
   { id: 'binh_thanh', label: 'Bình Thạnh', fee: 20000 },
   { id: 'tan_binh', label: 'Tân Bình', fee: 25000 },
@@ -30,7 +34,9 @@ const HCMC_DISTRICTS = [
   { id: 'phu_nhuan', label: 'Phú Nhuận', fee: 22000 },
   { id: 'go_vap', label: 'Gò Vấp', fee: 30000 },
 
+
   { id: 'binh_tan', label: 'Bình Tân', fee: 35000 },
+
 
   { id: 'hoc_mon', label: 'Hóc Môn', fee: 40000 },
   { id: 'cu_chi', label: 'Củ Chi', fee: 50000 },
@@ -39,10 +45,12 @@ const HCMC_DISTRICTS = [
   { id: 'can_gio', label: 'Cần Giờ', fee: 70000 },
 ];
 
+
 export default function CheckoutPage() {
   const { items, clearCart, getFinalTotal, discountPercent, shippingFee, setShippingFee } = useCartStore();
   const { user } = useAuthStore();
   const router = useRouter();
+
 
   const [payingMember, setPayingMember] = useState<string | null>(null);
   const [selectedDistrict, setSelectedDistrict] = useState(HCMC_DISTRICTS[0].id);
@@ -50,29 +58,36 @@ export default function CheckoutPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [mounted, setMounted] = useState(false);
 
+
   useEffect(() => {
     const frame = requestAnimationFrame(() => {
       setMounted(true);
     });
 
+
     const dist = HCMC_DISTRICTS.find(d => d.id === selectedDistrict);
     if (dist) setShippingFee(dist.fee);
+
 
     return () => cancelAnimationFrame(frame);
   }, [selectedDistrict, setShippingFee]);
 
+
   const owners = Array.from(new Set(items.map(item => item.owner))).filter(Boolean) as string[];
-  const shipPerPerson = owners.length > 0 ? shippingFee / owners.length : 0; 
+  const shipPerPerson = owners.length > 0 ? shippingFee / owners.length : 0;
+
 
   const calculateUserSubtotal = (name: string) => {
     return items.filter(i => i.owner === name).reduce((sum, i) => sum + (i.price * i.quantity), 0);
   };
 
+
   const calculateUserTotal = (ownerName: string) => {
     const subtotal = calculateUserSubtotal(ownerName);
     const userDiscount = (subtotal * discountPercent) / 100;
-    return subtotal - userDiscount + shipPerPerson; 
+    return subtotal - userDiscount + shipPerPerson;
   };
+
 
   const handleFinalOrder = () => {
     if (!detailedAddress.trim()) {
@@ -105,6 +120,7 @@ export default function CheckoutPage() {
 
   if (!mounted) return null;
 
+
   return (
     <div className="min-h-screen bg-white dark:bg-slate-950 transition-colors">
       <div className="max-w-7xl mx-auto py-12 px-6 font-sans grid grid-cols-1 lg:grid-cols-3 gap-12">
@@ -113,10 +129,11 @@ export default function CheckoutPage() {
           <Link href="/group-order" className="text-slate-400 font-black uppercase text-[10px] flex items-center gap-2 hover:text-orange-500 transition-colors">
             <ArrowLeft size={16} /> Quay lại giỏ hàng nhóm
           </Link>
-          
+         
           <h1 className="text-6xl font-black italic uppercase tracking-tighter text-slate-900 dark:text-white leading-none">
             Thanh toán <br/><span className="text-orange-500">Từng người</span>
           </h1>
+
 
           <div className="space-y-6">
             <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.4em] flex items-center gap-3">
@@ -141,6 +158,7 @@ export default function CheckoutPage() {
               />
             </div>
           </div>
+
 
           <div className="space-y-6">
             <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.4em]">
@@ -172,6 +190,7 @@ export default function CheckoutPage() {
           </div>
         </div>
 
+
         <div className="relative">
           <div className="bg-[#111827] dark:bg-slate-900/90 text-white p-10 rounded-[3rem] sticky top-28 shadow-2xl min-h-125 flex flex-col items-center justify-between text-center border border-white/5 backdrop-blur-sm">
             {payingMember ? (
@@ -196,6 +215,7 @@ export default function CheckoutPage() {
               </div>
             )}
 
+
             <div className="mt-12 pt-8 border-t border-white/10 w-full text-left space-y-4">
               <div className="flex justify-between text-slate-400 text-[10px] font-black uppercase">
                 <span>Tổng đơn nhóm</span>
@@ -215,3 +235,6 @@ export default function CheckoutPage() {
     </div>
   );
 }
+
+
+
