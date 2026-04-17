@@ -1,35 +1,59 @@
-"use client";
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
-import type { Product } from "@/types";
 
-export interface CartItem extends Product {
-  quantity: number;
-  restaurantName: string;
-  owner: string;
-  images: string[];
+const RESTAURANT_NAMES = [
+  "Cơm tấm Cô Ba",
+  "Bún Phở Ba Miền",
+  "Bếp Bánh Ngọc Thảo",
+  "Ellen's Healthy Kitchen",
+  "Bunkr - Fast Food",
+  "Hot N' Grilled Saigon",
+  "1997 Drinks",
+  "Tiệm Chay An Nhiên"
+];
+
+
+export interface Product {
+  id: string | number;
+  name: string;
+  price: number;
+  image?: string;
+  images?: string[];
+  restaurantId?: number | string;
 }
+
+
+export interface CartItem {
+  id: string | number;
+  name: string;
+  price: number;
+  quantity: number;
+  images: string[];
+  restaurantId: number;
+  owner: string;
+}
+
 
 interface CartStore {
   items: CartItem[];
   shippingFee: number;
   discountPercent: number;
 
-  addItem: (product: Product, restaurantName: string, owner?: string) => void;
-  removeItem: (id: number, owner?: string) => void;
-  updateQuantity: (id: number, deltaOrQuantity: number, owner?: string) => void;
 
+  addItem: (product: Product, owner?: string) => void;
+  removeItem: (id: string | number, owner: string) => void;
+  updateQuantity: (id: string | number, owner: string, quantity: number) => void;
   clearCart: () => void;
   setShippingFee: (fee: number) => void;
-
   applyVoucher: (code: string) => { success: boolean; message: string };
 
-  totalPrice: () => number;
+
   getSubTotal: () => number;
   getDiscountAmount: () => number;
   getFinalTotal: () => number;
 }
+
 
 export const useCartStore = create<CartStore>()(
   persist(
@@ -38,104 +62,78 @@ export const useCartStore = create<CartStore>()(
       shippingFee: 15000,
       discountPercent: 0,
 
-      // ================= ADD ITEM =================
-      addItem: (product, restaurantName, owner = "Host") => {
-        const safeOwner = owner || "Host";
+
+      addItem: (product, owner = "Host") => {
         const currentItems = get().items;
 
-        const productId = Number(product.id);
+
+        let safeOwner = owner || "Host";
+
+
+        if (
+          RESTAURANT_NAMES.some(
+            (name) => safeOwner.toUpperCase() === name.toUpperCase()
+          )
+        ) {
+          safeOwner = "Host";
+        }
+
 
         const existingItem = currentItems.find(
           (item) =>
-            Number(item.id) === productId &&
-            item.owner === safeOwner
+            item.id === product.id && item.owner === safeOwner
         );
+
 
         if (existingItem) {
           set({
             items: currentItems.map((item) =>
-              Number(item.id) === productId &&
-              item.owner === safeOwner
-                ? {
-                    ...item,
-                    quantity: item.quantity + 1,
-                  }
+              item.id === product.id && item.owner === safeOwner
+                ? { ...item, quantity: item.quantity + 1 }
                 : item
             ),
           });
           return;
         }
 
+
         const newItem: CartItem = {
-          ...product,
-
-          // 🔥 FIX QUAN TRỌNG: luôn giữ images
-          images: product.images ?? ["/placeholder-food.png"],
-
-          id: productId,
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          images: product.images ?? (product.image ? [product.image] : []),
+          restaurantId: product.restaurantId
+            ? Number(product.restaurantId)
+            : 1,
           quantity: 1,
-          restaurantName,
           owner: safeOwner,
         };
 
-        set({
-          items: [...currentItems, newItem],
-        });
+
+        set({ items: [...currentItems, newItem] });
       },
 
-      // ================= REMOVE =================
+
       removeItem: (id, owner) => {
-        const safeId = Number(id);
-
-        if (!owner) {
-          set({
-            items: get().items.filter(
-              (item) => Number(item.id) !== safeId
-            ),
-          });
-          return;
-        }
-
         set({
           items: get().items.filter(
-            (item) =>
-              !(Number(item.id) === safeId && item.owner === owner)
+            (item) => !(item.id === id && item.owner === owner)
           ),
         });
       },
 
-      // ================= UPDATE =================
-      updateQuantity: (id, deltaOrQuantity, owner) => {
-        const safeId = Number(id);
-        const currentItems = get().items;
 
+      updateQuantity: (id, owner, quantity) => {
         set({
-          items: currentItems.map((item) => {
-            const matched =
-              Number(item.id) === safeId &&
-              (!owner || item.owner === owner);
-
-            if (!matched) return item;
-
-            if (owner) {
-              return {
-                ...item,
-                quantity: Math.max(1, deltaOrQuantity),
-              };
-            }
-
-            return {
-              ...item,
-              quantity: Math.max(
-                1,
-                item.quantity + deltaOrQuantity
-              ),
-            };
-          }),
+          items: get().items.map((item) =>
+            item.id === id && item.owner === owner
+              ? { ...item, quantity: Math.max(1, quantity) }
+              : item
+          ),
         });
       },
 
-      // ================= CLEAR =================
+
       clearCart: () =>
         set({
           items: [],
@@ -143,55 +141,64 @@ export const useCartStore = create<CartStore>()(
           shippingFee: 15000,
         }),
 
+
       setShippingFee: (fee) => set({ shippingFee: fee }),
 
-      // ================= VOUCHER =================
+
       applyVoucher: (code) => {
         const c = code.trim().toUpperCase();
+
 
         if (c === "GIAM20" || c === "FOODIE20") {
           set({ discountPercent: 20 });
           return {
             success: true,
-            message: "Đã áp dụng mã giảm 20%",
+            message: "Đã áp dụng mã giảm giá 20%!",
           };
         }
+
 
         if (c === "NHOM05") {
           set({ discountPercent: 50 });
           return {
             success: true,
-            message: "Mã nhóm: giảm 50%",
+            message: "Mã nhóm 05: Giảm ngay 50%!",
           };
         }
 
+
         return {
           success: false,
-          message: "Mã không tồn tại",
+          message: "Mã giảm giá không tồn tại!",
         };
       },
 
-      // ================= TOTAL =================
-      totalPrice: () =>
-        get().items.reduce(
-          (sum, item) => sum + item.price * item.quantity,
+
+      getSubTotal: () => {
+        return get().items.reduce(
+          (total, item) => total + item.price * item.quantity,
           0
-        ),
+        );
+      },
 
-      getSubTotal: () =>
-        get().items.reduce(
-          (sum, item) => sum + item.price * item.quantity,
-          0
-        ),
 
-      getDiscountAmount: () =>
-        (get().getSubTotal() * get().discountPercent) / 100,
+      getDiscountAmount: () => {
+        const sub = get().getSubTotal();
+        return (sub * get().discountPercent) / 100;
+      },
 
-      getFinalTotal: () =>
-        get().getSubTotal() - get().getDiscountAmount(),
+
+      getFinalTotal: () => {
+        const sub = get().getSubTotal();
+        const discount = get().getDiscountAmount();
+        const shipping = get().shippingFee;
+
+
+        return sub - discount + shipping;
+      },
     }),
     {
-      name: "foodie-cart-v3",
+      name: "foodie-cart-v6",
     }
   )
 );

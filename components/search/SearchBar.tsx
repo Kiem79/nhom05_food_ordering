@@ -4,31 +4,39 @@ import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Search, X } from "lucide-react";
-
-// Lấy dữ liệu trực tiếp từ file JSON theo yêu cầu của Nhi
+import { motion, AnimatePresence } from "framer-motion"; 
 import productsData from "@/lib/data/products.json";
-import { Product } from "@/types"; 
+import { Product } from "@/types";
+
+const BASE_PATH = "/nhom05_food_ordering";
 
 export default function SearchBar() {
+  const [isExpanded, setIsExpanded] = useState(false); 
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Product[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
-
+  const inputRef = useRef<HTMLInputElement>(null);
   const products = productsData.products as Product[];
 
-  // Đóng dropdown khi click ra ngoài [cite: 16, 17, 18]
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setIsExpanded(false);
         setIsOpen(false);
+        setQuery("");
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Xử lý tìm kiếm logic cũ [cite: 26, 27, 30, 31]
+  useEffect(() => {
+    if (isExpanded && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isExpanded]);
+
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setQuery(value);
@@ -38,7 +46,7 @@ export default function SearchBar() {
         p.name.toLowerCase().includes(value.toLowerCase()) ||
         p.category.some(cat => cat.toLowerCase().includes(value.toLowerCase()))
       );
-      setResults(filtered.slice(0, 5)); // Hiển thị tối đa 5 kết quả [cite: 33]
+      setResults(filtered.slice(0, 5));
       setIsOpen(true);
     } else {
       setResults([]);
@@ -46,79 +54,93 @@ export default function SearchBar() {
     }
   };
 
-  const clearSearch = () => {
-    setQuery("");
-    setResults([]);
-    setIsOpen(false);
-  };
-
   return (
-      <div className="relative w-full max-w-md hidden md:block z-50" ref={searchRef}>
-        <div className="relative group">
+    <div className="relative flex items-center z-50" ref={searchRef}>
+      <div className="relative flex items-center justify-end">
+        <motion.div
+          initial={false}
+          animate={{ width: isExpanded ? "280px" : "40px" }}
+          className="flex items-center h-10 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm transition-all"
+        >
+          {/* Nút kính lúp để kích hoạt */}
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="w-10 h-10 flex items-center justify-center shrink-0 text-slate-500 hover:text-orange-500 transition-colors"
+          >
+            <Search size={18} />
+          </button>
+
           <input
+            ref={inputRef}
             type="text"
-            placeholder="Bạn muốn ăn gì hôm nay?..."
+            placeholder="Tìm món ăn..."
             value={query}
             onChange={handleSearch}
-            onFocus={() => query.trim().length > 0 && setIsOpen(true)}
-            className="w-full bg-slate-50/50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white rounded-2xl pl-10 pr-10 py-2 text-xs font-medium outline-none focus:bg-white dark:focus:bg-slate-800 focus:border-orange-500 dark:focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all"
+            className={`bg-transparent border-none text-xs font-medium outline-none text-slate-900 dark:text-white w-full pr-4 ${
+              isExpanded ? "opacity-100" : "opacity-0 invisible"
+            } transition-opacity duration-300`}
           />
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-orange-500 transition-colors w-4 h-4" />
-
-          {query && (
-            <button onClick={clearSearch} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300">
-              <X className="w-4 h-4" />
+          {query && isExpanded && (
+            <button
+              onClick={() => setQuery("")}
+              className="px-3 text-slate-400 hover:text-slate-600"
+            >
+              <X size={14} />
             </button>
           )}
-        </div>
-
-        {/* Dropdown Gợi Ý */}
-        {isOpen && (
-          <div className="absolute top-full left-0 w-full mt-2 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-800 overflow-hidden shadow-slate-200/50 dark:shadow-black/50 transition-all">
+        </motion.div>
+      </div>
+      <AnimatePresence>
+        {isOpen && isExpanded && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            className="absolute top-full right-0 w-[320px] mt-2 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-800 overflow-hidden"
+          >
             {results.length > 0 ? (
               <div className="flex flex-col">
-                <div className="px-4 py-2 bg-slate-50/80 dark:bg-slate-800/50 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
-                  Gợi ý cho bạn
+                <div className="px-4 py-2 bg-slate-50/80 dark:bg-slate-800/50 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                  Gợi ý món ngon
                 </div>
                 {results.map((product) => (
                   <Link
-                    href={`/products/${product.id}`}
+                    href={`${BASE_PATH}/products/${product.id}`}
                     key={product.id}
-                    onClick={() => setIsOpen(false)}
+                    onClick={() => {
+                      setIsOpen(false);
+                      setIsExpanded(false);
+                    }}
                     className="flex items-center gap-3 p-3 hover:bg-orange-50/50 dark:hover:bg-orange-500/10 transition-colors border-b border-slate-50 dark:border-slate-800 last:border-0 group"
                   >
-                    <div className="relative w-12 h-12 rounded-xl overflow-hidden shrink-0 bg-slate-100 dark:bg-slate-800">
+                    <div className="relative w-10 h-10 rounded-lg overflow-hidden shrink-0">
                       <Image
-                        src={product.images[0] || "/placeholder.png"}
+                        src={product.images[0] ? `${BASE_PATH}${product.images[0]}` : `${BASE_PATH}/placeholder.png`}
                         alt={product.name}
                         fill
+                        unoptimized
                         className="object-cover group-hover:scale-110 transition-transform duration-500"
                       />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-bold text-sm text-slate-900 dark:text-white truncate group-hover:text-orange-600 dark:group-hover:text-orange-500">
+                      <h4 className="font-bold text-[13px] text-slate-900 dark:text-white truncate">
                         {product.name}
                       </h4>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="text-[10px] font-black text-orange-500 bg-orange-100 dark:bg-orange-500/20 px-1.5 py-0.5 rounded uppercase">
-                          {product.category[0]}
-                        </span>
-                        <span className="text-xs font-black text-slate-600 dark:text-slate-400">
-                          {product.price.toLocaleString("vi-VN")}đ
-                        </span>
-                      </div>
+                      <p className="text-[11px] font-black text-orange-500">
+                        {product.price.toLocaleString()}đ
+                      </p>
                     </div>
                   </Link>
                 ))}
               </div>
             ) : (
-              <div className="p-6 text-center text-slate-500 dark:text-slate-400 flex flex-col items-center">
-                <Search className="w-6 h-6 text-slate-200 dark:text-slate-700 mb-2" />
-                <p className="text-xs font-medium">Không tìm thấy món ăn nào!</p>
+              <div className="p-4 text-center text-slate-500 text-xs italic">
+                Không tìm thấy món &quot;{query}&quot;
               </div>
             )}
-          </div>
+          </motion.div>
         )}
-      </div>
+      </AnimatePresence>
+    </div>
   );
 }
