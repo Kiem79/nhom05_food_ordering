@@ -1,13 +1,21 @@
 import RestaurantContent from "@/components/ui/RestaurantContent";
 import restaurantsData from "@/lib/data/stores.json";
+import type { Restaurant } from "@/types";
 
-export async function generateStaticParams() {
-  return restaurantsData.restaurants.map((r: any) => ({
-    id: String(r.id),
+export async function generateStaticParams(): Promise<{ id: string }[]> {
+  const restaurants = restaurantsData.restaurants as Restaurant[];
+
+  return restaurants.map((restaurant) => ({
+    id: String(restaurant.id),
   }));
 }
 
-export default async function Page({ params }: { params: Promise<{ id: string }> }) {
-  const resolvedParams = await params;
-  return <RestaurantContent id={resolvedParams.id} />;
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
+
+export default async function Page({ params }: PageProps) {
+  const { id } = await params;
+
+  return <RestaurantContent id={id} />;
 }
