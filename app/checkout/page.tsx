@@ -36,32 +36,40 @@ const HCMC_DISTRICTS = [
 ];
 
 export default function CheckoutPage() {
-  const { items, clearCart, getFinalTotal, discountPercent, shippingFee, setShippingFee } = useCartStore();
+  const { items, clearCart, getFinalTotal, discountPercent } = useCartStore();
   const { user } = useAuthStore();
   const router = useRouter();
+  
   const [payingMember, setPayingMember] = useState<string | null>(null);
   const [selectedDistrict, setSelectedDistrict] = useState(HCMC_DISTRICTS[0].id);
   const [detailedAddress, setDetailedAddress] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [mounted, setMounted] = useState(false);
+
+  // Tính toán trực tiếp phí ship (Derived State) - Không cần dùng useState/useEffect nữa
+  const currentDist = HCMC_DISTRICTS.find(d => d.id === selectedDistrict);
+  const shippingFee = currentDist ? currentDist.fee : 0;
+
   useEffect(() => {
     const frame = requestAnimationFrame(() => {
       setMounted(true);
     });
-    const dist = HCMC_DISTRICTS.find(d => d.id === selectedDistrict);
-    if (dist) setShippingFee(dist.fee);
     return () => cancelAnimationFrame(frame);
-  }, [selectedDistrict, setShippingFee]);
+  }, []);
+
   const owners = Array.from(new Set(items.map(item => item.owner))).filter(Boolean) as string[];
   const shipPerPerson = owners.length > 0 ? shippingFee / owners.length : 0;
+
   const calculateUserSubtotal = (name: string) => {
     return items.filter(i => i.owner === name).reduce((sum, i) => sum + (i.price * i.quantity), 0);
   };
+
   const calculateUserTotal = (ownerName: string) => {
     const subtotal = calculateUserSubtotal(ownerName);
     const userDiscount = (subtotal * discountPercent) / 100;
     return subtotal - userDiscount + shipPerPerson;
   };
+
   const handleFinalOrder = () => {
     if (!detailedAddress.trim()) {
       toast.error("Vui lòng nhập địa chỉ nhận đồ!");
@@ -73,33 +81,36 @@ export default function CheckoutPage() {
       const newOrder = {
         id: `FOODIE-${Date.now()}`,
         address: detailedAddress,
-        district: HCMC_DISTRICTS.find(d => d.id === selectedDistrict)?.label,
+        district: currentDist?.label,
         total: getFinalTotal() + shippingFee,
         items: [...items]
       };
       const existingOrders = JSON.parse(localStorage.getItem("foodie_orders") || "[]");
       localStorage.setItem("foodie_orders", JSON.stringify([...existingOrders, newOrder]));
-     
+
       clearCart();
       toast.dismiss(loadingId);
       toast.success("Đặt hàng thành công!");
-     
+
       router.push("/order-success");
     }, 1500);
   };
+
   if (!mounted) return null;
+
   return (
     <div className="min-h-screen bg-white dark:bg-slate-950 transition-colors">
       <div className="max-w-7xl mx-auto py-12 px-6 font-sans grid grid-cols-1 lg:grid-cols-3 gap-12">
         <div className="lg:col-span-2 space-y-12">
           <Breadcrumbs />
-          <Link href="/group-order" className="text-slate-400 font-black uppercase text-[10px] flex items-center gap-2 hover:text-orange-500 transition-colors">
+          <Link href="/group-order" className="text-slate-400 font-black uppercase text-[10px] flex items-center gap-2 hover:text-orange-500 transition-colors w-fit">
             <ArrowLeft size={16} /> Quay lại giỏ hàng nhóm
           </Link>
-         
+
           <h1 className="text-6xl font-black italic uppercase tracking-tighter text-slate-900 dark:text-white leading-none">
             Thanh toán <br/><span className="text-orange-500">Từng người</span>
           </h1>
+          
           <div className="space-y-6">
             <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.4em] flex items-center gap-3">
               <MapPin size={18} className="text-orange-500" /> 01. Địa chỉ nhận hàng (TP.HCM)
@@ -123,6 +134,7 @@ export default function CheckoutPage() {
               />
             </div>
           </div>
+          
           <div className="space-y-6">
             <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.4em]">
               02. Chi tiết tiền từng người ({owners.length})
@@ -131,7 +143,7 @@ export default function CheckoutPage() {
               {owners.map(name => (
                 <div key={name} className={`p-6 bg-white dark:bg-slate-900 border-2 rounded-[2.5rem] flex flex-col md:flex-row justify-between items-center gap-6 transition-all ${payingMember === name ? 'border-orange-500 ring-4 ring-orange-500/10' : 'border-slate-100 dark:border-slate-800 shadow-sm'}`}>
                   <div className="flex items-center gap-5">
-                    <div className="w-16 h-16 bg-orange-100 dark:bg-orange-500/20 rounded-full flex items-center justify-center text-orange-600 dark:text-orange-500 font-black text-2xl uppercase italic">{name[0]}</div>
+                    <div className="w-16 h-16 bg-orange-100 dark:bg-orange-500/20 rounded-full flex items-center justify-center text-orange-600 dark:text-orange-500 font-black text-2xl uppercase italic shrink-0">{name[0]}</div>
                     <div className="flex flex-col">
                       <p className="font-black text-slate-900 dark:text-white uppercase italic text-xl">{name === "Host" ? `Bạn (${user?.name})` : name}</p>
                       <div className="flex flex-col mt-1">
@@ -144,7 +156,7 @@ export default function CheckoutPage() {
                       </div>
                     </div>
                   </div>
-                  <button onClick={() => setPayingMember(name)} className="flex items-center gap-3 bg-slate-900 dark:bg-orange-500 text-white px-8 py-4 rounded-[1.5rem] text-[10px] font-black uppercase tracking-widest hover:bg-orange-500 dark:hover:bg-white dark:hover:text-slate-900 transition-all shadow-lg">
+                  <button onClick={() => setPayingMember(name)} className="shrink-0 flex items-center gap-3 bg-slate-900 dark:bg-orange-500 text-white px-8 py-4 rounded-[1.5rem] text-[10px] font-black uppercase tracking-widest hover:bg-orange-500 dark:hover:bg-white dark:hover:text-slate-900 transition-all shadow-lg">
                     <QrCode size={18} /> Quét mã trả tiền
                   </button>
                 </div>
@@ -152,6 +164,7 @@ export default function CheckoutPage() {
             </div>
           </div>
         </div>
+
         <div className="relative">
           <div className="bg-[#111827] dark:bg-slate-900/90 text-white p-10 rounded-[3rem] sticky top-28 shadow-2xl min-h-125 flex flex-col items-center justify-between text-center border border-white/5 backdrop-blur-sm">
             {payingMember ? (
@@ -165,7 +178,7 @@ export default function CheckoutPage() {
                   <p className="text-4xl font-black text-orange-500">{Math.round(calculateUserTotal(payingMember)).toLocaleString()}đ</p>
                 </div>
                 <div className="bg-white p-6 rounded-[2.5rem] inline-block border-8 border-white shadow-2xl">
-                  <Image src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=FoodiePay_${payingMember}_${Math.round(calculateUserTotal(payingMember))}`} alt="QR" width={200} height={200} className="w-44 h-44" />
+                  <Image src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=FoodiePay_${payingMember}_${Math.round(calculateUserTotal(payingMember))}`} alt="QR" width={200} height={200} className="w-44 h-44" unoptimized />
                 </div>
                 <button onClick={() => { toast.success(`${payingMember} đã hoàn tất!`); setPayingMember(null); }} className="w-full py-4 bg-white/10 hover:bg-green-500 text-green-500 hover:text-white rounded-2xl font-black uppercase text-[10px] transition-all">Xác nhận đã trả tiền</button>
               </div>
@@ -176,14 +189,14 @@ export default function CheckoutPage() {
               </div>
             )}
             <div className="mt-12 pt-8 border-t border-white/10 w-full text-left space-y-4">
-              <div className="flex justify-between text-slate-400 text-[10px] font-black uppercase">
+              <div className="flex justify-between items-end text-slate-400 text-[10px] font-black uppercase">
                 <span>Tổng đơn nhóm</span>
-                <span className="text-orange-500 text-2xl italic">{(getFinalTotal() + shippingFee).toLocaleString()}đ</span>
+                <span className="text-orange-500 text-3xl italic">{(getFinalTotal() + shippingFee).toLocaleString()}đ</span>
               </div>
               <button
                 onClick={handleFinalOrder}
                 disabled={isProcessing || items.length === 0}
-                className="w-full py-5 bg-orange-500 hover:bg-orange-600 text-white rounded-[1.5rem] font-black uppercase tracking-widest transition-all active:scale-95 shadow-xl shadow-orange-500/20"
+                className="w-full py-5 bg-orange-500 hover:bg-orange-600 disabled:bg-slate-800 disabled:text-slate-500 text-white rounded-[1.5rem] font-black uppercase tracking-widest transition-all active:scale-95 shadow-xl shadow-orange-500/20"
               >
                 {isProcessing ? <Loader2 className="animate-spin mx-auto" size={22} /> : "XÁC NHẬN CHỐT ĐƠN"}
               </button>
@@ -194,11 +207,6 @@ export default function CheckoutPage() {
     </div>
   );
 }
-
-
-
-
-
 
 
 

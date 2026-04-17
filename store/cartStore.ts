@@ -1,6 +1,7 @@
+"use client";
+
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-
 
 const RESTAURANT_NAMES = [
   "Cơm tấm Cô Ba",
@@ -13,7 +14,6 @@ const RESTAURANT_NAMES = [
   "Tiệm Chay An Nhiên"
 ];
 
-
 export interface Product {
   id: string | number;
   name: string;
@@ -22,7 +22,6 @@ export interface Product {
   images?: string[];
   restaurantId?: number | string;
 }
-
 
 export interface CartItem {
   id: string | number;
@@ -34,56 +33,38 @@ export interface CartItem {
   owner: string;
 }
 
-
 interface CartStore {
   items: CartItem[];
-  shippingFee: number;
   discountPercent: number;
-
-
+  discountFixed: number;
   addItem: (product: Product, owner?: string) => void;
   removeItem: (id: string | number, owner: string) => void;
   updateQuantity: (id: string | number, owner: string, quantity: number) => void;
   clearCart: () => void;
-  setShippingFee: (fee: number) => void;
   applyVoucher: (code: string) => { success: boolean; message: string };
-
-
   getSubTotal: () => number;
   getDiscountAmount: () => number;
   getFinalTotal: () => number;
 }
 
-
 export const useCartStore = create<CartStore>()(
   persist(
     (set, get) => ({
       items: [],
-      shippingFee: 15000,
       discountPercent: 0,
-
+      discountFixed: 0,
 
       addItem: (product, owner = "Host") => {
         const currentItems = get().items;
-
-
         let safeOwner = owner || "Host";
 
-
-        if (
-          RESTAURANT_NAMES.some(
-            (name) => safeOwner.toUpperCase() === name.toUpperCase()
-          )
-        ) {
+        if (RESTAURANT_NAMES.some((name) => safeOwner.toUpperCase() === name.toUpperCase())) {
           safeOwner = "Host";
         }
 
-
         const existingItem = currentItems.find(
-          (item) =>
-            item.id === product.id && item.owner === safeOwner
+          (item) => item.id === product.id && item.owner === safeOwner
         );
-
 
         if (existingItem) {
           set({
@@ -96,32 +77,23 @@ export const useCartStore = create<CartStore>()(
           return;
         }
 
-
         const newItem: CartItem = {
           id: product.id,
           name: product.name,
           price: product.price,
           images: product.images ?? (product.image ? [product.image] : []),
-          restaurantId: product.restaurantId
-            ? Number(product.restaurantId)
-            : 1,
+          restaurantId: product.restaurantId ? Number(product.restaurantId) : 1,
           quantity: 1,
           owner: safeOwner,
         };
-
-
         set({ items: [...currentItems, newItem] });
       },
 
-
       removeItem: (id, owner) => {
         set({
-          items: get().items.filter(
-            (item) => !(item.id === id && item.owner === owner)
-          ),
+          items: get().items.filter((item) => !(item.id === id && item.owner === owner)),
         });
       },
-
 
       updateQuantity: (id, owner, quantity) => {
         set({
@@ -133,68 +105,51 @@ export const useCartStore = create<CartStore>()(
         });
       },
 
-
       clearCart: () =>
         set({
           items: [],
           discountPercent: 0,
-          shippingFee: 15000,
+          discountFixed: 0,
         }),
-
-
-      setShippingFee: (fee) => set({ shippingFee: fee }),
-
 
       applyVoucher: (code) => {
         const c = code.trim().toUpperCase();
 
-
-        if (c === "GIAM20" || c === "FOODIE20") {
-          set({ discountPercent: 20 });
-          return {
-            success: true,
-            message: "Đã áp dụng mã giảm giá 20%!",
-          };
+        if (c === "GIAM10") {
+          set({ discountPercent: 10, discountFixed: 0 });
+          return { success: true, message: "Đã áp dụng mã Giảm 10% cho đơn đầu tiên!" };
         }
 
-
-        if (c === "NHOM05") {
-          set({ discountPercent: 50 });
-          return {
-            success: true,
-            message: "Mã nhóm 05: Giảm ngay 50%!",
-          };
+        if (c === "GIAM20" ) {
+          set({ discountPercent: 20, discountFixed: 0 });
+          return { success: true, message: "Đã áp dụng mã giảm giá 20%!" };
         }
 
+        if (c === "FREESHIP") {
+          set({ discountPercent: 0, discountFixed: 15000 });
+          return { success: true, message: "Đã giảm 15.000đ vào tổng đơn!" };
+        }
 
-        return {
-          success: false,
-          message: "Mã giảm giá không tồn tại!",
-        };
+        return { success: false, message: "Mã giảm giá không tồn tại!" };
       },
-
 
       getSubTotal: () => {
-        return get().items.reduce(
-          (total, item) => total + item.price * item.quantity,
-          0
-        );
+        return get().items.reduce((total, item) => total + item.price * item.quantity, 0);
       },
-
 
       getDiscountAmount: () => {
         const sub = get().getSubTotal();
-        return (sub * get().discountPercent) / 100;
+        const percentDiscount = (sub * get().discountPercent) / 100;
+        const totalDiscount = percentDiscount + get().discountFixed;
+        
+        return Math.min(totalDiscount, sub);
       },
-
 
       getFinalTotal: () => {
         const sub = get().getSubTotal();
         const discount = get().getDiscountAmount();
-        const shipping = get().shippingFee;
-
-
-        return sub - discount + shipping;
+        
+        return sub - discount;
       },
     }),
     {
