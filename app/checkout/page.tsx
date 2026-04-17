@@ -97,9 +97,11 @@ export default function CheckoutPage() {
       clearCart();
       toast.dismiss(loadingId);
       toast.success("Đặt hàng thành công!");
-      router.push("/order-tracking"); 
+      
+      router.push("/order-success"); 
     }, 1500);
   };
+
 
   if (!mounted) return null;
 
