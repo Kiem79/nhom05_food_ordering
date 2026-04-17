@@ -1,8 +1,5 @@
 "use client";
 
-
-
-
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useCartStore } from "@/store/cartStore";
@@ -12,9 +9,6 @@ import { useRouter } from "next/navigation";
 import useAuthStore from "@/store/authStore";
 import Link from "next/link";
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
-
-
-
 
 const HCMC_DISTRICTS = [
   { id: 'q1', label: 'Quận 1', fee: 35000 },
@@ -40,6 +34,7 @@ const HCMC_DISTRICTS = [
   { id: 'nha_be', label: 'Nhà Bè', fee: 45000 },
   { id: 'can_gio', label: 'Cần Giờ', fee: 70000 },
 ];
+
 export default function CheckoutPage() {
   const { items, clearCart, getFinalTotal, discountPercent, shippingFee, setShippingFee } = useCartStore();
   const { user } = useAuthStore();

@@ -3,14 +3,21 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, ShoppingBag, Users, Zap, ShieldCheck } from "lucide-react";
-import data from "@/lib/data.json";
-import ProductCard from "@/components/ui/ProductCard";
+import { ArrowRight, ShoppingBag, Users, Zap, ShieldCheck, Info } from "lucide-react";
+import { Product } from "@/types/product";
+import productsData from "@/lib/data/products.json"; 
 import FoodCardSkeleton from "@/components/ui/FoodCardSkeleton";
 import Image from "next/image";
 
+const basePath = "/nhom05_food_ordering";
+
 export default function HomePage() {
   const [loading, setLoading] = useState(true);
+
+  const [featuredProducts] = useState<Product[]>(() => {
+    const allProducts = [...(productsData.products as Product[])];
+    return allProducts.sort(() => 0.5 - Math.random()).slice(0, 6);
+  });
 
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 800);
@@ -30,7 +37,7 @@ export default function HomePage() {
             transition={{ duration: 0.8 }}
             className="space-y-8"
           >
-            <div className="inline-flex items-center gap-2 bg-orange-50 dark:bg-slate-900 px-4 py-2 rounded-2xl">
+            <div className="inline-flex items-center gap-2 bg-orange-50 dark:bg-slate-900/50 px-4 py-2 rounded-2xl border border-orange-100 dark:border-orange-500/20">
               <Zap size={14} className="text-orange-500 fill-orange-500" />
               <span className="text-[10px] font-black uppercase tracking-[0.15em] text-orange-600 dark:text-orange-500">
                 Foodie v1.0 • Smart Ordering
@@ -66,12 +73,13 @@ export default function HomePage() {
             transition={{ duration: 1 }}
             className="relative"
           >
-            <div className="relative w-full aspect-[5/4] rounded-[3rem] overflow-hidden shadow-2xl shadow-orange-100 dark:shadow-none border-[12px] border-slate-50 dark:border-slate-900">
+            <div className="relative w-full aspect-5/4 rounded-[3rem] overflow-hidden shadow-2xl shadow-orange-100 dark:shadow-none border-12px border-slate-50 dark:border-slate-900">
               <div className="relative w-full h-full">
                 <Image
                   src="https://images.unsplash.com/photo-1551248429-40975aa4de74"
                   alt="Food"
                   fill
+                  priority
                   className="object-cover"
                 />
               </div>
@@ -82,7 +90,7 @@ export default function HomePage() {
       </section>
 
       {/* FEATURES */}
-      <section className="py-24 bg-slate-50/50 dark:bg-slate-900/40 px-6 border-y border-slate-100 dark:border-slate-900 transition-colors">
+      <section className="py-24 bg-slate-50/50 dark:bg-slate-900/40 px-6 border-y border-slate-100 dark:border-slate-800 transition-colors">
         <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-10">
           <FeatureCard
             icon={<ShoppingBag size={28} />}
@@ -102,9 +110,38 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* MENU NỔI BẬT */}
+      <section className="px-6 py-24 bg-white dark:bg-slate-950 transition-colors">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex justify-between items-end mb-6">
+            <div>
+              <h2 className="text-4xl font-black text-slate-900 dark:text-white uppercase italic tracking-tighter">
+                Thực đơn <span className="text-orange-500">nổi bật</span>
+              </h2>
+              <div className="h-1.5 w-24 bg-orange-500 mt-2 rounded-full"></div>
+            </div>
+            <Link href="/restaurants" className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-orange-500 transition-colors flex items-center gap-2">
+              Xem tất cả <ArrowRight size={14} />
+            </Link>
+          </div>
+
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
+            {loading ? (
+              Array.from({ length: 6 }).map((_, i) => (
+                <FoodCardSkeleton key={i} />
+              ))
+            ) : (
+              featuredProducts.map((item) => (
+                <HomeProductCard key={item.id} product={item} />
+              ))
+            )}
+          </div>
+        </div>
+      </section>
+
       {/* CTA SECTION */}
       <section className="py-24 px-6 bg-white dark:bg-slate-950 transition-colors">
-        <div className="max-w-5xl mx-auto bg-slate-900 dark:bg-orange-600 rounded-[3rem] p-16 text-center text-white space-y-8 shadow-2xl relative overflow-hidden">
+        <div className="max-w-5xl mx-auto bg-slate-900 dark:bg-orange-500 rounded-[3rem] p-16 text-center text-white space-y-8 shadow-2xl relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
           <h2 className="text-4xl md:text-5xl font-black tracking-tight leading-tight">
             Sẵn sàng đặt món <br className="md:hidden" /> cùng team?
@@ -120,39 +157,66 @@ export default function HomePage() {
           </Link>
         </div>
       </section>
-
-      {/* MENU */}
-      <section className="px-6 py-24 dark:bg-slate-950 transition-colors">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex justify-between items-end mb-12">
-            <div>
-              <h2 className="text-4xl font-black text-slate-900 dark:text-white uppercase italic tracking-tighter">
-                Thực đơn <span className="text-orange-500">nổi bật</span>
-              </h2>
-              <div className="h-1.5 w-24 bg-orange-500 mt-2 rounded-full"></div>
-            </div>
-          </div>
-
-          {loading ? (
-            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <FoodCardSkeleton key={i} />
-              ))}
-            </div>
-          ) : (
-            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
-              {data.slice(0, 6).map((item) => (
-                <ProductCard key={item.id} product={item} />
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
     </div>
   );
 }
 
-/* FEATURE CARD NÂNG CẤP GIAO DIỆN */
+function HomeProductCard({ product }: { product: Product }) {
+  const rawImg = product.images[0];
+  const finalImg = rawImg.startsWith("http") 
+    ? rawImg 
+    : `${basePath}${rawImg.startsWith("/") ? "" : "/"}${rawImg}`;
+
+  return (
+    <div className="group bg-white dark:bg-slate-900 rounded-[2.5rem] overflow-hidden border border-slate-100 dark:border-slate-800 hover:shadow-2xl hover:shadow-orange-500/5 transition-all duration-500 flex flex-col h-full">
+      <div className="relative aspect-4/3 overflow-hidden bg-slate-100 dark:bg-slate-800">
+        <Image
+          src={finalImg}
+          alt={product.name}
+          fill
+          className="object-cover group-hover:scale-110 transition-transform duration-700"
+          unoptimized={true} 
+        />
+        <div className="absolute top-4 right-4 bg-white/90 dark:bg-slate-950/90 backdrop-blur-md px-3 py-1 rounded-full shadow-lg border border-white/20">
+          <span className="text-orange-600 dark:text-orange-500 font-black text-xs">
+            {product.calories} kcal
+          </span>
+        </div>
+      </div>
+      
+      <div className="p-8 flex flex-col grow space-y-4">
+        <div className="grow">
+          <div className="flex flex-wrap gap-2">
+            {product.category.slice(0, 2).map((cat, idx) => (
+              <span key={idx} className="text-[10px] font-black uppercase tracking-widest text-orange-500 bg-orange-50 dark:bg-orange-500/10 px-3 py-1 rounded-lg">
+                {cat}
+              </span>
+            ))}
+          </div>
+          <h3 className="text-xl font-black text-slate-900 dark:text-white mt-4 line-clamp-1 italic uppercase tracking-tight">
+            {product.name}
+          </h3>
+          <p className="text-slate-500 dark:text-slate-400 text-sm line-clamp-2 mt-2 font-medium leading-relaxed">
+            {product.description}
+          </p>
+        </div>
+
+        <div className="flex items-center justify-between pt-6 border-t border-slate-50 dark:border-slate-800 mt-auto">
+          <span className="text-2xl font-black text-slate-900 dark:text-white italic tracking-tighter">
+            {product.price.toLocaleString()}đ
+          </span>
+          <Link 
+            href={`/products/${product.id}`}
+            className="flex items-center gap-2 bg-slate-900 dark:bg-slate-800 text-white px-5 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-orange-500 transition-all active:scale-95 shadow-lg shadow-slate-200 dark:shadow-none"
+          >
+            Chi tiết <Info size={14} />
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function FeatureCard({
   icon,
   title,
@@ -170,7 +234,7 @@ function FeatureCard({
       <h3 className="text-xl font-black text-slate-900 dark:text-white mb-3 uppercase tracking-tight">{title}</h3>
       <p className="text-slate-500 dark:text-slate-400 leading-relaxed font-medium">{desc}</p>
       
-      {/* Hiệu ứng trang trí nhỏ ở góc card */}
+      {/* Hiệu ứng trang trí góc */}
       <div className="absolute bottom-0 right-0 w-16 h-16 bg-slate-50 dark:bg-slate-800/50 rounded-tl-[2rem] -mr-8 -mb-8 transition-all group-hover:mr-0 group-hover:mb-0"></div>
     </div>
   );
