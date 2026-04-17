@@ -1,3 +1,5 @@
+import { Product } from "./product";
+
 export interface RestaurantContact {
   phone: string;
   email: string;
@@ -21,4 +23,5 @@ export interface Restaurant {
   tags: string[];
   badges: string[];
   popularProductIds: number[];
+  menu: Product[];
 }

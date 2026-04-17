@@ -21,7 +21,7 @@ export function ThemeToggle() {
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
       className="p-2 bg-gray-200 dark:bg-gray-800 text-black dark:text-white rounded-md transition-colors"
     >
-      {theme === "dark" ? "☀️" : "🌙"}
+      {theme === "dark" ? "🌙": "☀️"}
     </button>
   );
 }
