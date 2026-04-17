@@ -3,8 +3,8 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  User, ShoppingBag, Clock, ChevronRight, Package, MapPin,
-  Trash2, Store, Calendar, Sparkles, Zap, CreditCard,
+  User, ShoppingBag, ChevronRight, Package,
+  Trash2, Calendar, CreditCard,
   AlertTriangle, X, LogIn
 } from "lucide-react";
 import Link from "next/link";
@@ -18,7 +18,7 @@ interface OrderItem {
   name: string;
   price: number;
   quantity: number;
-  displayImage: string;
+  displayImage: string; 
   restaurantName?: string;
 }
 
@@ -43,10 +43,13 @@ export default function DashboardPage() {
     if (savedOrders) {
       try {
         const parsedOrders: Order[] = JSON.parse(savedOrders);
+
         // Loại bỏ trùng lặp ID và ưu tiên đơn hàng mới nhất lên đầu
         const uniqueOrders = Array.from(
           new Map(parsedOrders.map((order) => [order.id, order])).values()
         );
+
+        // Đảo ngược danh sách để đơn mới nhất ở trên cùng
         setOrders(uniqueOrders.reverse()); 
       } catch (e) {
         console.error("Lỗi khi đọc dữ liệu đơn hàng từ LocalStorage", e);
@@ -98,8 +101,8 @@ export default function DashboardPage() {
               >
                 ĐĂNG NHẬP NGAY <LogIn size={20} />
               </Link>
-              <Link href="/products" className="block text-[10px] font-black text-slate-300 dark:text-slate-600 uppercase tracking-[0.2em] hover:text-slate-900 dark:hover:text-slate-400 transition-colors">
-                Quay lại thực đơn
+              <Link href="/restaurants" className="block text-[10px] font-black text-slate-300 dark:text-slate-600 uppercase tracking-[0.2em] hover:text-slate-900 dark:hover:text-slate-400 transition-colors">
+                Quay lại nhà hàng
               </Link>
             </div>
           </motion.div>
@@ -111,10 +114,11 @@ export default function DashboardPage() {
   return (
     <div className="max-w-7xl mx-auto px-6 py-12 font-sans bg-slate-50/30 dark:bg-slate-950 transition-colors duration-500 min-h-screen relative">
       <Breadcrumbs />
+
       {/* MODAL XÁC NHẬN XÓA (Custom UI của Nhi) */}
       <AnimatePresence>
         {showConfirmDelete && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+          <div className="fixed inset-0 z-100 flex items-center justify-center p-6">
             <motion.div 
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               onClick={() => setShowConfirmDelete(false)}
@@ -149,7 +153,9 @@ export default function DashboardPage() {
                   Xóa sạch
                 </button>
               </div>
-              <button onClick={() => setShowConfirmDelete(false)} className="absolute top-8 right-8 text-slate-300 dark:text-slate-600 hover:text-slate-900 dark:hover:text-white transition-colors"><X size={24} /></button>
+              <button onClick={() => setShowConfirmDelete(false)} className="absolute top-8 right-8 text-slate-300 dark:text-slate-600 hover:text-slate-900 dark:hover:text-white transition-colors">
+                <X size={24} />
+              </button>
             </motion.div>
           </div>
         )}
@@ -186,36 +192,49 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+
         {/* CỘT TRÁI: THÔNG TIN USER (STATS) */}
         <div className="lg:col-span-4">
           <div className="sticky top-28 bg-slate-900 dark:bg-slate-800 rounded-[3.5rem] p-1 shadow-2xl">
             <div className="bg-white dark:bg-slate-900 rounded-[3.3rem] p-10 text-center relative overflow-hidden transition-colors">
-              <div className="absolute -top-10 -right-10 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl" />
-              
-              <motion.div whileHover={{ rotate: 10 }} className="w-32 h-32 bg-slate-900 dark:bg-slate-950 rounded-[2.8rem] flex items-center justify-center text-white mx-auto mb-8 shadow-2xl relative">
+
+              <motion.div
+                whileHover={{ rotate: 10 }}
+                className="w-32 h-32 bg-slate-900 dark:bg-slate-950 rounded-[2.8rem] flex items-center justify-center text-white mx-auto mb-8 shadow-2xl relative"
+              >
                 <User size={56} strokeWidth={1.5} />
               </motion.div>
 
               <h2 className="text-4xl font-black uppercase italic text-slate-900 dark:text-white leading-none tracking-tighter">
                 {user?.name || "Foodie Member"}
               </h2>
-              
+
               <div className="grid grid-cols-1 gap-3 mt-10">
+
                 <div className="bg-slate-50 dark:bg-slate-800 p-6 rounded-[2rem] border border-slate-100 dark:border-slate-700 flex items-center justify-between px-8 transition-colors hover:bg-orange-50 dark:hover:bg-orange-500/10">
                   <div className="text-left">
-                    <p className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1">Số đơn hàng</p>
-                    <p className="text-3xl font-black text-slate-900 dark:text-white italic">{orders.length}</p>
+                    <p className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1">
+                      Số đơn hàng
+                    </p>
+                    <p className="text-3xl font-black text-slate-900 dark:text-white italic">
+                      {orders.length}
+                    </p>
                   </div>
                   <ShoppingBag size={24} className="text-slate-300 dark:text-slate-600" />
                 </div>
 
                 <div className="bg-slate-900 dark:bg-orange-500 p-6 rounded-[2rem] flex items-center justify-between px-8 text-white transition-all hover:bg-orange-500 dark:hover:bg-white dark:hover:text-orange-500 group">
                   <div className="text-left">
-                    <p className="text-[9px] font-black text-slate-400 dark:text-slate-200 group-hover:text-orange-100 dark:group-hover:text-orange-500 uppercase tracking-widest mb-1">Tổng chi tiêu</p>
-                    <p className="text-2xl font-black italic">{totalSpending.toLocaleString()}đ</p>
+                    <p className="text-[9px] font-black text-slate-400 dark:text-slate-200 group-hover:text-orange-100 dark:group-hover:text-orange-500 uppercase tracking-widest mb-1">
+                      Tổng chi tiêu
+                    </p>
+                    <p className="text-2xl font-black italic">
+                      {totalSpending.toLocaleString()}đ
+                    </p>
                   </div>
                   <CreditCard size={24} className="text-slate-500 dark:text-white/60 group-hover:text-white dark:group-hover:text-orange-500" />
                 </div>
+
               </div>
             </div>
           </div>
@@ -255,11 +274,13 @@ export default function DashboardPage() {
                       <div key={i} className="flex items-center justify-between group/item p-2 rounded-3xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
                         <div className="flex items-center gap-6">
                           <div className="relative w-20 h-20 rounded-[2rem] overflow-hidden border-4 border-white dark:border-slate-700 shadow-xl group-hover/item:scale-105 transition-transform duration-500">
+                            {/* Hiển thị ảnh: Ưu tiên displayImage từ data đã lưu */}
                             <Image 
-                              src={item.displayImage || "/images/placeholder-food.png"} 
+                              src={item.displayImage || "/placeholder-food.png"} 
                               alt={item.name} 
                               fill 
                               className="object-cover" 
+                              sizes="80px"
                             />
                           </div>
                           <div>
@@ -280,13 +301,17 @@ export default function DashboardPage() {
                     {/* TỔNG TIỀN & NÚT MUA LẠI */}
                     <div className="pt-8 border-t-2 border-dashed border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row justify-between items-center gap-8">
                       <div className="text-center sm:text-left">
-                        <p className="text-[10px] text-slate-400 dark:text-slate-500 font-black uppercase tracking-[0.3em] mb-2">Thanh toán cuối cùng</p>
+                        <p className="text-[10px] text-slate-400 dark:text-slate-500 font-black uppercase tracking-[0.3em] mb-2">
+                          Thanh toán cuối cùng
+                        </p>
                         <p className="text-5xl font-black text-slate-900 dark:text-white tracking-tighter italic leading-none">
-                          {order.total.toLocaleString()}<span className="text-orange-500 not-italic text-2xl ml-1">đ</span>
+                          {order.total.toLocaleString()}
+                          <span className="text-orange-500 not-italic text-2xl ml-1">đ</span>
                         </p>
                       </div>
+
                       <Link 
-                        href="/products" 
+                        href="/restaurants"
                         className="w-full sm:w-auto px-10 py-5 bg-slate-900 dark:bg-orange-500 text-white rounded-[1.8rem] text-[11px] font-black uppercase tracking-widest hover:bg-orange-500 dark:hover:bg-white dark:hover:text-slate-900 hover:shadow-[0_20px_40px_-10px_rgba(249,115,22,0.4)] transition-all flex items-center justify-center gap-3 active:scale-95 group/btn"
                       >
                         Mua lại đơn này <ChevronRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
@@ -301,10 +326,15 @@ export default function DashboardPage() {
                 className="text-center py-32 bg-white dark:bg-slate-900 rounded-[4rem] border-2 border-dashed border-slate-100 dark:border-slate-800 shadow-inner"
               >
                 <Package size={64} className="mx-auto text-slate-200 dark:text-slate-700 mb-6" />
-                <h4 className="text-2xl font-black text-slate-900 dark:text-white uppercase italic tracking-tighter">Bạn chưa có kỷ niệm ăn uống nào</h4>
-                <p className="text-slate-400 dark:text-slate-500 font-medium mt-2 max-w-xs mx-auto text-sm">Hãy bắt đầu đặt món và lấp đầy lịch sử của mình nhé!</p>
+                <h4 className="text-2xl font-black text-slate-900 dark:text-white uppercase italic tracking-tighter">
+                  Bạn chưa có kỷ niệm ăn uống nào
+                </h4>
+                <p className="text-slate-400 dark:text-slate-500 font-medium mt-2 max-w-xs mx-auto text-sm">
+                  Hãy bắt đầu đặt món và lấp đầy lịch sử của mình nhé!
+                </p>
+
                 <Link 
-                  href="/products" 
+                  href="/restaurants"
                   className="inline-block mt-8 bg-orange-500 text-white px-10 py-4 rounded-2xl font-black text-[11px] uppercase tracking-widest hover:bg-slate-900 transition-all shadow-xl shadow-orange-100 dark:shadow-none"
                 >
                   Bắt đầu đặt món
