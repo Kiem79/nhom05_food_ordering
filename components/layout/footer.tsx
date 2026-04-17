@@ -21,7 +21,7 @@ return (
           <div>
             <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-widest mb-6">Khám phá</h4>
             <ul className="space-y-4 text-sm text-slate-500 dark:text-slate-400 font-medium">
-              <li><Link href="/products" className="hover:text-orange-500 dark:hover:text-orange-400 transition-colors">Thực đơn</Link></li>
+              <li><Link href="/restaurants" className="hover:text-orange-500 dark:hover:text-orange-400 transition-colors">Thực đơn</Link></li>
               <li><Link href="/group-order" className="hover:text-orange-500 dark:hover:text-orange-400 transition-colors">Đặt món nhóm</Link></li>
               <li><Link href="/about" className="hover:text-orange-500 dark:hover:text-orange-400 transition-colors">Về chúng tôi</Link></li>
             </ul>
