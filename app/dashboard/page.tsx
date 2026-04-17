@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   User, ShoppingBag, ChevronRight, Package,
   Trash2, Calendar, CreditCard,
-  AlertTriangle, X, LogIn
+  AlertTriangle, X, LogIn, MessageSquare
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -20,6 +20,7 @@ interface OrderItem {
   quantity: number;
   displayImage: string; 
   restaurantName?: string;
+  note?: string;
 }
 
 interface Order {
@@ -290,6 +291,11 @@ export default function DashboardPage() {
                             <p className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-[0.2em] mt-1.5">
                               x{item.quantity} • {item.price.toLocaleString()}đ
                             </p>
+                            {item.note && (
+                              <p className="text-[10px] text-orange-500 italic font-bold uppercase tracking-wider mt-2 flex items-center gap-1.5 bg-orange-500/5 dark:bg-orange-500/10 px-3 py-1 rounded-full w-fit border border-orange-500/10">
+                                <MessageSquare size={10} strokeWidth={3} /> {item.note}
+                              </p>
+                            )}                            
                           </div>
                         </div>
                         <span className="text-xl font-black text-slate-900 dark:text-white italic tracking-tighter">

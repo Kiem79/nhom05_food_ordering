@@ -7,7 +7,6 @@ import * as z from "zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-// Đã bổ sung import motion ở đây
 import { motion } from "framer-motion"; 
 import { Loader2, Lock, Mail, Eye, EyeOff, ArrowRight } from "lucide-react";
 import useAuthStore from "@/store/authStore";
@@ -52,7 +51,6 @@ export default function LoginPage() {
 
   return (
   <div className="min-h-screen flex items-center justify-center bg-orange-50/30 dark:bg-slate-950 p-6 font-sans transition-colors duration-500">
-    {/* Thêm Background Decor mờ phía sau cho đồng bộ với các trang khác */}
     <div className="fixed inset-0 pointer-events-none opacity-40 dark:opacity-20 transition-opacity">
       <div className="absolute top-0 left-0 w-80 h-80 bg-orange-500/10 dark:bg-orange-500/20 rounded-full blur-[100px]" />
       <div className="absolute bottom-0 right-0 w-80 h-80 bg-amber-500/10 dark:bg-amber-500/20 rounded-full blur-[100px]" />

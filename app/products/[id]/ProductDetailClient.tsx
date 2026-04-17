@@ -15,8 +15,6 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useCartStore } from "@/store/cartStore";
-import Breadcrumbs from "@/components/ui/Breadcrumbs";
-
 import productsData from "@/lib/data/products.json";
 import storesData from "@/lib/data/stores.json";
 
@@ -87,18 +85,6 @@ export default function ProductDetailClient({
       <div className="absolute top-0 right-0 -z-10 w-full h-full opacity-[0.03] dark:opacity-[0.05] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] dark:invert" />
 
       <div className="max-w-7xl mx-auto px-6 py-12">
-        <Breadcrumbs />
-
-        <Link
-          href={restaurant ? `/restaurants/${restaurant.id}` : "/products"}
-          className="inline-flex items-center gap-2 text-slate-400 dark:text-slate-500 hover:text-orange-500 dark:hover:text-orange-400 font-bold text-xs uppercase tracking-widest mb-10 transition-colors group"
-        >
-          <ChevronLeft
-            size={16}
-            className="group-hover:-translate-x-1 transition-transform"
-          />
-          Quay lại thực đơn
-        </Link>
 
         {/* DETAIL */}
         <div className="grid lg:grid-cols-2 gap-16 items-start mb-12">

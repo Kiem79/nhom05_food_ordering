@@ -10,7 +10,6 @@ import { Star, MapPin, Clock, ChevronRight } from "lucide-react";
 import type { Restaurant, Product } from "@/types";
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
 
-// QUAN TRỌNG: Khai báo basePath để fix lỗi ảnh
 const basePath = "/nhom05_food_ordering";
 
 export default function RestaurantsPage() {

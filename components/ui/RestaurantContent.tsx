@@ -84,17 +84,6 @@ export default function RestaurantContent({
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-12 font-sans bg-white dark:bg-slate-950 selection:bg-orange-100 dark:selection:bg-orange-500/30 transition-colors duration-500">
-      {/* BACK */}
-      <Link
-        href="/restaurants"
-        className="inline-flex items-center gap-2 text-slate-400 dark:text-slate-500 hover:text-orange-500 dark:hover:text-orange-400 font-black uppercase text-[10px] tracking-widest mb-8 transition-all group"
-      >
-        <ArrowLeft
-          size={14}
-          className="group-hover:-translate-x-1 transition-transform"
-        />
-        Quay lại thực đơn
-      </Link>
 
       {/* HERO */}
       <motion.div

@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { 
   Trash2, Receipt, ArrowRight, ShoppingBag, 
   Lock, LogIn, AlertCircle, Store, Link as LinkIcon, 
-  Check, Sparkles, Plus, Minus, Ticket 
+  Check, Sparkles, Plus, Minus, Ticket, MessageSquare 
 } from "lucide-react";
 
 import { useCartStore } from "@/store/cartStore";
@@ -44,7 +44,8 @@ export default function GroupOrderPage() {
   const {
     items, removeItem, addItem, updateQuantity,
     getSubTotal, getDiscountAmount, getFinalTotal,
-    applyVoucher, discountPercent
+    applyVoucher, discountPercent,
+    updateNote 
   } = useCartStore();
 
   const { user } = useAuthStore();
@@ -60,7 +61,6 @@ export default function GroupOrderPage() {
     });
     return () => cancelAnimationFrame(frame);
   }, []);
-
 
   const handleCopyLink = () => {
     const currentUrl = window.location.href;
@@ -130,53 +130,58 @@ export default function GroupOrderPage() {
 
   if (!user) {
     return (
-      <div className="min-h-[85vh] flex items-center justify-center px-6 bg-transparent dark:bg-slate-950 transition-colors duration-500">
-        <div className="mb-8"><Breadcrumbs /></div>
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-          className="max-w-md w-full bg-white dark:bg-slate-900 rounded-[3.5rem] p-12 text-center shadow-2xl border border-slate-50 dark:border-slate-800 space-y-8"
-        >
-          <div className="w-24 h-24 bg-orange-50 dark:bg-orange-500/10 rounded-full flex items-center justify-center mx-auto">
-            <Lock size={40} className="text-orange-500" />
-          </div>
-          <div className="space-y-2">
-            <h2 className="text-3xl font-black text-slate-900 dark:text-white uppercase italic tracking-tighter">Dừng khoảng 2s!</h2>
-            <p className="text-slate-400 dark:text-slate-500 font-medium text-xs">Vui lòng đăng nhập để sử dụng tính năng Đặt Nhóm.</p>
-          </div>
-          <Link href="/auth/login" className="w-full h-18 bg-slate-900 dark:bg-orange-500 text-white rounded-2xl font-black uppercase flex items-center justify-center gap-3 hover:bg-orange-500 transition-all shadow-xl active:scale-95">
-            ĐĂNG NHẬP NGAY <LogIn size={20} />
-          </Link>
-        </motion.div>
+      <div className="max-w-7xl mx-auto px-6 pt-28 min-h-screen">
+        <Breadcrumbs />
+        <div className="flex items-center justify-center mt-20">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+            className="max-w-md w-full bg-white dark:bg-slate-900 rounded-[3.5rem] p-12 text-center shadow-2xl border border-slate-50 dark:border-slate-800 space-y-8"
+          >
+            <div className="w-24 h-24 bg-orange-50 dark:bg-orange-500/10 rounded-full flex items-center justify-center mx-auto">
+              <Lock size={40} className="text-orange-500" />
+            </div>
+            <div className="space-y-2">
+              <h2 className="text-3xl font-black text-slate-900 dark:text-white uppercase italic tracking-tighter">Dừng khoảng 2s!</h2>
+              <p className="text-slate-400 dark:text-slate-500 font-medium text-xs">Vui lòng đăng nhập để sử dụng tính năng Đặt Nhóm.</p>
+            </div>
+            <Link href="/auth/login" className="w-full h-18 bg-slate-900 dark:bg-orange-500 text-white rounded-2xl font-black uppercase flex items-center justify-center gap-3 hover:bg-orange-500 transition-all shadow-xl active:scale-95">
+              ĐĂNG NHẬP NGAY <LogIn size={20} />
+            </Link>
+          </motion.div>
+        </div>
       </div>
     );
   }
 
   if (items.length === 0) {
     return (
-      <div className="min-h-[80vh] flex flex-col items-center justify-center space-y-8 px-6 bg-transparent dark:bg-slate-950 transition-colors duration-500">
-        <div className="mb-12"><Breadcrumbs /></div>
-        <div className="w-40 h-40 bg-slate-50 dark:bg-slate-900 rounded-full flex items-center justify-center relative shadow-inner">
-          <ShoppingBag size={64} className="text-slate-200 dark:text-slate-800" />
-          <AlertCircle className="absolute top-8 right-8 text-orange-500 animate-pulse" />
-        </div>
-        <div className="text-center space-y-2">
-           <h2 className="text-4xl font-black text-slate-900 dark:text-white uppercase italic tracking-tighter">Giỏ nhóm đang trống!</h2>
-           <p className="text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest text-[10px]">Đang đợi Leader {user?.name || "bạn"} chọn món...</p>
-        </div>
-        <div className="flex flex-col sm:flex-row gap-4">
-            <Link href="/restaurants" className="bg-slate-900 dark:bg-orange-500 text-white px-12 py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-orange-500 transition-all shadow-2xl active:scale-95 text-center">
-              ĐI CHỌN QUÁN
-            </Link>
-            <button onClick={handleSimulateFriend} className="bg-orange-50 dark:bg-orange-500/10 text-orange-600 dark:text-orange-500 px-8 py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-orange-100 transition-all border border-orange-200">
-              DEMO BẠN BÈ ĐẶT
-            </button>
+      <div className="max-w-7xl mx-auto px-6 pt-28 min-h-screen">
+        <Breadcrumbs />
+        <div className="flex flex-col items-center justify-center mt-20 space-y-8">
+          <div className="w-40 h-40 bg-slate-50 dark:bg-slate-900 rounded-full flex items-center justify-center relative shadow-inner">
+            <ShoppingBag size={64} className="text-slate-200 dark:text-slate-800" />
+            <AlertCircle className="absolute top-8 right-8 text-orange-500 animate-pulse" />
+          </div>
+          <div className="text-center space-y-2">
+              <h2 className="text-4xl font-black text-slate-900 dark:text-white uppercase italic tracking-tighter">Giỏ nhóm đang trống!</h2>
+              <p className="text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest text-[10px]">Đang đợi Leader {user?.name || "bạn"} chọn món...</p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-4">
+              <Link href="/restaurants" className="bg-slate-900 dark:bg-orange-500 text-white px-12 py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-orange-500 transition-all shadow-2xl active:scale-95 text-center">
+                ĐI CHỌN QUÁN
+              </Link>
+              <button onClick={handleSimulateFriend} className="bg-orange-50 dark:bg-orange-500/10 text-orange-600 dark:text-orange-500 px-8 py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-orange-100 transition-all border border-orange-200">
+                DEMO BẠN BÈ ĐẶT
+              </button>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-24 font-sans bg-slate-50/10 dark:bg-slate-950 transition-colors duration-500 min-h-screen">
+    <div className="max-w-7xl mx-auto px-6 pt-28 pb-24 font-sans bg-slate-50/10 dark:bg-slate-950 transition-colors duration-500 min-h-screen">
       <div className="mb-8"><Breadcrumbs /></div>
+      
       <div className="mb-16 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
         <div className="space-y-4">
             <h1 className="text-6xl md:text-7xl font-black text-slate-900 dark:text-white uppercase italic tracking-tighter leading-none">
@@ -197,7 +202,6 @@ export default function GroupOrderPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-        {/* CỘT TRÁI: DANH SÁCH MÓN ĂN */}
         <div className="lg:col-span-2 space-y-10">
           <div className="bg-white dark:bg-slate-900 rounded-[4rem] p-10 md:p-14 shadow-2xl border border-slate-50 dark:border-slate-800 relative overflow-hidden transition-colors">
             <h3 className="text-2xl font-black text-slate-900 dark:text-white uppercase italic mb-12 flex items-center gap-4 border-b border-slate-50 dark:border-slate-800 pb-8">
@@ -215,13 +219,15 @@ export default function GroupOrderPage() {
                     </div>
                     <div className="flex-1">
                       
-                      <div className="flex items-center gap-2 text-orange-500 mb-2">
-                        <Store size={14} />
-                        <span className="text-[10px] font-black uppercase tracking-widest">
-                          {item.restaurantId && RESTAURANT_MAP[item.restaurantId] 
-                            ? RESTAURANT_MAP[item.restaurantId] 
-                            : "Foodie Partner"}
-                        </span>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-orange-500 mb-2">
+                          <Store size={14} />
+                          <span className="text-[10px] font-black uppercase tracking-widest">
+                            {item.restaurantId && RESTAURANT_MAP[item.restaurantId] 
+                              ? RESTAURANT_MAP[item.restaurantId] 
+                              : "Foodie Partner"}
+                          </span>
+                        </div>
                       </div>
                       
                       <h4 className="font-black text-slate-900 dark:text-white text-2xl tracking-tight uppercase leading-none italic">{item.name}</h4>
@@ -232,6 +238,19 @@ export default function GroupOrderPage() {
                         <span className="px-3 py-1 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[9px] font-black rounded-lg uppercase">
                           {item.owner === "Host" ? "Bạn" : item.owner}
                         </span>
+                      </div>
+
+                      <div className="mt-4 flex items-center gap-2 w-full max-w-xs">
+                        <div className="p-2 bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-400 shrink-0">
+                          <MessageSquare size={12} />
+                        </div>
+                        <input
+                          type="text"
+                          placeholder="Ghi chú (vd: không hành...)"
+                          value={item.note || ""}
+                          onChange={(e) => updateNote(item.id, item.owner, e.target.value)}
+                          className="w-full bg-transparent border-b border-dashed border-slate-200 dark:border-slate-700 focus:border-orange-500 focus:outline-none text-[11px] font-medium text-slate-500 dark:text-slate-400 italic transition-all"
+                        />
                       </div>
                       
                       <div className="flex items-center gap-3 bg-slate-50 dark:bg-slate-800 w-fit p-1 rounded-xl mt-4 border border-slate-100 dark:border-slate-700">
@@ -254,7 +273,6 @@ export default function GroupOrderPage() {
           </div>
         </div>
 
-        {/* CỘT PHẢI: TỔNG KẾT */}
         <div className="relative">
           <div className="bg-slate-900 dark:bg-slate-900/80 backdrop-blur-md text-white rounded-[4rem] p-12 shadow-2xl sticky top-28 overflow-hidden border-4 border-white/5 dark:border-slate-800 transition-colors h-fit">
             
