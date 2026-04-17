@@ -17,7 +17,7 @@ type NewType = {
 
 // --- MOCK GPS MAP COMPONENT ---
 const FakeGPSMap = ({ destination }: NewType) => (
-  <div className="relative w-full h-[400px] bg-slate-100 dark:bg-slate-900 rounded-[3rem] overflow-hidden border-4 border-white dark:border-slate-800 shadow-inner transition-colors duration-500">
+  <div className="relative w-full h-100 bg-slate-100 dark:bg-slate-900 rounded-[3rem] overflow-hidden border-4 border-white dark:border-slate-800 shadow-inner transition-colors duration-500">
     <div
       className="absolute inset-0 opacity-20 dark:opacity-10"
       style={{
@@ -29,13 +29,13 @@ const FakeGPSMap = ({ destination }: NewType) => (
       <motion.path d="M 50 350 Q 150 300 200 200 T 350 50" fill="none" stroke="currentColor" className="text-slate-200 dark:text-slate-800" strokeWidth="8" strokeLinecap="round" />
       <motion.path d="M 50 350 Q 150 300 200 200 T 350 50" fill="none" stroke="#f97316" strokeWidth="8" strokeLinecap="round" initial={{ pathLength: 0 }} animate={{ pathLength: 0.6 }} transition={{ duration: 2, ease: "easeInOut" }} />
     </svg>
-    <div className="absolute left-[40px] bottom-[40px] text-center">
+    <div className="absolute left-10 bottom-10 text-center">
       <div className="w-8 h-8 bg-slate-900 dark:bg-orange-500 rounded-full flex items-center justify-center shadow-lg">
         <ChefHat size={14} className="text-white" />
       </div>
       <p className="text-[8px] font-black uppercase mt-1 dark:text-slate-400">Shop</p>
     </div>
-    <div className="absolute right-[40px] top-[40px] text-center">
+    <div className="absolute right-10 top-10 text-center">
       <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center shadow-lg animate-pulse mx-auto">
         <MapPin size={14} className="text-white" />
       </div>
@@ -221,7 +221,7 @@ export default function OrderTrackingPage() {
             initial={{ opacity: 0, y: 50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 50, scale: 0.9 }}
-            className="fixed bottom-6 right-6 w-[350px] bg-white dark:bg-slate-900 rounded-[2rem] shadow-2xl border border-slate-200 dark:border-slate-800 z-50 flex flex-col overflow-hidden"
+            className="fixed bottom-6 right-6 w-87.5 bg-white dark:bg-slate-900 rounded-[2rem] shadow-2xl border border-slate-200 dark:border-slate-800 z-50 flex flex-col overflow-hidden"
           >
             {/* Header Chat */}
             <div className="bg-orange-500 p-4 flex items-center justify-between text-white">
@@ -267,7 +267,7 @@ export default function OrderTrackingPage() {
         {isCalling && (
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-slate-900/90 backdrop-blur-md z-[100] flex items-center justify-center"
+            className="fixed inset-0 bg-slate-900/90 backdrop-blur-md z-100 flex items-center justify-center"
           >
             <div className="flex flex-col items-center text-white">
               {/* Vòng tròn lan tỏa mờ ảo */}
@@ -289,7 +289,7 @@ export default function OrderTrackingPage() {
                   onClick={() => setIsCalling(false)}
                   className="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center hover:bg-red-600 transition-colors shadow-lg shadow-red-500/30"
                 >
-                  <PhoneCall size={24} className="rotate-[135deg]" />
+                  <PhoneCall size={24} className="rotate-135" />
                 </button>
               </div>
             </div>
