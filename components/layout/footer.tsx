@@ -30,9 +30,9 @@ return (
           <div>
             <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-widest mb-6">Hỗ trợ</h4>
             <ul className="space-y-4 text-sm text-slate-500 dark:text-slate-400 font-medium">
-              <li><Link href="#" className="hover:text-orange-500 dark:hover:text-orange-400 transition-colors">Trung tâm trợ giúp</Link></li>
-              <li><Link href="#" className="hover:text-orange-500 dark:hover:text-orange-400 transition-colors">Chính sách bảo mật</Link></li>
-              <li><Link href="#" className="hover:text-orange-500 dark:hover:text-orange-400 transition-colors">Điều khoản dịch vụ</Link></li>
+              <li><Link href="/help-center" className="hover:text-orange-500 dark:hover:text-orange-400 transition-colors">Trung tâm trợ giúp</Link></li>
+              <li><Link href="/privacy-policy" className="hover:text-orange-500 dark:hover:text-orange-400 transition-colors">Chính sách bảo mật</Link></li>
+              <li><Link href="/terms-of-service" className="hover:text-orange-500 dark:hover:text-orange-400 transition-colors">Điều khoản dịch vụ</Link></li>
             </ul>
           </div>
 
