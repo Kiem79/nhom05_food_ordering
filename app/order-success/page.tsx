@@ -4,64 +4,65 @@ import React, { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { CheckCircle, PackageCheck, UserCircle } from "lucide-react";
 import Link from "next/link";
-import { useCartStore, CartItem } from "@/store/cartStore";
+import { useCartStore } from "@/store/cartStore";
+
+type OrderItem = {
+  id: string | number;
+  name: string;
+  price: number;
+  quantity: number;
+  displayImage: string;
+  restaurantName?: string;
+  owner?: string;
+};
+
+type Order = {
+  id: string;
+  date: string;
+  createdAt: string;
+  items: OrderItem[];
+  total: number;
+  status: string;
+};
 
 export default function OrderSuccessPage() {
-  const { items, totalPrice, clearCart } = useCartStore();
+  const { clearCart } = useCartStore();
   const [orderId, setOrderId] = useState<string>("");
   const hasSaved = useRef(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       if (hasSaved.current) return;
-
-      if (items.length === 0) {
-        const savedOrders = JSON.parse(localStorage.getItem("foodie_orders") || "[]");
-        if (savedOrders.length > 0) {
-          setOrderId(savedOrders[0].id);
-        }
-        return;
-      }
-
       hasSaved.current = true;
 
-      const generatedId = `SOM-2026-${Math.floor(1000 + Math.random() * 9000)}`;
-      
-      const newOrder = {
-        id: generatedId,
-        date: new Date().toLocaleString("vi-VN"),
-        items: items.map((item: CartItem) => ({
-          ...item,
-          
-          displayImage: item.images && item.images.length > 0 ? item.images[0] : "/placeholder.png"
-        })),
-        total: totalPrice(),
-        status: "Đang xử lý",
-      };
-
       try {
-        const existingOrders = JSON.parse(localStorage.getItem("foodie_orders") || "[]");
-        localStorage.setItem("foodie_orders", JSON.stringify([newOrder, ...existingOrders]));
-        
-        setOrderId(generatedId);
+        const savedOrders: Order[] = JSON.parse(
+          localStorage.getItem("foodie_orders") || "[]"
+        );
+
+        if (savedOrders.length > 0) {
+          const latestOrder = savedOrders[savedOrders.length - 1];
+          setOrderId(latestOrder.id);
+        }
+
         clearCart();
       } catch (error) {
-        console.error("Lỗi lưu đơn hàng:", error);
+        console.error("Lỗi đọc đơn hàng tại trang Success:", error);
       }
     }, 0);
 
     return () => clearTimeout(timer);
-  }, [items, totalPrice, clearCart]);
+  }, [clearCart]);
 
   return (
     <div className="min-h-[90vh] flex items-center justify-center bg-white dark:bg-slate-950 px-6 transition-colors duration-500">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         className="max-w-lg w-full text-center space-y-8"
       >
         <div className="relative inline-block">
-          <motion.div 
+          <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ type: "spring", stiffness: 200, damping: 10 }}
@@ -69,37 +70,52 @@ export default function OrderSuccessPage() {
           >
             <CheckCircle size={64} className="text-white" />
           </motion.div>
-          
-          <motion.div 
+
+          <motion.div
             animate={{ rotate: 360 }}
-            transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+            transition={{
+              duration: 15,
+              repeat: Infinity,
+              ease: "linear",
+            }}
             className="absolute -top-4 -left-4 -right-4 -bottom-4 border-2 border-dashed border-green-200 dark:border-green-900/30 rounded-full"
           />
         </div>
 
         <div className="space-y-4">
-         <h1 className="text-5xl md:text-6xl font-black text-slate-900 dark:text-white uppercase italic tracking-tighter leading-[1.1]">
+          <h1 className="text-5xl md:text-6xl font-black text-slate-900 dark:text-white uppercase italic tracking-tighter leading-[1.1]">
             <span className="block">Đã nhận đơn</span>
             <span className="block text-green-500">Thành công!</span>
           </h1>
+
           <p className="text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
             Món ăn của team bạn đang được chuyển đến nhà bếp. <br />
-            Mã đơn: <span className="font-bold text-slate-900 dark:text-white underline underline-offset-4 tracking-wider">
+            Mã đơn:{" "}
+            <span className="font-bold text-slate-900 dark:text-white underline underline-offset-4 tracking-wider">
               #{orderId || "XÁC NHẬN..."}
             </span>
           </p>
         </div>
 
         <div className="grid grid-cols-1 gap-4 pt-6">
-          <Link href="/order-tracking" className="h-16 bg-slate-900 dark:bg-orange-500 text-white rounded-2xl font-black uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-orange-500 dark:hover:bg-white dark:hover:text-slate-900 transition-all shadow-2xl shadow-slate-200 dark:shadow-none active:scale-95">
+          <Link
+            href="/order-tracking"
+            className="h-16 bg-slate-900 dark:bg-orange-500 text-white rounded-2xl font-black uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-orange-500 dark:hover:bg-white dark:hover:text-slate-900 transition-all shadow-2xl shadow-slate-200 dark:shadow-none active:scale-95"
+          >
             THEO DÕI SHIPPER <PackageCheck size={20} />
           </Link>
-          
-          <Link href="/dashboard" className="h-16 border-2 border-slate-100 dark:border-slate-800 text-slate-900 dark:text-white rounded-2xl font-black uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all active:scale-95">
+
+          <Link
+            href="/dashboard"
+            className="h-16 border-2 border-slate-100 dark:border-slate-800 text-slate-900 dark:text-white rounded-2xl font-black uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all active:scale-95"
+          >
             LỊCH SỬ ĐƠN HÀNG <UserCircle size={20} />
           </Link>
 
-          <Link href="/restaurants" className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest hover:text-orange-500 dark:hover:text-orange-400 transition-colors pt-4">
+          <Link
+            href="/restaurants"
+            className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest hover:text-orange-500 dark:hover:text-orange-400 transition-colors pt-4"
+          >
             Quay lại nhà hàng
           </Link>
         </div>
