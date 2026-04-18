@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { useCartStore } from "@/store/cartStore";
 
 type Product = {
-  id: string;
+  id: number;
   name: string;
   description: string;
   price: number;
@@ -29,19 +29,16 @@ const ProductCard = ({ product }: Props) => {
 
     toast.success("Đã thêm vào giỏ hàng 🛒");
   };
-  const imageSrc =
-  product.images?.[0] && product.images[0].trim() !== ""
-    ? product.images[0]
-    : "/images/fallback.webp";
+
   return (
     <div className="bg-white border rounded-foodie overflow-hidden">
       <div className="relative w-full h-64">
   <Image
-    src={product.images[0]}
-    alt={product.name}
-    fill
-    className="object-cover"
-  />
+  src={product.images?.[0] || "/images/fallback.webp"}
+  alt={product.name}
+  fill
+  className="object-cover"
+/>
       </div>
 
       <div className="p-4">

@@ -6,7 +6,9 @@
     "price": 45000,
     "category": "com",
     "images": [
-      "/food/banhbeo-1.webp"  
+      "/food/pho-ga-1.webp",
+      "/food/banhbeo-1.webp",
+      "/food/banhgio-2.webp"
     ]
   },
   {

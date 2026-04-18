@@ -19,7 +19,7 @@ export default function ProductDetail({ params }: Props) {
   const { id } = params;
 
   // Tìm sản phẩm theo id
-  const product = data.find((item) => item.id.toString() === id);
+  const product = data.find(p => p.id === Number(params.id));
 
   // Không có thì 404
   if (!product) {

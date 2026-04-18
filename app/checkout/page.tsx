@@ -3,40 +3,56 @@
 import React, { useState, useEffect } from "react";
 import { useCartStore } from "@/store/cartStore";
 import { Button } from "@/components/ui/button";
-import {
-  CheckCircle2,
-  Loader2,
-  Sparkles,
-} from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useOrderStore } from "@/store/orderStore";
+import useAuthStore from "@/store/authStore";
 
 export default function CheckoutPage() {
-  const { data: session, status } = useSession();
   const router = useRouter();
 
-  const { items, clearCart } = useCartStore();
-  const { addOrder } = useOrderStore();
+  // authStore
+  const { user } = useAuthStore();
+
+  // cartStore
+  const items = useCartStore((state) => state.items);
+  const clearCart = useCartStore((state) => state.clearCart);
   const getTotalPrice = useCartStore((state) => state.getTotalPrice);
+
+  // orderStore
+  const { addOrder } = useOrderStore();
+
+  // state
   const [paymentMethod, setPaymentMethod] = useState<"cod" | "bank">("cod");
   const [location, setLocation] = useState("cong-a");
-  const [isSuccess, setIsSuccess] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  // 🔐 Check login
+  // fix hydration
   useEffect(() => {
-    if (status === "unauthenticated") {
+    const timer = setTimeout(() => {
+      setMounted(true);
+    }, 0);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // check login
+  useEffect(() => {
+    if (!mounted) return;
+
+    if (!user) {
       toast.error("Vui lòng đăng nhập để đặt món!");
       router.push("/auth/login");
     }
-  }, [status, router]);
+  }, [mounted, user, router]);
 
-  // ✅ HANDLE ORDER
+  if (!mounted) return null;
+
+  // handle order
   const handleOrder = () => {
-    if (!session) {
+    if (!user) {
       toast.error("Phiên đăng nhập hết hạn!");
       return;
     }
@@ -50,76 +66,30 @@ export default function CheckoutPage() {
     const loadingId = toast.loading("Đang xử lý đơn hàng...");
 
     setTimeout(() => {
-      // 🔥 QUAN TRỌNG: clone items
       addOrder({
         id: `SOM-${Date.now()}`,
         date: new Date().toLocaleDateString(),
         total: getTotalPrice(),
         status: paymentMethod === "cod" ? "shipping" : "completed",
-        items: items.map((item) => ({ ...item })), // ✅ FIX BUG
+        items: items.map((item) => ({ ...item })),
       });
 
       toast.dismiss(loadingId);
       toast.success("Đặt hàng thành công!");
 
+      // clear cart sau khi đặt
       clearCart();
-      setIsSuccess(true);
+
+      // chuyển sang trang thành công
+      router.push("/order-success");
+
       setIsProcessing(false);
     }, 1500);
   };
 
-  // ⏳ Loading
-  if (status === "loading") {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-4">
-        <Loader2 className="animate-spin text-primary" size={40} />
-        <p className="text-secondary text-sm">
-          Đang kiểm tra quyền truy cập...
-        </p>
-      </div>
-    );
-  }
-
-  // ✅ SUCCESS UI
-  if (isSuccess) {
-    return (
-      <div className="max-w-xl mx-auto py-32 text-center space-y-10">
-        <div className="relative inline-block">
-          <div className="w-28 h-28 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto">
-            <CheckCircle2 size={56} />
-          </div>
-          <div className="absolute -top-2 -right-2 text-primary animate-bounce">
-            <Sparkles size={28} />
-          </div>
-        </div>
-
-        <h1 className="text-4xl font-bold text-primary">
-          Đặt hàng thành công!
-        </h1>
-
-        <p className="text-secondary">
-          Bạn nhớ ra{" "}
-          <span className="text-primary font-bold">
-            {location === "cong-a"
-              ? "Cổng A"
-              : location === "cong-b"
-              ? "Cổng B"
-              : "Thư viện"}
-          </span>{" "}
-          nhận đồ nhé!
-        </p>
-
-        <Button onClick={() => router.push("/")}>
-          Về trang chủ
-        </Button>
-      </div>
-    );
-  }
-
-  // 🧾 MAIN UI
   return (
     <div className="max-w-6xl mx-auto py-16 px-6">
-      <Link href="/group-order" className="text-secondary text-sm">
+      <Link href="/cart" className="text-secondary text-sm">
         ← Quay lại giỏ hàng
       </Link>
 
@@ -132,19 +102,26 @@ export default function CheckoutPage() {
 
           {/* LOCATION */}
           <div>
-            <h3 className="text-secondary mb-4">Chọn điểm nhận</h3>
-            <div className="flex gap-3">
+            <h3 className="text-secondary mb-4">
+              Chọn điểm nhận
+            </h3>
+
+            <div className="flex gap-3 flex-wrap">
               {["cong-a", "cong-b", "thu-vien"].map((loc) => (
                 <button
                   key={loc}
                   onClick={() => setLocation(loc)}
-                  className={`px-4 py-2 rounded-foodie border ${
+                  className={`px-4 py-2 rounded-foodie border transition ${
                     location === loc
                       ? "bg-primary text-white"
-                      : ""
+                      : "bg-white"
                   }`}
                 >
-                  {loc}
+                  {loc === "cong-a"
+                    ? "Cổng A"
+                    : loc === "cong-b"
+                    ? "Cổng B"
+                    : "Thư viện"}
                 </button>
               ))}
             </div>
@@ -155,13 +132,14 @@ export default function CheckoutPage() {
             <h3 className="text-secondary mb-4">
               Phương thức thanh toán
             </h3>
+
             <div className="flex gap-3">
               <button
                 onClick={() => setPaymentMethod("cod")}
-                className={`px-4 py-2 rounded-foodie border ${
+                className={`px-4 py-2 rounded-foodie border transition ${
                   paymentMethod === "cod"
                     ? "bg-primary text-white"
-                    : ""
+                    : "bg-white"
                 }`}
               >
                 COD
@@ -169,10 +147,10 @@ export default function CheckoutPage() {
 
               <button
                 onClick={() => setPaymentMethod("bank")}
-                className={`px-4 py-2 rounded-foodie border ${
+                className={`px-4 py-2 rounded-foodie border transition ${
                   paymentMethod === "bank"
                     ? "bg-primary text-white"
-                    : ""
+                    : "bg-white"
                 }`}
               >
                 Bank
@@ -182,8 +160,10 @@ export default function CheckoutPage() {
         </div>
 
         {/* RIGHT */}
-        <div className="bg-white p-6 rounded-foodie border">
-          <h3 className="font-bold mb-4">Đơn hàng</h3>
+        <div className="bg-white p-6 rounded-foodie border shadow-sm">
+          <h3 className="font-bold mb-4">
+            Đơn hàng
+          </h3>
 
           {items.length === 0 ? (
             <p className="text-gray-400 text-sm">
@@ -193,11 +173,12 @@ export default function CheckoutPage() {
             items.map((item) => (
               <div
                 key={item.id}
-                className="flex justify-between text-sm mb-2"
+                className="flex justify-between text-sm mb-3"
               >
                 <span>
                   {item.name} x{item.quantity}
                 </span>
+
                 <span>
                   {(item.price * item.quantity).toLocaleString()}đ
                 </span>
@@ -205,7 +186,7 @@ export default function CheckoutPage() {
             ))
           )}
 
-          <div className="mt-4 font-bold text-primary">
+          <div className="mt-6 pt-4 border-t font-bold text-primary text-lg">
             Tổng: {getTotalPrice().toLocaleString()}đ
           </div>
 
@@ -214,7 +195,9 @@ export default function CheckoutPage() {
             disabled={isProcessing}
             className="w-full mt-6"
           >
-            {isProcessing ? "Đang xử lý..." : "Đặt hàng"}
+            {isProcessing
+              ? "Đang xử lý..."
+              : "Đặt hàng"}
           </Button>
         </div>
       </div>

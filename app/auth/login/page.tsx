@@ -13,7 +13,7 @@ import { Loader2, Lock, Mail, Eye, EyeOff, ArrowRight } from "lucide-react";
 import useAuthStore from "@/store/authStore";
 
 const loginSchema = z.object({
-  email: z.string().email("Email không hợp lệ bạn ơi"),
+  email: z.string().trim().email("Email không hợp lệ bạn ơi"),
   password: z.string().min(6, "Mật khẩu tối thiểu 6 ký tự"),
 });
 

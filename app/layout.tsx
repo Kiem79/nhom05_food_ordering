@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { Toaster } from "sonner";
+import Providers from "./providers";
 
 const inter = Inter({
   subsets: ["latin", "vietnamese"],
@@ -26,25 +27,27 @@ export default function RootLayout({
       <body
         className={`${inter.className} antialiased text-primary bg-white min-h-screen flex flex-col`}
       >
-        {/* Header */}
-        <Header />
+        <Providers>
+          {/* Header */}
+          <Header />
 
-        {/* Main */}
-        <main className="flex-1 pt-16">
-          {children}
-        </main>
+          {/* Main */}
+          <main className="flex-1 pt-16">
+            {children}
+          </main>
 
-        {/* Footer */}
-        <Footer />
+          {/* Footer */}
+          <Footer />
 
-        {/* Toaster */}
-        <Toaster
-          position="top-right"
-          richColors
-          closeButton
-          expand
-          duration={3000}
-        />
+          {/* Toaster */}
+          <Toaster
+            position="top-right"
+            richColors
+            closeButton
+            expand
+            duration={3000}
+          />
+        </Providers>
       </body>
     </html>
   );

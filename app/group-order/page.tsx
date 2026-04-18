@@ -14,15 +14,21 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function GroupOrderPage() {
-  const { items, removeItem, clearCart, totalPrice } = useCartStore();
+  const { items, removeItem, clearCart, getTotalPrice } = useCartStore();
   const { user } = useAuthStore();
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
 
   // Đảm bảo dữ liệu Zustand đã được load xong trên Client
   useEffect(() => {
+  const timer = setTimeout(() => {
     setMounted(true);
-  }, []);
+  }, 0);  
+
+  return () => clearTimeout(timer);
+}, []);
+
+if (!mounted) return null;
 
   if (!mounted) return null;
 
@@ -113,7 +119,7 @@ export default function GroupOrderPage() {
   ];
 
   const totalPeople = mockMembers.length + 1;
-  const subtotal = totalPrice();
+  const subtotal = getTotalPrice();
   const shippingFee = 15000;
   const discount = 25000;
   const finalTotal = subtotal + shippingFee - discount;
