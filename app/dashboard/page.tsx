@@ -277,9 +277,17 @@ export default function DashboardPage() {
                           <div className="relative w-20 h-20 rounded-[2rem] overflow-hidden border-4 border-white dark:border-slate-700 shadow-xl group-hover/item:scale-105 transition-transform duration-500">
                             {/* Hiển thị ảnh: Ưu tiên displayImage từ data đã lưu */}
                             <Image 
-                              src={item.displayImage || "/placeholder-food.png"} 
+                              src={item.displayImage && item.displayImage.trim() !== ""
+      ? item.displayImage.startsWith("products")
+        ? item.displayImage
+        : `products/${item.displayImage}`
+      : `products/${item.name
+          ?.toLowerCase()
+          .replace(/\s+/g, "")
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")}.jpg`} 
                               alt={item.name} 
-                              fill 
+                              fill  
                               className="object-cover" 
                               sizes="80px"
                             />
