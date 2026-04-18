@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  User, ShoppingBag, ChevronRight, Package,
+  User, ShoppingBag, Package,
   Trash2, Calendar, CreditCard,
   AlertTriangle, X, LogIn, MessageSquare
 } from "lucide-react";
@@ -11,7 +11,7 @@ import Link from "next/link";
 import Image from "next/image";
 import useAuthStore from "@/store/authStore"; 
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
-
+import ReorderButton from "@/components/ReorderButton";
 // --- 1. ĐỊNH NGHĨA INTERFACES (TypeScript) ---
 interface OrderItem {
   id: string | number;
@@ -324,12 +324,7 @@ export default function DashboardPage() {
                         </p>
                       </div>
 
-                      <Link 
-                        href="/restaurants"
-                        className="w-full sm:w-auto px-10 py-5 bg-slate-900 dark:bg-orange-500 text-white rounded-[1.8rem] text-[11px] font-black uppercase tracking-widest hover:bg-orange-500 dark:hover:bg-white dark:hover:text-slate-900 hover:shadow-[0_20px_40px_-10px_rgba(249,115,22,0.4)] transition-all flex items-center justify-center gap-3 active:scale-95 group/btn"
-                      >
-                        Mua lại đơn này <ChevronRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
-                      </Link>
+                      <ReorderButton order={order} />
                     </div>
                   </div>
                 </motion.div>
