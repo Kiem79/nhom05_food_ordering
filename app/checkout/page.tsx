@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useCartStore } from "@/store/cartStore";
-import { QrCode, X, MapPin, Building2, ArrowLeft, Loader2, MessageSquare } from "lucide-react"; 
+import { QrCode, X, MapPin, Building2, ArrowLeft, Loader2, MessageSquare } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import useAuthStore from "@/store/authStore";
@@ -36,23 +36,25 @@ const HCMC_DISTRICTS = [
 ];
 
 export default function CheckoutPage() {
-  const { items, clearCart, getFinalTotal, discountPercent, shippingFee, setShippingFee } = useCartStore();
+  const { items, clearCart, getFinalTotal, discountPercent } = useCartStore();
   const { user } = useAuthStore();
   const router = useRouter();
+
   const [payingMember, setPayingMember] = useState<string | null>(null);
   const [selectedDistrict, setSelectedDistrict] = useState(HCMC_DISTRICTS[0].id);
   const [detailedAddress, setDetailedAddress] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [mounted, setMounted] = useState(false);
 
+  const currentDist = HCMC_DISTRICTS.find(d => d.id === selectedDistrict);
+  const shippingFee = currentDist ? currentDist.fee : 0;
+
   useEffect(() => {
     const frame = requestAnimationFrame(() => {
       setMounted(true);
     });
-    const dist = HCMC_DISTRICTS.find(d => d.id === selectedDistrict);
-    if (dist) setShippingFee(dist.fee);
     return () => cancelAnimationFrame(frame);
-  }, [selectedDistrict, setShippingFee]);
+  }, []);
 
   const owners = Array.from(new Set(items.map(item => item.owner))).filter(Boolean) as string[];
   const shipPerPerson = owners.length > 0 ? shippingFee / owners.length : 0;
@@ -74,24 +76,26 @@ export default function CheckoutPage() {
     }
     setIsProcessing(true);
     const loadingId = toast.loading("Đang chốt đơn nhóm...");
+    
     setTimeout(() => {
       const newOrder = {
         id: `FOODIE-${Date.now()}`,
         address: detailedAddress,
-        district: HCMC_DISTRICTS.find(d => d.id === selectedDistrict)?.label,
+        district: currentDist?.label,
         total: getFinalTotal() + shippingFee,
         items: items.map(item => ({
           ...item,
-          note: item.note || "" 
+          note: item.note || ""
         }))
       };
+      
       const existingOrders = JSON.parse(localStorage.getItem("foodie_orders") || "[]");
       localStorage.setItem("foodie_orders", JSON.stringify([...existingOrders, newOrder]));
-      
+
       clearCart();
       toast.dismiss(loadingId);
       toast.success("Đặt hàng thành công!");
-      
+
       router.push("/order-success");
     }, 1500);
   };
@@ -103,10 +107,10 @@ export default function CheckoutPage() {
       <div className="max-w-7xl mx-auto py-12 px-6 font-sans grid grid-cols-1 lg:grid-cols-3 gap-12">
         <div className="lg:col-span-2 space-y-12">
           <Breadcrumbs />
-          <Link href="/group-order" className="text-slate-400 font-black uppercase text-[10px] flex items-center gap-2 hover:text-orange-500 transition-colors">
+          <Link href="/group-order" className="text-slate-400 font-black uppercase text-[10px] flex items-center gap-2 hover:text-orange-500 transition-colors w-fit">
             <ArrowLeft size={16} /> Quay lại giỏ hàng nhóm
           </Link>
-          
+
           <h1 className="text-6xl font-black italic uppercase tracking-tighter text-slate-900 dark:text-white leading-none">
             Thanh toán <br/><span className="text-orange-500">Từng người</span>
           </h1>
@@ -146,7 +150,7 @@ export default function CheckoutPage() {
                     <div className="w-16 h-16 bg-orange-100 dark:bg-orange-500/20 rounded-full flex items-center justify-center text-orange-600 dark:text-orange-500 font-black text-2xl uppercase italic shrink-0">{name[0]}</div>
                     <div className="flex flex-col">
                       <p className="font-black text-slate-900 dark:text-white uppercase italic text-xl">{name === "Host" ? `Bạn (${user?.name})` : name}</p>
-                      
+
                       <div className="mt-2 space-y-1">
                         {items.filter(i => i.owner === name).map((item, idx) => (
                           <div key={idx} className="flex flex-col">
@@ -154,7 +158,7 @@ export default function CheckoutPage() {
                               {item.name} <span className="text-slate-400 italic">x{item.quantity}</span>
                             </span>
                             {item.note && (
-                              <span className="flex items-center gap-1 text-[10px] text-orange-500 italic font-medium ml-2">
+                              <span className="flex items-center gap-1 text-[10px] text-orange-500 italic font-medium ml-2 mt-0.5">
                                 <MessageSquare size={10} /> {item.note}
                               </span>
                             )}
@@ -162,7 +166,7 @@ export default function CheckoutPage() {
                         ))}
                       </div>
 
-                      <div className="flex flex-col mt-3 pt-3 border-t border-slate-50 dark:border-slate-800">
+                      <div className="flex flex-col mt-4 pt-3 border-t border-slate-50 dark:border-slate-800">
                         <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">
                           Tiền món (sau giảm): <span className="text-slate-900 dark:text-slate-200 ml-1">{(calculateUserSubtotal(name) * (1 - discountPercent/100)).toLocaleString()}đ</span>
                         </p>
@@ -194,7 +198,7 @@ export default function CheckoutPage() {
                   <p className="text-4xl font-black text-orange-500">{Math.round(calculateUserTotal(payingMember)).toLocaleString()}đ</p>
                 </div>
                 <div className="bg-white p-6 rounded-[2.5rem] inline-block border-8 border-white shadow-2xl">
-                  <Image src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=FoodiePay_${payingMember}_${Math.round(calculateUserTotal(payingMember))}`} alt="QR" width={200} height={200} className="w-44 h-44" />
+                  <Image src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=FoodiePay_${payingMember}_${Math.round(calculateUserTotal(payingMember))}`} alt="QR" width={200} height={200} className="w-44 h-44" unoptimized />
                 </div>
                 <button onClick={() => { toast.success(`${payingMember} đã hoàn tất!`); setPayingMember(null); }} className="w-full py-4 bg-white/10 hover:bg-green-500 text-green-500 hover:text-white rounded-2xl font-black uppercase text-[10px] transition-all">Xác nhận đã trả tiền</button>
               </div>
@@ -205,14 +209,14 @@ export default function CheckoutPage() {
               </div>
             )}
             <div className="mt-12 pt-8 border-t border-white/10 w-full text-left space-y-4">
-              <div className="flex justify-between text-slate-400 text-[10px] font-black uppercase">
+              <div className="flex justify-between items-end text-slate-400 text-[10px] font-black uppercase">
                 <span>Tổng đơn nhóm</span>
-                <span className="text-orange-500 text-2xl italic">{(getFinalTotal() + shippingFee).toLocaleString()}đ</span>
+                <span className="text-orange-500 text-3xl italic">{(getFinalTotal() + shippingFee).toLocaleString()}đ</span>
               </div>
               <button
                 onClick={handleFinalOrder}
                 disabled={isProcessing || items.length === 0}
-                className="w-full py-5 bg-orange-500 hover:bg-orange-600 text-white rounded-[1.5rem] font-black uppercase tracking-widest transition-all active:scale-95 shadow-xl shadow-orange-500/20"
+                className="w-full py-5 bg-orange-500 hover:bg-orange-600 disabled:bg-slate-800 disabled:text-slate-500 text-white rounded-[1.5rem] font-black uppercase tracking-widest transition-all active:scale-95 shadow-xl shadow-orange-500/20"
               >
                 {isProcessing ? <Loader2 className="animate-spin mx-auto" size={22} /> : "XÁC NHẬN CHỐT ĐƠN"}
               </button>
