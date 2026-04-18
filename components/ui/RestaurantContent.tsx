@@ -13,7 +13,7 @@ import {
   Clock,
   Mail,
   Flame,
-  ArrowLeft,
+  ArrowUpRight,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -27,10 +27,14 @@ const basePath = "/nhom05_food_ordering";
 
 interface RestaurantContentProps {
   id: string;
+  actualRating: string;
+  totalReviews: number;
 }
 
 export default function RestaurantContent({
   id,
+  actualRating,
+  totalReviews,
 }: RestaurantContentProps) {
   const { addItem } = useCartStore();
 
@@ -151,18 +155,22 @@ export default function RestaurantContent({
           />
         </div>
 
-        <div className="flex-1 min-w-[160px]">
-          <InfoItem
-            icon={
-              <Star
-                size={20}
-                className="fill-orange-500 text-orange-500"
-              />
-            }
-            label="Rating"
-            value={`${restaurant.rating} / 5.0`}
-          />
-        </div>
+        <Link href={`/restaurants/${id}/review`} className="flex-1 min-w-[160px] group">
+          <div className="flex items-center gap-5 p-6 rounded-[2.5rem] bg-white dark:bg-slate-900 border border-slate-50 dark:border-slate-800 shadow-sm hover:border-orange-500 hover:shadow-lg transition-all h-full relative overflow-hidden">
+            <div className="w-12 h-12 bg-orange-50 dark:bg-orange-500/10 rounded-2xl flex items-center justify-center text-orange-500 shrink-0 group-hover:scale-110 transition-transform">
+              <Star size={20} className="fill-orange-500 text-orange-500" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-[9px] font-black uppercase tracking-[0.15em] text-slate-400 dark:text-slate-500 mb-0.5">
+                Rating ({totalReviews})
+              </p>
+              <p className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1">
+                {actualRating} / 5.0
+                <ArrowUpRight size={14} className="text-orange-500 opacity-0 group-hover:opacity-100 transition-all" />
+              </p>
+            </div>
+          </div>
+        </Link>
       </div>
 
       {/* MENU */}

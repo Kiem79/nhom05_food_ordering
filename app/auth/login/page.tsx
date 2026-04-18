@@ -16,26 +16,51 @@ const loginSchema = z.object({
   password: z.string().min(6, "Mật khẩu tối thiểu 6 ký tự"),
 });
 
+type LoginFormData = z.infer<typeof loginSchema>;
+
 export default function LoginPage() {
   const router = useRouter();
   const { login } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
     
     setTimeout(() => {
       // Logic giả lập đăng nhập
+      // Kiểm tra tài khoản cứng để test
       if (data.email === "ldmanh79@gmail.com" && data.password === "123456") {
-        const mockUser = { 
+        const adminUser = { 
           email: data.email, 
           name: "Mạnh", 
           role: "ADMIN" 
+        };
+        login(adminUser);
+        toast.success("ĐĂNG NHẬP THÀNH CÔNG!", {
+          description: "Chào mừng ADMIN quay trở lại.",
+        });
+        router.push("/restaurants");
+        setIsLoading(false);
+        return;
+      }
+
+      // Kiểm tra tài khoản lưu trong LocalStorage
+      const existingUsers = JSON.parse(localStorage.getItem("foodie_users") || "[]");
+      const user = existingUsers.find(
+        (u: LoginFormData & { name: string; role: string }) => 
+          u.email === data.email && u.password === data.password
+      );
+
+      if (user) {
+        const mockUser = { 
+          email: user.email, 
+          name: user.name, 
+          role: user.role 
         };
         login(mockUser);
         toast.success("ĐĂNG NHẬP THÀNH CÔNG!", {
@@ -86,7 +111,7 @@ export default function LoginPage() {
               }`}
             />
           </div>
-          {errors.email && <p className="text-red-500 text-[10px] font-bold ml-4 italic">{(errors.email as any).message}</p>}
+          {errors.email && <p className="text-red-500 text-[10px] font-bold ml-4 italic">{errors.email.message}</p>}
         </div>
 
         {/* PASSWORD INPUT */}
@@ -112,7 +137,7 @@ export default function LoginPage() {
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
           </div>
-          {errors.password && <p className="text-red-500 text-[10px] font-bold ml-4 italic">{(errors.password as any).message}</p>}
+          {errors.password && <p className="text-red-500 text-[10px] font-bold ml-4 italic">{errors.password.message}</p>}
         </div>
 
         {/* SUBMIT BUTTON */}

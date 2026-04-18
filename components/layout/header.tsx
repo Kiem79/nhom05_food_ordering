@@ -8,6 +8,7 @@ import useAuthStore from "@/store/authStore";
 import { useCartStore } from "@/store/cartStore";
 import { ThemeToggle } from "@/components/ThemeToggle"; 
 import SearchBar from "@/components/search/SearchBar";
+import { toast } from "sonner";
 
 export default function Header() {
   const pathname = usePathname();
@@ -45,11 +46,30 @@ export default function Header() {
   ];
 
   const handleLogout = () => {
-    if (confirm("Bạn muốn đăng xuất ?")) {
-      logout();
-      clearCart?.();
-      router.push("/");
-    }
+    toast.error("XÁC NHẬN ĐĂNG XUẤT", {
+      description: "Bạn có chắc muốn rời khỏi hội ăn ngon không?",
+      duration: 5000,
+      style: {
+        borderRadius: '24px',
+        padding: '20px',
+        border: '2px solid #f97316',
+        background: 'white',
+      },
+      className: "dark:bg-slate-900 dark:text-white",
+      action: {
+        label: "RỜI ĐI",
+        onClick: () => {
+          logout();
+          clearCart?.();
+          router.push("/");
+          toast.success("Đã đăng xuất thành công");
+        },
+      },
+      cancel: {
+        label: "Ở LẠI",
+        onClick: () => {},
+      },
+    });
   };
 
   if (!mounted) return null;
