@@ -14,8 +14,11 @@ const routeLabels: Record<string, string> = {
   "cart": "Giỏ hàng",
   "history": "Lịch sử",
   "contact": "Liên hệ",
-  "about": "Thành viên",
-  dashboard: "Lịch sử"
+  "about": "Về chúng tôi",
+  "dashboard": "Lịch sử",
+  "help-center": "Trung tâm trợ giúp",
+  "privacy-policy": "Chính sách bảo mật",
+  "terms-of-service": "Điều khoản dịch vụ"
 };
 
 export default function Breadcrumbs() {
