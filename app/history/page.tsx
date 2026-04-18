@@ -21,7 +21,7 @@ export default function HistoryPage() {
   return (
     <div className="max-w-5xl mx-auto px-6 py-10 bg-transparent dark:bg-slate-950 transition-colors duration-500 min-h-screen">
       <h1 className="text-3xl font-bold text-primary dark:text-white mb-6">
-        Lịch sử đơn hàng
+        Lịch sử giao hàng
       </h1>
 
       {/* FILTER */}

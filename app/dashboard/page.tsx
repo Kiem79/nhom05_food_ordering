@@ -29,6 +29,13 @@ interface Order {
   items: OrderItem[];
   total: number;
   status: string;
+  deliveryHistory?: DeliveryStep[];
+}
+
+interface DeliveryStep {
+  label: string;
+  time: string;
+  completed: boolean;
 }
 
 export default function DashboardPage() {
@@ -36,7 +43,7 @@ export default function DashboardPage() {
   const [isClient, setIsClient] = useState(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const { user } = useAuthStore(); 
-
+  
   // --- 2. LOGIC LẤY DỮ LIỆU (Persistence) ---
   useEffect(() => {
     setIsClient(true);
@@ -44,10 +51,10 @@ export default function DashboardPage() {
     if (savedOrders) {
       try {
         const parsedOrders: Order[] = JSON.parse(savedOrders);
-
+        const enrichedOrders = parsedOrders;
         // Loại bỏ trùng lặp ID và ưu tiên đơn hàng mới nhất lên đầu
         const uniqueOrders = Array.from(
-          new Map(parsedOrders.map((order) => [order.id, order])).values()
+          new Map(enrichedOrders.map((order) => [order.id, order])).values()
         );
 
         // Đảo ngược danh sách để đơn mới nhất ở trên cùng
@@ -245,7 +252,9 @@ export default function DashboardPage() {
         <div className="lg:col-span-8 space-y-8">
           <AnimatePresence mode="popLayout">
             {orders.length > 0 ? (
-              orders.map((order, idx) => (
+              orders.map((order, idx) => {
+                  const isDelivered = order.deliveryHistory?.some(step => step.label === "Hoàn tất" && step.completed);
+                return(
                 <motion.div 
                   key={order.id} 
                   initial={{ opacity: 0, y: 30 }} 
@@ -265,12 +274,13 @@ export default function DashboardPage() {
                       </div>
                     </div>
                     <span className="text-[10px] font-black text-green-600 dark:text-green-400 uppercase tracking-widest flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" /> {order.status}
+                      <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" /> {isDelivered ? "Đã nhận" : "Đang giao hàng"}
                     </span>
                   </div>
 
                   {/* ORDER CONTENT */}
                   <div className="p-8 md:p-10 space-y-8">
+                    
                     {order.items.map((item, i) => (
                       <div key={i} className="flex items-center justify-between group/item p-2 rounded-3xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
                         <div className="flex items-center gap-6">
@@ -315,7 +325,14 @@ export default function DashboardPage() {
                           <span className="text-orange-500 not-italic text-2xl ml-1">đ</span>
                         </p>
                       </div>
-
+                      {!isDelivered && (
+      <Link
+        href={`/order-tracking/`}
+        className="flex-1 sm:flex-none px-6 py-5 bg-blue-500 text-white rounded-[1.8rem] text-[11px] font-black uppercase tracking-widest hover:bg-blue-600 transition-all flex items-center justify-center"
+      >
+        Xem trạng thái
+      </Link>
+    )}
                       <Link 
                         href="/restaurants"
                         className="w-full sm:w-auto px-10 py-5 bg-slate-900 dark:bg-orange-500 text-white rounded-[1.8rem] text-[11px] font-black uppercase tracking-widest hover:bg-orange-500 dark:hover:bg-white dark:hover:text-slate-900 hover:shadow-[0_20px_40px_-10px_rgba(249,115,22,0.4)] transition-all flex items-center justify-center gap-3 active:scale-95 group/btn"
@@ -325,7 +342,7 @@ export default function DashboardPage() {
                     </div>
                   </div>
                 </motion.div>
-              ))
+              )})
             ) : (
               <motion.div 
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }}
