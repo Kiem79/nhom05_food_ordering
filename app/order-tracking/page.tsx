@@ -100,13 +100,38 @@ export default function OrderTrackingPage() {
 
   // Hàm xử lý XÁC NHẬN NHẬN HÀNG
   const handleConfirmReceipt = () => {
+  try {
+    const orders = JSON.parse(localStorage.getItem("foodie_orders") || "[]");
+
+    const updatedOrders = orders.map((order: any) => {
+      if (order.id === orderId) {
+        return {
+          ...order,
+          status: "Đã nhận",
+          deliveryHistory: [
+            { label: "Đã đặt", time: "—", completed: true },
+            { label: "Chuẩn bị", time: "—", completed: true },
+            { label: "Đang giao", time: "—", completed: true },
+            { label: "Hoàn tất", time: "—", completed: true },
+          ],
+        };
+      }
+      return order;
+    });
+
+    localStorage.setItem("foodie_orders", JSON.stringify(updatedOrders));
+
     toast.success("Xác nhận thành công! Chúc team ăn ngon miệng nhé 😋");
-    
-    // Đợi 2 giây cho khách đọc thông báo rồi tự động hất về Trang chủ
+
     setTimeout(() => {
       router.push("/");
     }, 2000);
-  };
+
+  } catch (err) {
+    console.error("Lỗi cập nhật trạng thái đơn hàng:", err);
+    toast.error("Có lỗi xảy ra!");
+  }
+};
 
   if (!mounted) return null;
 

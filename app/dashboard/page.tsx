@@ -29,6 +29,13 @@ interface Order {
   items: OrderItem[];
   total: number;
   status: string;
+  deliveryHistory?: DeliveryStep[];
+}
+
+interface DeliveryStep {
+  label: string;
+  time: string;
+  completed: boolean;
 }
 
 export default function DashboardPage() {
@@ -44,7 +51,7 @@ export default function DashboardPage() {
     if (savedOrders) {
       try {
         const parsedOrders: Order[] = JSON.parse(savedOrders);
-
+        const enrichedOrders = parsedOrders;
         // Loại bỏ trùng lặp ID và ưu tiên đơn hàng mới nhất lên đầu
         const uniqueOrders = Array.from(
           new Map(parsedOrders.map((order) => [order.id, order])).values()
@@ -245,7 +252,9 @@ export default function DashboardPage() {
         <div className="lg:col-span-8 space-y-8">
           <AnimatePresence mode="popLayout">
             {orders.length > 0 ? (
-              orders.map((order, idx) => (
+              orders.map((order, idx) => {
+                const isDelivered = order.deliveryHistory?.some(step => step.label === "Hoàn tất" && step.completed);
+                return(
                 <motion.div 
                   key={order.id} 
                   initial={{ opacity: 0, y: 30 }} 
@@ -265,7 +274,7 @@ export default function DashboardPage() {
                       </div>
                     </div>
                     <span className="text-[10px] font-black text-green-600 dark:text-green-400 uppercase tracking-widest flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" /> {order.status}
+                      <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" /> {isDelivered ? "Đã nhận" : "Đang giao hàng"}
                     </span>
                   </div>
 
@@ -276,21 +285,25 @@ export default function DashboardPage() {
                         <div className="flex items-center gap-6">
                           <div className="relative w-20 h-20 rounded-[2rem] overflow-hidden border-4 border-white dark:border-slate-700 shadow-xl group-hover/item:scale-105 transition-transform duration-500">
                             {/* Hiển thị ảnh: Ưu tiên displayImage từ data đã lưu */}
-                            <Image 
-                              src={item.displayImage && item.displayImage.trim() !== ""
+                            <Image
+  src={
+    item.displayImage && item.displayImage.trim() !== ""
       ? item.displayImage.startsWith("products")
-        ? item.displayImage
+        ? `/${item.displayImage}`
         : `products/${item.displayImage}`
       : `products/${item.name
           ?.toLowerCase()
-          .replace(/\s+/g, "")
+          .replace(/đ/g, "d")
+          .replace(/Đ/g, "d")
           .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "")}.jpg`} 
-                              alt={item.name} 
-                              fill  
-                              className="object-cover" 
-                              sizes="80px"
-                            />
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/\s+/g, "")}.jpg`
+  }
+  alt={item.name}
+  fill
+  className="object-cover"
+  sizes="80px"
+/>
                           </div>
                           <div>
                             <p className="text-lg font-black text-slate-900 dark:text-white uppercase italic leading-tight group-hover/item:text-orange-500 transition-colors tracking-tight">
@@ -324,12 +337,21 @@ export default function DashboardPage() {
                         </p>
                       </div>
 
+                      {!isDelivered && (
+      <Link
+        href={`/order-tracking/`}
+        className="flex-1 sm:flex-none px-6 py-5 bg-blue-500 text-white rounded-[1.8rem] text-[11px] font-black uppercase tracking-widest hover:bg-blue-600 transition-all flex items-center justify-center"
+      >
+        Xem trạng thái
+      </Link>
+    )}
+
                       <ReorderButton order={order} />
                     </div>
                   </div>
                 </motion.div>
-              ))
-            ) : (
+                )
+})) : (
               <motion.div 
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }}
                 className="text-center py-32 bg-white dark:bg-slate-900 rounded-[4rem] border-2 border-dashed border-slate-100 dark:border-slate-800 shadow-inner"
