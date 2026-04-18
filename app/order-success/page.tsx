@@ -2,7 +2,14 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { CheckCircle, PackageCheck, UserCircle } from "lucide-react";
+import {
+  PackageCheck, 
+  UserCircle, 
+  Sparkles, 
+  Pizza, 
+  UtensilsCrossed, 
+  ChefHat,
+} from "lucide-react";
 import Link from "next/link";
 import { useCartStore } from "@/store/cartStore";
 
@@ -55,20 +62,67 @@ export default function OrderSuccessPage() {
   }, [clearCart]);
 
   return (
-    <div className="min-h-[90vh] flex items-center justify-center bg-white dark:bg-slate-950 px-6 transition-colors duration-500">
+    <div className="min-h-[90vh] flex items-center justify-center bg-white dark:bg-slate-950 px-6 transition-colors duration-500 relative overflow-hidden">
+      
+      {/* --- AMBIENT BACKGROUND --- */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-150 h-150 bg-orange-500/5 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute top-0 right-0 w-80 h-80 bg-orange-500/3 blur-[100px] rounded-full pointer-events-none" />
+
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        className="max-w-lg w-full text-center space-y-8"
+        className="max-w-lg w-full text-center space-y-10 relative z-10"
       >
         <div className="relative inline-block">
+          
+          {/* --- ICON DECOR --- */}
+          <motion.div 
+            animate={{ y: [0, -15, 0], opacity: [0.5, 0.8, 0.5] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute -top-10 -left-12 text-orange-400"
+          >
+            <Sparkles size={32} />
+          </motion.div>
+
+          <motion.div 
+            animate={{ y: [0, 15, 0], opacity: [0.4, 0.7, 0.4] }}
+            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+            className="absolute -bottom-6 -right-16 text-orange-500 rotate-12"
+          >
+            <Pizza size={32} />
+          </motion.div>
+
+          <motion.div 
+            animate={{ x: [0, 8, 0], opacity: [0.3, 0.6, 0.3] }}
+            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute top-0 -right-20 text-slate-400 dark:text-slate-500 -rotate-12"
+          >
+            <ChefHat size={28} />
+          </motion.div>
+
+          <motion.div 
+            animate={{ rotate: [0, -10, 0], opacity: [0.5, 0.6, 0.5] }}
+            transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute bottom-0 -left-16 text-slate-300 dark:text-slate-700"
+          >
+            <UtensilsCrossed size={28} />
+          </motion.div>
+
+          {/* --- MAIN ICON TRÒN --- */}
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ type: "spring", stiffness: 200, damping: 10 }}
-            className="w-32 h-32 bg-green-500 rounded-full flex items-center justify-center shadow-2xl shadow-green-100 dark:shadow-green-900/20"
+            className="w-32 h-32 bg-orange-500 rounded-full flex items-center justify-center shadow-2xl shadow-orange-500/20 dark:shadow-orange-900/20"
           >
-            <CheckCircle size={64} className="text-white" />
+            <svg viewBox="0 0 24 24" className="w-16 h-16 text-white" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+              <motion.path 
+                d="M20 6L9 17L4 12"
+                initial={{ pathLength: 0 }}
+                animate={{ pathLength: 1 }}
+                transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
+              />
+            </svg>
           </motion.div>
 
           <motion.div
@@ -78,14 +132,15 @@ export default function OrderSuccessPage() {
               repeat: Infinity,
               ease: "linear",
             }}
-            className="absolute -top-4 -left-4 -right-4 -bottom-4 border-2 border-dashed border-green-200 dark:border-green-900/30 rounded-full"
+            className="absolute -top-4 -left-4 -right-4 -bottom-4 border-3 border-dashed border-orange-300 dark:border-orange-900/30 rounded-full pointer-events-none"
           />
         </div>
 
-        <div className="space-y-4">
+        {/* --- CONTENT SECTION --- */}
+        <div className="space-y-6 pt-4">
           <h1 className="text-5xl md:text-6xl font-black text-slate-900 dark:text-white uppercase italic tracking-tighter leading-[1.1]">
             <span className="block">Đã nhận đơn</span>
-            <span className="block text-green-500">Thành công!</span>
+            <span className="block text-orange-500">Thành công!</span>
           </h1>
 
           <p className="text-slate-500 dark:text-slate-400 font-medium leading-relaxed">

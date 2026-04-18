@@ -20,22 +20,44 @@ const registerSchema = z.object({
   path: ["confirmPassword"],
 });
 
+type RegisterFormData = z.infer<typeof registerSchema>;
+
 export default function RegisterPage() {
   const router = useRouter();
   const { login } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const { register, handleSubmit, formState: { errors } } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
   });
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: RegisterFormData) => {
     setIsLoading(true);
     
     // Giả lập tạo tài khoản (Lưu thẳng vào Zustand)
     setTimeout(() => {
       try {
+        // Lưu vào LocalStorage 
+        const existingUsers = JSON.parse(localStorage.getItem("foodie_users") || "[]");
+        
+        const isExisted = existingUsers.some((user: RegisterFormData) => user.email === data.email);
+        if (isExisted) {
+          toast.error("Email này đã được đăng ký rồi!");
+          setIsLoading(false);
+          return;
+        }
+
+        const newUserAccount = {
+          name: data.name,
+          email: data.email,
+          password: data.password, // Lưu để giả lập kiểm tra lúc login
+          role: "MEMBER"
+        };
+
+        existingUsers.push(newUserAccount);
+        localStorage.setItem("foodie_users", JSON.stringify(existingUsers));
+
         const newUser = { 
           email: data.email, 
           name: data.name,
@@ -48,8 +70,6 @@ export default function RegisterPage() {
         });
         
         router.push("/restaurants");
-      } catch (error) {
-        toast.error("Lỗi đăng ký!");
       } finally {
         setIsLoading(false);
       }
@@ -64,7 +84,7 @@ export default function RegisterPage() {
       >
         <div className="text-center space-y-2 mb-8">
           <h1 className="text-4xl font-black text-slate-900 dark:text-white uppercase tracking-tighter italic">
-            🍔 Join <span className="text-orange-500">Foodie</span>
+            <span className="grayscale-[0.5] dark:grayscale-0">🍔</span> Join <span className="text-orange-500">Foodie</span>
           </h1>
           <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em]">
             Create account for Group Order
@@ -82,7 +102,7 @@ export default function RegisterPage() {
               className={`w-full h-16 pl-14 pr-6 bg-slate-50 dark:bg-slate-800/50 border-2 rounded-2xl outline-none transition-all font-bold dark:text-white ${errors.name ? "border-red-200 dark:border-red-900/50" : "focus:border-orange-500 border-slate-50 dark:border-slate-800"}`}
             />
           </div>
-          {errors.name && <p className="text-red-500 text-[10px] font-bold ml-4 italic">{(errors.name as any).message}</p>}
+          {errors.name && <p className="text-red-500 text-[10px] font-bold ml-4 italic">{errors.name.message}</p>}
         </div>
 
         {/* Email */}
@@ -96,7 +116,7 @@ export default function RegisterPage() {
               className={`w-full h-16 pl-14 pr-6 bg-slate-50 dark:bg-slate-800/50 border-2 rounded-2xl outline-none transition-all font-bold dark:text-white ${errors.email ? "border-red-200 dark:border-red-900/50" : "focus:border-orange-500 border-slate-50 dark:border-slate-800"}`}
             />
           </div>
-          {errors.email && <p className="text-red-500 text-[10px] font-bold ml-4 italic">{(errors.email as any).message}</p>}
+          {errors.email && <p className="text-red-500 text-[10px] font-bold ml-4 italic">{errors.email.message}</p>}
         </div>
 
         {/* Mật khẩu */}
@@ -110,11 +130,11 @@ export default function RegisterPage() {
               placeholder="••••••••"
               className={`w-full h-16 pl-14 pr-16 bg-slate-50 dark:bg-slate-800/50 border-2 rounded-2xl outline-none transition-all font-bold dark:text-white ${errors.password ? "border-red-200 dark:border-red-900/50" : "focus:border-orange-500 border-slate-50 dark:border-slate-800"}`}
             />
-            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-orange-500">
+            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-orange-500 transition-colors">
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
           </div>
-          {errors.password && <p className="text-red-500 text-[10px] font-bold ml-4 italic">{(errors.password as any).message}</p>}
+          {errors.password && <p className="text-red-500 text-[10px] font-bold ml-4 italic">{errors.password.message}</p>}
         </div>
 
         {/* Xác nhận Mật khẩu */}
@@ -129,7 +149,7 @@ export default function RegisterPage() {
               className={`w-full h-16 pl-14 pr-6 bg-slate-50 dark:bg-slate-800/50 border-2 rounded-2xl outline-none transition-all font-bold dark:text-white ${errors.confirmPassword ? "border-red-200 dark:border-red-900/50" : "focus:border-orange-500 border-slate-50 dark:border-slate-800"}`}
             />
           </div>
-          {errors.confirmPassword && <p className="text-red-500 text-[10px] font-bold ml-4 italic">{(errors.confirmPassword as any).message}</p>}
+          {errors.confirmPassword && <p className="text-red-500 text-[10px] font-bold ml-4 italic">{errors.confirmPassword.message}</p>}
         </div>
 
         <button
@@ -143,8 +163,8 @@ export default function RegisterPage() {
         </button>
 
         <div className="text-center pt-4">
-          <Link href="/auth/login" className="text-xs font-bold text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300">
-            Đã có tài khoản? <span className="text-orange-500 underline underline-offset-4 decoration-2 font-black uppercase">Đăng nhập ngay</span>
+          <Link href="/auth/login" className="text-xs font-bold text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors">
+            Đã có tài khoản? <span className="text-orange-500 underline underline-offset-4 decoration-2 font-black uppercase ml-1">Đăng nhập ngay</span>
           </Link>
         </div>
       </form>
