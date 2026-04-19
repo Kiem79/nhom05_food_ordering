@@ -64,7 +64,7 @@ export default function Cart() {
 
           <div className="pt-8 border-t-4 border-slate-50 dark:border-slate-800 flex justify-between items-end">
             <div>
-              <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em] mb-2">Tổng thanh toán (gồm ship)</p>
+              <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em] mb-2">Tổng thanh toán (chưa bao gồm ship)</p>
               <p className="text-5xl font-black text-slate-900 dark:text-white italic tracking-tighter leading-none">
                 {getFinalTotal().toLocaleString()}đ
               </p>

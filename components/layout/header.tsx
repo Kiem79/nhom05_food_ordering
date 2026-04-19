@@ -41,8 +41,11 @@ export default function Header() {
   // 2. Các link nằm trong mục "Khác"
   const otherLinks = [
     { name: "Lịch sử", href: "/dashboard" },
-    { name: "Thành viên", href: "/about" },
     { name: "Liên hệ", href: "/contact" }, 
+    { name: "Trung tâm trợ giúp", href: "/help-center" }, 
+    { name: "Chính sách bảo mật", href: "/privacy-policy" }, 
+    { name: "Điều khoản dịch vụ", href: "/terms-of-service" },
+    { name: "Về chúng tôi", href: "/about" }, 
   ];
 
   const handleLogout = () => {
