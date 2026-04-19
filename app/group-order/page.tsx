@@ -42,7 +42,7 @@ type ProductType = {
   name: string;
   price: number;
   restaurantId?: number | string;
-  images?: string[];
+  displayImage?: string;
   [key: string]: unknown;
 };
 
@@ -127,10 +127,18 @@ export default function GroupOrderPage() {
     }, 800);
   };
 
-  const getImgSrc = (src: string | undefined) => {
-    const url = src || "/placeholder-food.png";
-    return url.startsWith('http') ? url : `${basePath}${url.startsWith('/') ? '' : '/'}${url}`;
-  };
+  const getImgSrc = (src?: string, name?: string) => {
+  const file =
+    src && src.trim() !== ""
+      ? src
+      : `/products/${name
+          ?.toLowerCase()
+          .replace(/\s+/g, "")
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")}.jpg`;
+
+  return file.startsWith("http") ? file : file;
+};
 
   if (!mounted) return null;
 
@@ -222,7 +230,25 @@ export default function GroupOrderPage() {
                     key={`${item.id}-${item.owner}`} className="flex items-center gap-8 group"
                   >
                     <div className="relative w-28 h-28 rounded-[2rem] overflow-hidden shadow-xl shrink-0 border-4 border-slate-50 dark:border-slate-800 bg-slate-100 dark:bg-slate-800">
-                      <Image src={getImgSrc(item.images?.[0])} alt={item.name} fill sizes="112px" className="object-cover" unoptimized />
+                      <Image
+  src={
+    item.displayImage && item.displayImage.trim() !== ""
+      ? item.displayImage.startsWith("products")
+        ? `${item.displayImage}`
+        : `products/${item.displayImage}`
+      : `products/${item.name
+          ?.toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/đ/g, "d")
+          .replace(/\s+/g, "")}.jpg`
+  }
+  alt={item.name}
+  fill
+  sizes="112px"
+  className="object-cover"
+  unoptimized
+/>
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center justify-between">

@@ -59,8 +59,8 @@ export default function ReorderButton({ order }: { order: Order }) {
       {/* MODAL */}
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 w-full max-w-lg space-y-6">
-            <h2 className="text-xl font-black">Chỉnh số lượng</h2>
+          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 w-full max-w-lg max-h-[80vh] overflow-y-auto space-y-6">
+            <h1 className="text-x2 font-black text-center">Số lượng</h1>
 
             {items.map((item, index) => (
               <div key={item.id} className="flex justify-between items-center">

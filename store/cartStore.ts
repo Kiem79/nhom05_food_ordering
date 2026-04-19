@@ -19,7 +19,7 @@ export interface Product {
   name: string;
   price: number;
   image?: string;
-  images?: string[];
+  displayImage?: string;
   restaurantId?: number | string;
 }
 
@@ -28,7 +28,7 @@ export interface CartItem {
   name: string;
   price: number;
   quantity: number;
-  images: string[];
+  displayImage?: string;
   restaurantId: number;
   owner: string;
   note?: string; // Tính năng ghi chú từ phiên bản 2
@@ -83,7 +83,7 @@ export const useCartStore = create<CartStore>()(
           id: product.id,
           name: product.name,
           price: product.price,
-          images: product.images ?? (product.image ? [product.image] : []),
+          displayImage: product.displayImage ?? product.image ?? "",
           restaurantId: product.restaurantId ? Number(product.restaurantId) : 1,
           quantity: 1,
           owner: safeOwner,
