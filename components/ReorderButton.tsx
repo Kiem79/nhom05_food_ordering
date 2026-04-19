@@ -10,10 +10,15 @@ interface OrderItem {
   price: number;
   quantity: number;
   displayImage: string;
+  owner: string;
 }
 
 interface Order {
+  id: string;
+  date: string;
   items: OrderItem[];
+  total: number;
+  status: string;
 }
 
 export default function ReorderButton({ order }: { order: Order }) {
@@ -30,19 +35,34 @@ export default function ReorderButton({ order }: { order: Order }) {
   };
 
   const handleConfirm = () => {
-    items.forEach((item) => {
-      for (let i = 0; i < item.quantity; i++) {
-        addItem({
-          id: item.id,
-          name: item.name,
-          price: item.price,
-          image: item.displayImage,
-        });
+  items.forEach((item) => {
+    addItem(
+      {
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        image: item.displayImage,
+      },
+      item.owner
+    );
+
+    if (item.quantity > 1) {
+      for (let i = 1; i < item.quantity; i++) {
+        addItem(
+          {
+            id: item.id,
+            name: item.name,
+            price: item.price,
+            image: item.displayImage,
+          },
+          item.owner
+        );
       }
-    });
+    }
+  });
 
     setOpen(false);
-    router.push("/cart");
+    router.push("/group-order");
   };
 
   return (
@@ -63,7 +83,7 @@ export default function ReorderButton({ order }: { order: Order }) {
             <h1 className="text-x2 font-black text-center">Số lượng</h1>
 
             {items.map((item, index) => (
-              <div key={item.id} className="flex justify-between items-center">
+              <div key={`${item.id}-${index}`} className="flex justify-between items-center">
                 <span>{item.name}</span>
 
                 <div className="flex items-center gap-3">
