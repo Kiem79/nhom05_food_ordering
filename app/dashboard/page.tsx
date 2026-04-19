@@ -12,6 +12,7 @@ import Image from "next/image";
 import useAuthStore from "@/store/authStore"; 
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import ReorderButton from "@/components/ReorderButton";
+import OrderDetailModal from "@/components/OrderDetailButton";
 // --- 1. ĐỊNH NGHĨA INTERFACES (TypeScript) ---
 interface OrderItem {
   id: string | number;
@@ -21,6 +22,7 @@ interface OrderItem {
   displayImage: string; 
   restaurantName?: string;
   note?: string;
+  owner?: string;
 }
 
 interface Order {
@@ -41,9 +43,11 @@ interface DeliveryStep {
 export default function DashboardPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [isClient, setIsClient] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [openDetail, setOpenDetail] = useState(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const { user } = useAuthStore(); 
-
+  
   // --- 2. LOGIC LẤY DỮ LIỆU (Persistence) ---
   useEffect(() => {
     setIsClient(true);
@@ -51,7 +55,6 @@ export default function DashboardPage() {
     if (savedOrders) {
       try {
         const parsedOrders: Order[] = JSON.parse(savedOrders);
-        const enrichedOrders = parsedOrders;
         // Loại bỏ trùng lặp ID và ưu tiên đơn hàng mới nhất lên đầu
         const uniqueOrders = Array.from(
           new Map(parsedOrders.map((order) => [order.id, order])).values()
@@ -264,6 +267,15 @@ export default function DashboardPage() {
                 >
                   {/* ORDER HEADER */}
                   <div className="bg-slate-50/80 dark:bg-slate-800/50 px-8 py-5 flex items-center justify-between border-b border-slate-100 dark:border-slate-800 group-hover:bg-orange-50/30 dark:group-hover:bg-orange-500/5 transition-colors">
+                  <button
+  onClick={() => {
+    setSelectedOrder(order);
+    setOpenDetail(true);
+  }}
+  className="ml-4 px-4 py-2 rounded-xl text-[10px] text-align: center font-black uppercase tracking-widest bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:bg-orange-50 dark:hover:bg-orange-500/10 transition"
+>
+  Chi tiết đơn hàng
+</button>
                     <div className="flex items-center gap-6">
                       <span className="bg-slate-900 dark:bg-slate-950 text-white px-5 py-2 rounded-full text-[10px] font-black uppercase italic shadow-lg">
                         #{order.id}
@@ -346,7 +358,7 @@ export default function DashboardPage() {
       </Link>
     )}
 
-                      <ReorderButton order={order} />
+                      <ReorderButton order={order as any} />
                     </div>
                   </div>
                 </motion.div>
@@ -375,6 +387,13 @@ export default function DashboardPage() {
           </AnimatePresence>
         </div>
       </div>
+      {openDetail && selectedOrder && (
+  <OrderDetailModal
+  open={openDetail}
+  onClose={() => setOpenDetail(false)}
+  items={selectedOrder?.items || []}
+/>
+)}
     </div>
   );
 }
