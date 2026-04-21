@@ -18,7 +18,8 @@ const routeLabels: Record<string, string> = {
   "dashboard": "Lịch sử",
   "help-center": "Trung tâm trợ giúp",
   "privacy-policy": "Chính sách bảo mật",
-  "terms-of-service": "Điều khoản dịch vụ"
+  "terms-of-service": "Điều khoản dịch vụ",
+  "review": "Đánh giá"
 };
 
 export default function Breadcrumbs() {

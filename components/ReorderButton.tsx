@@ -11,6 +11,7 @@ interface OrderItem {
   quantity: number;
   displayImage: string;
   owner: string;
+  note?: string;
 }
 
 interface Order {
@@ -42,6 +43,7 @@ export default function ReorderButton({ order }: { order: Order }) {
         name: item.name,
         price: item.price,
         image: item.displayImage,
+        note: item.note || "",
       },
       item.owner
     );
