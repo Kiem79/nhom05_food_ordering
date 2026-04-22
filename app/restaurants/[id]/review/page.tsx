@@ -8,6 +8,7 @@ import restaurantsData from "@/lib/data/stores.json";
 import ReviewCard from "@/components/ui/ReviewCard";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Restaurant, Review } from "@/types";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 
 interface ReviewPageProps {
   params: Promise<{ id: string }>;
@@ -60,23 +61,7 @@ export default function ReviewPage({ params }: ReviewPageProps) {
 
   return (
     <div className="max-w-7xl mx-auto px-6 pt-32 pb-20 min-h-screen bg-white dark:bg-slate-950 transition-colors duration-500">
-      {/* BREADCRUMB */}
-      <nav className="flex items-center gap-3 mb-10 overflow-x-auto no-scrollbar pb-2">
-        <Link href="/" className="text-slate-400 hover:text-orange-500 transition-colors shrink-0">
-          <Home size={16} />
-        </Link>
-        <ChevronRight size={14} className="text-slate-300 shrink-0" />
-        <Link href="/restaurants" className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-orange-500 transition-colors shrink-0">
-          Nhà hàng
-        </Link>
-        <ChevronRight size={14} className="text-slate-300 shrink-0" />
-        <Link href={`/restaurants/${id}`} className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-orange-500 transition-colors truncate max-w-37.5">
-          {restaurant?.name}
-        </Link>
-        <ChevronRight size={14} className="text-slate-300 shrink-0" />
-        <span className="text-[10px] font-black uppercase tracking-widest text-orange-500 shrink-0 italic underline underline-offset-4">Đánh giá</span>
-      </nav>
-
+      <Breadcrumbs />
       {/* HEADER & SCORE SECTION */}
       <div className="flex flex-col lg:flex-row justify-between gap-12 mb-8 items-start lg:items-center">
         <motion.div 
