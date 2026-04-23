@@ -18,7 +18,7 @@ export default function ReviewLoading() {
 
       <div className="flex flex-col lg:flex-row justify-between gap-12 mb-12 items-start lg:items-center">
         <div className="flex-1 space-y-4">
-          <div className="w-full max-w-[500px] h-20 md:h-32 bg-slate-100 dark:bg-slate-900 rounded-3xl animate-pulse" />
+          <div className="w-full max-w-125 h-20 md:h-32 bg-slate-100 dark:bg-slate-900 rounded-3xl animate-pulse" />
           <div className="w-64 h-4 bg-slate-50 dark:bg-slate-900 rounded-full animate-pulse" />
         </div>
 
@@ -35,7 +35,7 @@ export default function ReviewLoading() {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
         <div className="lg:col-span-4 space-y-8">
-          <div className="h-[450px] w-full bg-slate-100 dark:bg-slate-900 rounded-[3.5rem] border-[3px] border-slate-50 dark:border-slate-800 p-8 space-y-8">
+          <div className="h-112.5 w-full bg-slate-100 dark:bg-slate-900 rounded-[3.5rem] border-[3px] border-slate-50 dark:border-slate-800 p-8 space-y-8">
              <div className="w-1/2 h-8 bg-slate-200 dark:bg-slate-800 rounded-2xl animate-pulse" />
              {[1,2,3,4,5].map(i => (
                 <div key={i} className="space-y-3">

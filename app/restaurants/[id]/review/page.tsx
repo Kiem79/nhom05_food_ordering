@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, use } from "react";
-import Link from "next/link";
-import { ChevronRight, Star, MessageSquare, BarChart3, Users, Home, Filter, ArrowUpDown, PieChart } from "lucide-react";
+import { Star, MessageSquare, BarChart3, Users, Filter, ArrowUpDown, PieChart } from "lucide-react";
 import * as ReviewsData from "@/lib/data/review";
 import restaurantsData from "@/lib/data/stores.json";
 import ReviewCard from "@/components/ui/ReviewCard";

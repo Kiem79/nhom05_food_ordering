@@ -255,8 +255,8 @@ export default function GroupOrderPage() {
                         <div className="flex items-center gap-2 text-orange-500 mb-2">
                           <Store size={14} />
                           <span className="text-[10px] font-black uppercase tracking-widest">
-                            {item.restaurantId && RESTAURANT_MAP[item.restaurantId]
-                              ? RESTAURANT_MAP[item.restaurantId]
+                            {item.restaurantId && RESTAURANT_MAP[item.restaurantId as keyof typeof RESTAURANT_MAP]
+                              ? RESTAURANT_MAP[item.restaurantId as keyof typeof RESTAURANT_MAP]
                               : "Foodie Partner"}
                           </span>
                         </div>

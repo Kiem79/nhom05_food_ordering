@@ -7,6 +7,11 @@ import productsData from "@/lib/data/products.json";
 import restaurantsData from "@/lib/data/stores.json";
 import type { Product, Restaurant } from "@/types";
 
+interface BreadcrumbsProps {
+  customLabels?: Record<string, string>;
+  restaurantInfo?: { id: string; name: string };
+}
+
 const routeLabels: Record<string, string> = {
   "restaurants": "Quán ăn",
   "products": "Thực đơn",
@@ -22,11 +27,13 @@ const routeLabels: Record<string, string> = {
   "review": "Đánh giá"
 };
 
-export default function Breadcrumbs() {
+export default function Breadcrumbs({ customLabels, restaurantInfo }: BreadcrumbsProps) {
   const pathname = usePathname();
   const pathSegments = pathname.split("/").filter(Boolean);
 
   const getDynamicLabel = (segment: string) => {
+    if (customLabels && customLabels[segment]) return customLabels[segment];
+
     const restaurants = restaurantsData.restaurants as Restaurant[];
     const products = productsData.products as Product[];
 
@@ -42,7 +49,9 @@ export default function Breadcrumbs() {
   if (pathSegments[0] === "products" && pathSegments.length === 2) {
     const productId = pathSegments[1];
     const product = (productsData.products as Product[]).find(p => String(p.id) === productId);
-    const store = (restaurantsData.restaurants as Restaurant[]).find(r => String(r.id) === String(product?.restaurantId));
+    
+    const displayStore = restaurantInfo || (restaurantsData.restaurants as Restaurant[]).find(r => String(r.id) === String(product?.restaurantId));
+    const productName = customLabels?.[productId] || product?.name || "Chi tiết món";
 
     return (
       <nav className="flex flex-wrap items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] mb-6">
@@ -53,15 +62,15 @@ export default function Breadcrumbs() {
         <ChevronRight size={12} className="text-slate-300" />
         <Link href="/restaurants" className="text-slate-400 hover:text-orange-500 transition-colors">Quán ăn</Link>
         
-        {store && (
+        {displayStore && (
           <>
             <ChevronRight size={12} className="text-slate-300" />
-            <Link href={`/restaurants/${store.id}`} className="text-slate-400 hover:text-orange-500 transition-colors">{store.name}</Link>
+            <Link href={`/restaurants/${displayStore.id}`} className="text-slate-400 hover:text-orange-500 transition-colors">{displayStore.name}</Link>
           </>
         )}
 
         <ChevronRight size={12} className="text-slate-300" />
-        <span className="text-orange-500 italic">{product?.name || "Chi tiết món"}</span>
+        <span className="text-orange-500 italic">{productName}</span>
       </nav>
     );
   }

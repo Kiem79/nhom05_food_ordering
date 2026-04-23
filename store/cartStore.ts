@@ -33,6 +33,7 @@ export interface CartItem {
   restaurantId?: string | number;
   owner: string;
   note?: string; 
+  addedBy?: string;
 }
 
 interface CartStore {

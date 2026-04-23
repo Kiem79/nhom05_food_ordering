@@ -22,7 +22,7 @@ export default function RestaurantCard({ restaurant }: { restaurant: Restaurant 
       <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] overflow-hidden border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-100/50 dark:shadow-none hover:shadow-2xl hover:shadow-orange-100/50 dark:hover:shadow-orange-950/20 transition-all duration-500 flex flex-col h-full">
         
         {/* IMAGE SECTION */}
-        <div className="relative aspect-[16/10] overflow-hidden bg-slate-200 dark:bg-slate-800">
+        <div className="relative aspect-16/10 overflow-hidden bg-slate-200 dark:bg-slate-800">
           <Image
             src={finalImageSrc}
             alt={restaurant.name || "Restaurant"}

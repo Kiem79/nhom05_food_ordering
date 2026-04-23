@@ -105,7 +105,7 @@ export default function SearchBar() {
                 </div>
                 {results.map((product) => (
                   <Link
-                    href={`${BASE_PATH}/products/${product.id}`}
+                    href={`/products/${product.id}`}
                     key={product.id}
                     onClick={() => {
                       setIsOpen(false);

@@ -1,15 +1,15 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sun, Moon, Zap, Heart, X } from "lucide-react";
+import { Zap, Heart, X } from "lucide-react";
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
 
 const basePath = "/nhom05_food_ordering";
 
-// Icon Github SVG bất tử - Tránh triệt để lỗi Build
+// Icon Github SVG 
 const GithubIcon = ({ size = 18 }: { size?: number }) => (
   <svg 
     xmlns="http://www.w3.org/2000/svg" 
@@ -23,7 +23,16 @@ const GithubIcon = ({ size = 18 }: { size?: number }) => (
   </svg>
 );
 
-const members = [
+interface Member {
+  name: string;
+  mssv: string;
+  role: string;
+  description: string;
+  github: string;
+  avatar: string;
+}
+
+const members: Member[] = [
   {
     name: 'Lê Đức Mạnh',
     mssv: '24128129',
@@ -71,7 +80,7 @@ Thiết kế và triển khai Modal chi tiết đơn hàng, cho phép xem danh s
 Xây dựng hệ thống lưu trữ dữ liệu (Persistence) bằng Zustand hoặc LocalStorage, đảm bảo dữ liệu không bị mất khi reload trang.
 Tối ưu trải nghiệm người dùng với thống kê cá nhân hóa (tổng số đơn, món ăn yêu thích).`,
     github: 'https://github.com/24126166-tech',
-    avatar: '/images/Members/Bich%20Nhi.jpg',
+    avatar: '/images/Members/BichNhi.jpg',
   },
   {
     name: 'Lê Thị Xuân Nhi',
@@ -83,7 +92,7 @@ Phát triển trang thanh toán (Checkout), xử lý nhập mã giảm giá (Vou
 Xây dựng logic áp dụng mã giảm giá theo phần trăm (ví dụ: GIAM20).
 Triển khai thuật toán chia tiền (Split Bill), tự động tính số tiền mỗi người phải trả.`,
     github: 'https://github.com/sunhope28',
-    avatar: '/images/Members/Xuan%20Nhi.jpg',
+    avatar: '/images/Members/XuanNhi.jpg',
   },
   {
     name: 'Trần Thị Bích Ngọc',
@@ -100,12 +109,14 @@ Nâng cao trải nghiệm người dùng (UI/UX) với giao diện hiện đại
 ];
 
 export default function AboutPage() {
-  const [selectedMember, setSelectedMember] = useState<any>(null);
+  const [selectedMember, setSelectedMember] = useState<Member | null>(null);
   const [mounted, setMounted] = useState(false);
 
-  // Chỉ giữ lại mounted để tránh lỗi hydration của Next.js
   useEffect(() => {
-    setMounted(true);
+    const timer = setTimeout(() => {
+      setMounted(true);
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
 
   if (!mounted) return null;
@@ -143,7 +154,7 @@ export default function AboutPage() {
         >
           <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/15 rounded-full blur-3xl" />
           <p className="text-base md:text-lg font-medium italic leading-relaxed text-slate-300 max-w-4xl relative z-10">
-            "Chúng tôi là nhóm sinh viên đam mê công nghệ, xây dựng nền tảng đặt đồ ăn trực tuyến đem lại trải nghiệm <span className="text-orange-500 font-black uppercase tracking-tighter">Nhanh chóng – Tiện lợi – Hiện đại</span> cho dân văn phòng."
+            &quot; Chúng tôi là nhóm sinh viên đam mê công nghệ, xây dựng nền tảng đặt đồ ăn trực tuyến đem lại trải nghiệm <span className="text-orange-500 font-black uppercase tracking-tighter">Nhanh chóng - Tiện lợi - Hiện đại </span> cho dân văn phòng. &quot;
           </p>
         </motion.div>
 
@@ -179,7 +190,7 @@ export default function AboutPage() {
       {/* --- MODAL CHI TIẾT --- */}
       <AnimatePresence>
         {selectedMember && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
             <motion.div 
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               onClick={() => setSelectedMember(null)}
@@ -193,7 +204,7 @@ export default function AboutPage() {
                 <X size={28} />
               </button>
               <div className="flex flex-col md:flex-row">
-                <div className="md:w-2/5 relative aspect-square md:aspect-auto min-h-[350px]">
+                <div className="md:w-2/5 relative aspect-square md:aspect-auto min-h-87.5">
                   <Image src={`${basePath}${selectedMember.avatar}`} alt={selectedMember.name} fill className="object-cover" unoptimized />
                 </div>
                 <div className="md:w-3/5 p-12 md:p-16 space-y-8 text-left">

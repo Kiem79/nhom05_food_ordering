@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, Zap, Clock, Heart, MapPin, CheckCircle2, X } from "lucide-react";
+import { Send, Zap, Clock, Heart, MapPin, CheckCircle2 } from "lucide-react";
 import confetti from "canvas-confetti";
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
 
@@ -12,7 +12,11 @@ export default function ContactPage() {
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
 
   useEffect(() => {
-    setMounted(true);
+    const timer = setTimeout(() => {
+      setMounted(true);
+    }, 0);
+    
+    return () => clearTimeout(timer);
   }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -143,7 +147,6 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              {/* BẢN ĐỒ - Grayscale Hover */}
               <div className="relative h-72 w-full rounded-[2.5rem] overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-1000 border border-slate-100 dark:border-slate-800">
                 <iframe 
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.485398611095!2d106.7693381!3d10.8506324!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752763f238711f%3A0xbdca97148a0494c!2zSENNIFVuaXZlcnNpdHkgb2YgVGVjaG5vbG9neSBhbmQgRWR1Y2F0aW9u!5e0!3m2!1sen!2s!4v1713160000000!5m2!1sen!2s"
@@ -158,7 +161,7 @@ export default function ContactPage() {
       {/* --- POPUP THÀNH CÔNG --- */}
       <AnimatePresence>
         {isSuccess && (
-          <div className="fixed inset-0 z-[110] flex items-center justify-center p-6">
+          <div className="fixed inset-0 z-110 flex items-center justify-center p-6">
             <motion.div 
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               onClick={() => setIsSuccess(false)}

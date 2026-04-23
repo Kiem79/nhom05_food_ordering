@@ -58,7 +58,7 @@ export default function Loading() {
 
         {/* --- RIGHT COLUMN: STICKY SIDEBAR --- */}
         <div className="relative">
-          <div className="bg-[#111827] dark:bg-slate-900/90 p-10 rounded-[3rem] min-h-[500px] flex flex-col items-center justify-between border border-white/5 backdrop-blur-sm animate-pulse">
+          <div className="bg-[#111827] dark:bg-slate-900/90 p-10 rounded-[3rem] min-h-125 flex flex-col items-center justify-between border border-white/5 backdrop-blur-sm animate-pulse">
             
             {/* Top Placeholder (QR Icon Area) */}
             <div className="my-auto space-y-6 w-full flex flex-col items-center">

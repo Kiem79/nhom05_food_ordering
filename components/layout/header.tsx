@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { ShoppingCart, LogOut, ChevronDown } from "lucide-react";
+import { ShoppingCart, LogOut, ChevronDown, Menu, X } from "lucide-react"; 
 import useAuthStore from "@/store/authStore";
 import { useCartStore } from "@/store/cartStore";
 import { ThemeToggle } from "@/components/ThemeToggle"; 
@@ -18,17 +18,22 @@ export default function Header() {
   const [mounted, setMounted] = useState(false);
   
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setMounted(true);
+    const timer = setTimeout(() => setMounted(true), 0);
+    
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsDropdownOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      clearTimeout(timer);
+    };
   }, []);
 
   // 1. Các link hiển thị trực tiếp
@@ -81,8 +86,18 @@ export default function Header() {
     <header className="fixed top-0 left-0 right-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md z-50 border-b border-slate-100 dark:border-slate-800 font-sans transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between gap-4">
 
-        {/* --- CỤM BÊN TRÁI: LOGO + MENU CHÍNH --- */}
-        <div className="flex items-center gap-8">
+        {/* --- CỤM BÊN TRÁI: HAMBURGER + LOGO + MENU CHÍNH --- */}
+        <div className="flex items-center gap-3 lg:gap-8">
+          
+          {/* NÚT HAMBURGER MOBILE */}
+          <button 
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="p-2 md:hidden text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all"
+            aria-label="Toggle Menu"
+          >
+            {isMobileMenuOpen ? <X size={26} /> : <Menu size={26} />}
+          </button>
+
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group shrink-0">
             <div className="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center text-white font-black italic shadow-lg group-hover:bg-slate-900 dark:group-hover:bg-white dark:group-hover:text-slate-900 transition-all duration-500">
@@ -93,8 +108,8 @@ export default function Header() {
             </span>
           </Link>
 
-          {/* Navigation Links - Nằm sát Logo và kế bên SearchBar ở cụm phải */}
-          <nav className="flex items-center gap-6 border-l border-slate-100 dark:border-slate-800 pl-6">
+          {/* Navigation Links - Chỉ hiện trên desktop */}
+          <nav className="hidden md:flex items-center gap-6 border-l border-slate-100 dark:border-slate-800 pl-6">
             {visibleLinks.map((link) => (
               <Link
                 key={link.href}
@@ -144,7 +159,9 @@ export default function Header() {
         {/* --- CỤM BÊN PHẢI: SEARCH + ACTIONS --- */}
         <div className="flex items-center gap-1 sm:gap-3 shrink-0">
           
-          <SearchBar />
+          <div className="hidden md:block">
+            <SearchBar />
+          </div>
 
           <Link 
             href="/group-order" 
@@ -190,6 +207,32 @@ export default function Header() {
         </div>
 
       </div>
+
+      {/* --- MENU MOBILE OVERLAY --- */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden bg-white dark:bg-slate-950 border-t border-slate-100 dark:border-slate-800 shadow-2xl animate-in fade-in zoom-in-95 slide-in-from-top-4 duration-300 origin-top">
+          <div className="px-6 py-8 space-y-6">
+            <div className="pb-4 border-b border-slate-50 dark:border-slate-800">
+               <SearchBar />
+            </div>
+            
+            <div className="flex flex-col gap-5">
+              {[...visibleLinks, ...otherLinks].map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`text-[12px] font-black uppercase tracking-[0.2em] transition-all ${
+                    pathname === link.href ? "text-orange-500" : "text-slate-600 dark:text-slate-300"
+                  }`}
+                >
+                  {link.name}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 }

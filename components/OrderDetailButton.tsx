@@ -12,22 +12,21 @@ interface OrderItem {
 
 interface Props {
   open: boolean;
-
   onClose: () => void;
   items: OrderItem[];
 }
 
-export default function OrderDetailModal({open, onClose, items = [],}: Props) {
+export default function OrderDetailModal({ open, onClose, items = [] }: Props) {
   if (!open || !items?.length) return null;
 
-  const groupByOwner = items.reduce((acc: any, item) => {
-  const owner = item.owner || "Unknown";
+  const groupByOwner = items.reduce<Record<string, OrderItem[]>>((acc, item) => {
+    const owner = item.owner || "Unknown";
 
-  if (!acc[owner]) acc[owner] = [];
-  acc[owner].push(item);
+    if (!acc[owner]) acc[owner] = [];
+    acc[owner].push(item);
 
-  return acc;
-}, {});
+    return acc;
+  }, {});
 
   const subTotal = items.reduce(
     (sum, i) => sum + i.price * i.quantity,
@@ -35,12 +34,13 @@ export default function OrderDetailModal({open, onClose, items = [],}: Props) {
   );
 
   const shipFee = 15000;
-  const ownerCount = Object.keys(groupByOwner).length;
-  const shipPerPerson = shipFee / ownerCount;
+  const owners = Object.keys(groupByOwner);
+  const ownerCount = owners.length;
+  const shipPerPerson = shipFee / (ownerCount || 1); 
 
   const getOwnerTotal = (owner: string) =>
     groupByOwner[owner].reduce(
-      (sum: number, i: any) => sum + i.price * i.quantity,
+      (sum: number, i: OrderItem) => sum + i.price * i.quantity,
       0
     );
 
@@ -56,14 +56,14 @@ export default function OrderDetailModal({open, onClose, items = [],}: Props) {
 
         {/* BODY */}
         <div className="space-y-6 max-h-[60vh] overflow-y-auto pr-2">
-          {Object.keys(groupByOwner).map((owner) => (
+          {owners.map((owner) => (
             <div key={owner} className="border-b border-white/10 pb-4">
 
               <h3 className="font-black text-orange-500 mb-2">
                 {owner === "Host" ? "Bạn" : owner}
               </h3>
 
-              {groupByOwner[owner].map((item: any, idx: number) => (
+              {groupByOwner[owner].map((item, idx) => (
                 <div key={idx} className="flex justify-between text-sm">
                   <span>{item.name} × {item.quantity}</span>
                   <span>{(item.price * item.quantity).toLocaleString()}đ</span>

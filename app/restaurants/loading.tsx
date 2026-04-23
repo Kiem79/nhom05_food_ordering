@@ -15,7 +15,7 @@ export default function Loading() {
         </div>
 
         <div className="flex justify-start items-center gap-2">
-          <div className="flex bg-slate-100 dark:bg-slate-900 p-1.5 rounded-2xl items-center border border-transparent dark:border-slate-800 w-[200px]">
+          <div className="flex bg-slate-100 dark:bg-slate-900 p-1.5 rounded-2xl items-center border border-transparent dark:border-slate-800 w-50">
             <div className="shrink-0 w-9 h-9 bg-orange-500/50 rounded-xl mr-1" />
             <div className="h-9 w-24 bg-white dark:bg-slate-800 rounded-xl shadow-sm" />
           </div>
