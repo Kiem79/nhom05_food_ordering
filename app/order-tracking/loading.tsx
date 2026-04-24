@@ -7,14 +7,14 @@ export default function Loading() {
     <div className="max-w-7xl mx-auto px-6 py-12 bg-transparent dark:bg-slate-950 transition-colors duration-500 min-h-screen">
       
       <div className="mb-12 animate-pulse">
-        <div className="h-16 md:h-20 w-3/4 md:w-[500px] bg-slate-200 dark:bg-slate-800 rounded-2xl mb-4" />
+        <div className="h-16 md:h-20 w-3/4 md:w-125 bg-slate-200 dark:bg-slate-800 rounded-2xl mb-4" />
         <div className="h-3 w-64 bg-slate-100 dark:bg-slate-800/50 rounded-full" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
         
         <div className="animate-pulse">
-          <div className="relative w-full h-[400px] bg-slate-100 dark:bg-slate-900 rounded-[3rem] border-4 border-white dark:border-slate-800 overflow-hidden">
+          <div className="relative w-full h-100 bg-slate-100 dark:bg-slate-900 rounded-[3rem] border-4 border-white dark:border-slate-800 overflow-hidden">
             <div className="absolute inset-0 opacity-10 flex flex-wrap gap-8 p-8">
                 {Array.from({ length: 48 }).map((_, i) => (
                     <div key={i} className="w-1 h-1 bg-slate-400 rounded-full" />

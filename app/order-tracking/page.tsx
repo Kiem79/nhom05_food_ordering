@@ -4,12 +4,25 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner"; // Đã thêm toast để không bị lỗi
+import { toast } from "sonner";
 import {
   Bike, MapPin, ChefHat, CheckCircle2, Navigation, Clock,
   Home, Phone, MessageCircle, User, ReceiptText, X, Send, PhoneCall, MicOff, PackageCheck
 } from "lucide-react";
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
+
+interface DeliveryStep {
+  label: string;
+  time: string;
+  completed: boolean;
+}
+
+interface Order {
+  id: string;
+  district?: string;
+  status: string;
+  deliveryHistory: DeliveryStep[];
+}
 
 type NewType = {
   destination: string;
@@ -75,24 +88,28 @@ export default function OrderTrackingPage() {
   ]);
 
   useEffect(() => {
-    setMounted(true);
-    const savedOrders = JSON.parse(localStorage.getItem("foodie_orders") || "[]");
-    if (savedOrders.length > 0) {
-      const latestOrder = savedOrders[savedOrders.length - 1];
-      if (latestOrder.district) setDeliveryDistrict(latestOrder.district);
-      if (latestOrder.id) setOrderId(latestOrder.id);
-    }
+    const timer = setTimeout(() => {
+      setMounted(true);
+      const rawData = localStorage.getItem("foodie_orders");
+      const savedOrders: Order[] = rawData ? JSON.parse(rawData) : [];
+      
+      if (savedOrders.length > 0) {
+        const latestOrder = savedOrders[savedOrders.length - 1];
+        if (latestOrder.district) setDeliveryDistrict(latestOrder.district);
+        if (latestOrder.id) setOrderId(latestOrder.id);
+      }
+    }, 0);
+
+    return () => clearTimeout(timer);
   }, []);
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (!chatMessage.trim()) return;
 
-    // Thêm tin nhắn của mình
     setChatHistory(prev => [...prev, { sender: 'me', text: chatMessage }]);
     setChatMessage("");
     
-    // Trả lời tự động của Shipper sau 1.5s
     setTimeout(() => {
       setChatHistory(prev => [...prev, { sender: 'driver', text: 'Dạ vâng ạ, bạn đợi mình chút nhé!' }]);
     }, 1500);
@@ -100,38 +117,38 @@ export default function OrderTrackingPage() {
 
   // Hàm xử lý XÁC NHẬN NHẬN HÀNG
   const handleConfirmReceipt = () => {
-  try {
-    const orders = JSON.parse(localStorage.getItem("foodie_orders") || "[]");
+    try {
+      const rawData = localStorage.getItem("foodie_orders");
+      const orders: Order[] = rawData ? JSON.parse(rawData) : [];
 
-    const updatedOrders = orders.map((order: any) => {
-      if (order.id === orderId) {
-        return {
-          ...order,
-          status: "Đã nhận",
-          deliveryHistory: [
-            { label: "Đã đặt", time: "—", completed: true },
-            { label: "Chuẩn bị", time: "—", completed: true },
-            { label: "Đang giao", time: "—", completed: true },
-            { label: "Hoàn tất", time: "—", completed: true },
-          ],
-        };
-      }
-      return order;
-    });
+      const updatedOrders = orders.map((order: Order) => {
+        if (order.id === orderId) {
+          return {
+            ...order,
+            status: "Đã nhận",
+            deliveryHistory: [
+              { label: "Đã đặt", time: "—", completed: true },
+              { label: "Chuẩn bị", time: "—", completed: true },
+              { label: "Đang giao", time: "—", completed: true },
+              { label: "Hoàn tất", time: "—", completed: true },
+            ],
+          };
+        }
+        return order;
+      });
 
-    localStorage.setItem("foodie_orders", JSON.stringify(updatedOrders));
+      localStorage.setItem("foodie_orders", JSON.stringify(updatedOrders));
+      toast.success("Xác nhận thành công! Chúc team ăn ngon miệng nhé 😋");
 
-    toast.success("Xác nhận thành công! Chúc team ăn ngon miệng nhé 😋");
+      setTimeout(() => {
+        router.push("/");
+      }, 2000);
 
-    setTimeout(() => {
-      router.push("/");
-    }, 2000);
-
-  } catch (err) {
-    console.error("Lỗi cập nhật trạng thái đơn hàng:", err);
-    toast.error("Có lỗi xảy ra!");
-  }
-};
+    } catch (err) {
+      console.error("Lỗi cập nhật trạng thái đơn hàng:", err);
+      toast.error("Có lỗi xảy ra!");
+    }
+  };
 
   if (!mounted) return null;
 
@@ -165,7 +182,6 @@ export default function OrderTrackingPage() {
         <FakeGPSMap destination={deliveryDistrict} />
         
         <div className="space-y-6">
-          {/* CARD 1: THÔNG TIN TÀI XẾ */}
           <div className="bg-white dark:bg-slate-900 rounded-[3rem] p-8 border border-slate-50 dark:border-slate-800 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6 relative z-10">
             <div className="flex items-center gap-5">
               <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-400">
@@ -193,7 +209,6 @@ export default function OrderTrackingPage() {
             </div>
           </div>
 
-          {/* CARD 2: TIẾN ĐỘ ĐƠN HÀNG */}
           <div className="bg-white dark:bg-slate-900 rounded-[3rem] p-10 border border-slate-50 dark:border-slate-800 shadow-2xl shadow-slate-100/50 dark:shadow-none transition-colors">
             <div className="flex justify-between items-end mb-10 pb-6 border-b border-slate-50 dark:border-slate-800">
               <h3 className="text-xl font-black text-slate-900 dark:text-white uppercase italic flex items-center gap-3">
@@ -227,7 +242,6 @@ export default function OrderTrackingPage() {
             </div>
           </div>
 
-          {/* NÚT XÁC NHẬN NHẬN HÀNG (Chuẩn style Shopee) */}
           <button 
             onClick={handleConfirmReceipt}
             className="w-full h-16 bg-orange-500 hover:bg-orange-600 text-white rounded-full font-black uppercase tracking-widest text-[13px] transition-all active:scale-95 shadow-xl shadow-orange-500/20 flex items-center justify-center gap-3 mt-8 border border-orange-400/50"
@@ -237,9 +251,6 @@ export default function OrderTrackingPage() {
         </div>
       </div>
 
-      {/* ======================= OVERLAYS ======================= */}
-
-      {/* 1. KHUNG CHAT MINI */}
       <AnimatePresence>
         {isChatOpen && (
           <motion.div
@@ -248,7 +259,6 @@ export default function OrderTrackingPage() {
             exit={{ opacity: 0, y: 50, scale: 0.9 }}
             className="fixed bottom-6 right-6 w-87.5 bg-white dark:bg-slate-900 rounded-[2rem] shadow-2xl border border-slate-200 dark:border-slate-800 z-50 flex flex-col overflow-hidden"
           >
-            {/* Header Chat */}
             <div className="bg-orange-500 p-4 flex items-center justify-between text-white">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center"><User size={20}/></div>
@@ -261,7 +271,6 @@ export default function OrderTrackingPage() {
               </div>
               <button onClick={() => setIsChatOpen(false)} className="hover:bg-white/20 p-2 rounded-full transition-colors"><X size={20} /></button>
             </div>
-            {/* Khung tin nhắn */}
             <div className="h-64 p-4 overflow-y-auto flex flex-col gap-3 bg-slate-50 dark:bg-slate-950/50">
               {chatHistory.map((msg, idx) => (
                 <div key={idx} className={`max-w-[80%] p-3 rounded-2xl text-sm font-medium ${msg.sender === 'me' ?
@@ -270,7 +279,6 @@ export default function OrderTrackingPage() {
                 </div>
               ))}
             </div>
-            {/* Chỗ nhập tin nhắn */}
             <form onSubmit={handleSendMessage} className="p-3 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex gap-2">
               <input
                 type="text"
@@ -287,7 +295,6 @@ export default function OrderTrackingPage() {
         )}
       </AnimatePresence>
 
-      {/* 2. MÀN HÌNH GỌI ĐIỆN GIẢ LẬP */}
       <AnimatePresence>
         {isCalling && (
           <motion.div
@@ -295,7 +302,6 @@ export default function OrderTrackingPage() {
             className="fixed inset-0 bg-slate-900/90 backdrop-blur-md z-100 flex items-center justify-center"
           >
             <div className="flex flex-col items-center text-white">
-              {/* Vòng tròn lan tỏa mờ ảo */}
               <div className="relative flex justify-center items-center mb-8">
                 <div className="absolute w-40 h-40 bg-orange-500/20 rounded-full animate-ping"></div>
                 <div className="absolute w-32 h-32 bg-orange-500/40 rounded-full animate-pulse"></div>
@@ -309,7 +315,6 @@ export default function OrderTrackingPage() {
                 <button className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center hover:bg-slate-700 transition-colors">
                   <MicOff size={24} />
                 </button>
-                {/* Nút Tắt Máy */}
                 <button
                   onClick={() => setIsCalling(false)}
                   className="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center hover:bg-red-600 transition-colors shadow-lg shadow-red-500/30"
@@ -321,7 +326,6 @@ export default function OrderTrackingPage() {
           </motion.div>
         )}
       </AnimatePresence>
-
     </div>
   );
 }

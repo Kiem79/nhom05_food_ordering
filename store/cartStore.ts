@@ -21,6 +21,7 @@ export interface Product {
   image?: string;
   displayImage?: string;
   restaurantId?: number | string;
+  note?: string;
 }
 
 export interface CartItem {
@@ -29,9 +30,10 @@ export interface CartItem {
   price: number;
   quantity: number;
   displayImage?: string;
-  restaurantId: number;
+  restaurantId?: string | number;
   owner: string;
-  note?: string; // Tính năng ghi chú từ phiên bản 2
+  note?: string; 
+  addedBy?: string;
 }
 
 interface CartStore {
@@ -56,41 +58,45 @@ export const useCartStore = create<CartStore>()(
       discountPercent: 0,
       discountFixed: 0,
 
-      addItem: (product, owner = "Host") => {
-        const currentItems = get().items;
-        let safeOwner = owner || "Host";
+    addItem: (product, owner = "Host") => {
+      const currentItems = get().items;
+      let safeOwner = owner || "Host";
 
-        if (RESTAURANT_NAMES.some((name) => safeOwner.toUpperCase() === name.toUpperCase())) {
-          safeOwner = "Host";
-        }
+      if (RESTAURANT_NAMES.some((name) => safeOwner.toUpperCase() === name.toUpperCase())) {
+        safeOwner = "Host";
+      }
 
-        const existingItem = currentItems.find(
-          (item) => item.id === product.id && item.owner === safeOwner
-        );
+      const existingItem = currentItems.find(
+        (item) => item.id === product.id && item.owner === safeOwner
+      );
 
-        if (existingItem) {
-          set({
-            items: currentItems.map((item) =>
-              item.id === product.id && item.owner === safeOwner
-                ? { ...item, quantity: item.quantity + 1 }
-                : item
-            ),
-          });
-          return;
-        }
+      if (existingItem) {
+        set({
+          items: currentItems.map((item) =>
+            item.id === product.id && item.owner === safeOwner
+              ? { 
+                  ...item, 
+                  quantity: item.quantity + 1,
+                  note: product.note || item.note || "" 
+                }
+              : item
+          ),
+        });
+        return;
+      }
 
-        const newItem: CartItem = {
-          id: product.id,
-          name: product.name,
-          price: product.price,
-          displayImage: product.displayImage ?? product.image ?? "",
-          restaurantId: product.restaurantId ? Number(product.restaurantId) : 1,
-          quantity: 1,
-          owner: safeOwner,
-          note: "", // Khởi tạo ghi chú trống
-        };
-        set({ items: [...currentItems, newItem] });
-      },
+      set({
+        items: [
+          ...currentItems,
+          { 
+            ...product, 
+            owner: safeOwner, 
+            quantity: 1, 
+            note: product.note || "" 
+          },
+        ],
+      });
+    },
 
       removeItem: (id, owner) => {
         set({

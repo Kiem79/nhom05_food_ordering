@@ -8,7 +8,7 @@ export default function Loading() {
       
       <div className="mb-16 flex flex-col md:flex-row justify-between items-start md:items-end gap-6 animate-pulse">
         <div className="space-y-4">
-          <div className="h-16 md:h-20 w-80 md:w-[450px] bg-slate-200 dark:bg-slate-800 rounded-2xl" />
+          <div className="h-16 md:h-20 w-80 md:w-112.5 bg-slate-200 dark:bg-slate-800 rounded-2xl" />
           <div className="h-3 w-48 bg-slate-100 dark:bg-slate-800/50 rounded-full" />
         </div>
         <div className="flex gap-3">
