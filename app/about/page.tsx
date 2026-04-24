@@ -35,7 +35,7 @@ interface Member {
 const members: Member[] = [
   {
     name: 'Lê Đức Mạnh',
-    mssv: '24128129',
+    mssv: '24126129',
     role: 'Leader - System Architect & Group Logic',
     description: `Thiết kế Kiến trúc & Quản trị trạng thái: Xây dựng "bộ não" điều phối dữ liệu toàn cục bằng Zustand Store, tối ưu luồng vận hành hệ thống.
 Giải pháp Đặt món nhóm (Group Order): Phát triển cấu trúc dữ liệu đa người dùng và thuật toán chia hóa đơn (Split Bill) tự động, chính xác.
