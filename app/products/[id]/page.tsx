@@ -5,6 +5,13 @@ import ProductDetailClient from "./ProductDetailClient";
 import { notFound } from "next/navigation";
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
 
+export async function generateStaticParams() {
+  const products = productsData.products as Product[];
+  return products.map((product) => ({
+    id: String(product.id),
+  }));
+}
+
 interface PageProps {
   params: Promise<{ id: string }>;
 }
