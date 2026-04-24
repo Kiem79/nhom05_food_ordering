@@ -93,7 +93,7 @@ export default function RestaurantContent({
       <motion.div
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="relative min-h-[500px] h-auto rounded-[3.5rem] overflow-hidden mb-12 shadow-2xl shadow-slate-200 dark:shadow-black/40 border-4 border-white dark:border-slate-900 flex items-end"
+        className="relative min-h-125 h-auto rounded-[3.5rem] overflow-hidden mb-12 shadow-2xl shadow-slate-200 dark:shadow-black/40 border-4 border-white dark:border-slate-900 flex items-end"
       >
         <Image
           src={getImg(restaurant.images[0])}
@@ -104,7 +104,7 @@ export default function RestaurantContent({
           unoptimized
         />
 
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/50 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-900/50 to-transparent" />
 
         <div className="relative z-10 w-full p-8 md:p-14 pt-32">
           <div className="flex gap-3 mb-6 flex-wrap">
@@ -138,7 +138,7 @@ export default function RestaurantContent({
 
       {/* INFO BAR */}
       <div className="flex flex-wrap lg:flex-nowrap gap-4 mb-20">
-        <div className="flex-2 min-w-[300px]">
+        <div className="flex-2 min-w-75">
           <InfoItem
             icon={<MapPin size={20} />}
             label="Địa điểm"
@@ -147,7 +147,7 @@ export default function RestaurantContent({
           />
         </div>
 
-        <div className="flex-1 min-w-[180px]">
+        <div className="flex-1 min-w-45">
           <InfoItem
             icon={<Clock size={20} />}
             label="Phục vụ"
@@ -155,7 +155,7 @@ export default function RestaurantContent({
           />
         </div>
 
-        <Link href={`/restaurants/${id}/review`} className="flex-1 min-w-[160px] group">
+        <Link href={`/restaurants/${id}/review`} className="flex-1 min-w-40 group">
           <div className="flex items-center gap-5 p-6 rounded-[2.5rem] bg-white dark:bg-slate-900 border border-slate-50 dark:border-slate-800 shadow-sm hover:border-orange-500 hover:shadow-lg transition-all h-full relative overflow-hidden">
             <div className="w-12 h-12 bg-orange-50 dark:bg-orange-500/10 rounded-2xl flex items-center justify-center text-orange-500 shrink-0 group-hover:scale-110 transition-transform">
               <Star size={20} className="fill-orange-500 text-orange-500" />
@@ -216,7 +216,7 @@ export default function RestaurantContent({
                         ease: "easeInOut",
                       }}
                     >
-                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-orange-400 to-orange-500 border-4 border-white dark:border-slate-900 shadow-lg shadow-orange-200 dark:shadow-orange-900/40 flex items-center justify-center">
+                      <div className="w-16 h-16 rounded-full bg-linear-to-br from-orange-400 to-orange-500 border-4 border-white dark:border-slate-900 shadow-lg shadow-orange-200 dark:shadow-orange-900/40 flex items-center justify-center">
                         <Flame
                           size={25}
                           className="fill-white text-white"
@@ -236,7 +236,7 @@ export default function RestaurantContent({
                         </p>
                       </div>
 
-                      <div className="relative aspect-[4/3] w-full overflow-hidden">
+                      <div className="relative aspect-4/3 w-full overflow-hidden">
                         <Image
                           src={getImg(product.images[0])}
                           alt={product.name}

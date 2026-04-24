@@ -28,7 +28,7 @@ export default function Loading() {
             </div>
           </div>
 
-          <div className="relative aspect-[5/4] w-full bg-slate-100 dark:bg-slate-900 rounded-[3rem] border-[12px] border-slate-50 dark:border-slate-900" />
+          <div className="relative aspect-5/4 w-full bg-slate-100 dark:bg-slate-900 rounded-[3rem] border-12 border-slate-50 dark:border-slate-900" />
         </div>
       </section>
 

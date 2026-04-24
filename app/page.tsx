@@ -168,7 +168,7 @@ function HomeProductCard({ product }: { product: Product }) {
     : `${basePath}${rawImg.startsWith("/") ? "" : "/"}${rawImg}`;
 
   return (
-    <div className="group bg-white dark:bg-slate-900 rounded-[2.5rem] overflow-hidden border border-slate-100 dark:border-slate-800 hover:shadow-2xl hover:shadow-orange-500/5 transition-all duration-500 flex flex-col h-full">
+    <div className="group bg-white dark:bg-slate-900 rounded-[2.5rem] overflow-hidden border border-slate-200 dark:border-slate-800 hover:shadow-2xl hover:shadow-orange-500/5 transition-all duration-500 flex flex-col h-full">
       <div className="relative aspect-4/3 overflow-hidden bg-slate-100 dark:bg-slate-800">
         <Image
           src={finalImg}
@@ -184,24 +184,30 @@ function HomeProductCard({ product }: { product: Product }) {
         </div>
       </div>
       
-      <div className="p-8 flex flex-col grow space-y-4">
-        <div className="grow">
+      {/* BODY SECTION */}
+      <div className="p-8 flex flex-col flex-1">
+        
+        <div className="flex flex-col min-h-40">
           <div className="flex flex-wrap gap-2">
             {product.category.slice(0, 2).map((cat, idx) => (
-              <span key={idx} className="text-[10px] font-black uppercase tracking-widest text-orange-500 bg-orange-50 dark:bg-orange-500/10 px-3 py-1 rounded-lg">
+              <span key={idx} className="text-[10px] font-black uppercase tracking-widest text-orange-500 bg-orange-50 dark:bg-orange-500/10 px-3 py-1.5 rounded-lg">
                 {cat}
               </span>
             ))}
           </div>
-          <h3 className="text-xl font-black text-slate-900 dark:text-white mt-4 line-clamp-1 italic uppercase tracking-tight">
+          
+          <h3 className="text-xl md:text-2xl font-black text-slate-900 dark:text-white mt-4 pt-3 pb-1 line-clamp-2 italic uppercase tracking-tighter leading-[1.1]">
             {product.name}
           </h3>
-          <p className="text-slate-500 dark:text-slate-400 text-sm line-clamp-2 mt-2 font-medium leading-relaxed">
+          
+          <p className="text-slate-500 dark:text-slate-400 text-sm line-clamp-3 mt-2 font-medium leading-relaxed">
             {product.description}
           </p>
         </div>
 
-        <div className="flex items-center justify-between pt-6 border-t border-slate-50 dark:border-slate-800 mt-auto">
+        <div className="flex-1 min-h-5"></div>
+
+        <div className="flex items-center justify-between pt-6 border-t border-slate-50 dark:border-slate-800">
           <span className="text-2xl font-black text-slate-900 dark:text-white italic tracking-tighter">
             {product.price.toLocaleString()}đ
           </span>

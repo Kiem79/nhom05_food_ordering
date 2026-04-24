@@ -10,7 +10,6 @@ import {
   ShoppingBag,
   Heart,
   Sparkles,
-  ChevronLeft,
   Leaf,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -93,7 +92,7 @@ export default function ProductDetailClient({
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="relative aspect-[4/3] rounded-[3rem] overflow-hidden shadow-2xl shadow-orange-100 dark:shadow-black/50 border-4 border-white dark:border-slate-900"
+              className="relative aspect-4/3 rounded-[3rem] overflow-hidden shadow-2xl shadow-orange-100 dark:shadow-black/50 border-4 border-white dark:border-slate-900"
             >
               <Image
                 src={getImg(product.images?.[0])}
@@ -241,7 +240,7 @@ export default function ProductDetailClient({
           viewport={{ once: true }}
           className="relative mb-24 overflow-hidden group"
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-orange-400 dark:from-orange-500 dark:to-orange-700 rounded-[2.5rem] shadow-2xl shadow-orange-200 dark:shadow-none" />
+          <div className="absolute inset-0 bg-linear-to-r from-orange-600 to-orange-400 dark:from-orange-500 dark:to-orange-700 rounded-[2.5rem] shadow-2xl shadow-orange-200 dark:shadow-none" />
           <div className="relative p-8 md:p-12 flex flex-col md:flex-row items-center gap-8">
             <div className="bg-white/20 backdrop-blur-md p-5 rounded-3xl border border-white/30">
               <Leaf className="text-white" size={40} />
@@ -273,7 +272,7 @@ export default function ProductDetailClient({
                 href={`/products/${item.id}`}
                 className="group bg-white dark:bg-slate-900 rounded-[2.5rem] p-5 border border-slate-50 dark:border-slate-800 shadow-lg hover:shadow-2xl hover:shadow-orange-100 transition-all duration-500"
               >
-                <div className="relative aspect-[4/3] rounded-2xl overflow-hidden mb-5">
+                <div className="relative aspect-4/3 rounded-2xl overflow-hidden mb-5">
                   <Image
                     src={getImg(item.images?.[0])}
                     alt={item.name}

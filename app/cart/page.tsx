@@ -12,7 +12,10 @@ export default function Cart() {
 
   // Đảm bảo chỉ chạy trên client để tránh lỗi Hydration
   useEffect(() => {
-    setMounted(true);
+    const timer = setTimeout(() => {
+      setMounted(true);
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
 
   if (!mounted) return null;

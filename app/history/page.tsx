@@ -92,7 +92,7 @@ export default function HistoryPage() {
           onClick={() => setSelectedOrder(null)}
         >
           <div
-            className="bg-white dark:bg-slate-900 p-6 rounded-foodie w-[400px] border border-transparent dark:border-slate-800 shadow-2xl"
+            className="bg-white dark:bg-slate-900 p-6 rounded-foodie w-100 border border-transparent dark:border-slate-800 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <h2 className="text-xl font-bold text-primary dark:text-white mb-4">

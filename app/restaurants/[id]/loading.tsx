@@ -8,7 +8,7 @@ export default function Loading() {
   return (
     <div className="min-h-screen bg-white dark:bg-slate-950 transition-colors duration-500">
       
-      <div className="relative h-[300px] md:h-[400px] w-full bg-slate-200 dark:bg-slate-900 animate-pulse">
+      <div className="relative h-75 md:h-100 w-full bg-slate-200 dark:bg-slate-900 animate-pulse">
         <div className="max-w-7xl mx-auto h-full px-6 flex flex-col justify-end pb-12">
           <div className="absolute top-8 left-6 h-8 w-24 bg-white/20 rounded-full" />
           
@@ -45,7 +45,7 @@ export default function Loading() {
               key={idx} 
               className="flex gap-4 p-4 rounded-[2rem] border border-slate-50 dark:border-slate-900 animate-pulse"
             >
-              <div className="w-24 h-24 bg-slate-100 dark:bg-slate-900 rounded-2xl flex-shrink-0" />
+              <div className="w-24 h-24 bg-slate-100 dark:bg-slate-900 rounded-2xl shrink-0" />
               
               <div className="flex-1 space-y-3 py-1">
                 <div className="h-4 w-3/4 bg-slate-200 dark:bg-slate-800 rounded-md" />
